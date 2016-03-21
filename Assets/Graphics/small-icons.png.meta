@@ -1,0 +1,2137 @@
+fileFormatVersion: 2
+guid: e8fa492b88213924f953c50ac8654789
+timeCreated: 1454197019
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: small-icons_0
+    21300002: small-icons_1
+    21300004: small-icons_2
+    21300006: small-icons_3
+    21300008: small-icons_4
+    21300010: small-icons_5
+    21300012: small-icons_6
+    21300014: small-icons_7
+    21300016: small-icons_8
+    21300018: small-icons_9
+    21300020: small-icons_10
+    21300022: small-icons_11
+    21300024: small-icons_12
+    21300026: small-icons_13
+    21300028: small-icons_14
+    21300030: small-icons_15
+    21300032: small-icons_16
+    21300034: small-icons_17
+    21300036: small-icons_18
+    21300038: small-icons_19
+    21300040: small-icons_20
+    21300042: small-icons_21
+    21300044: small-icons_22
+    21300046: small-icons_23
+    21300048: small-icons_24
+    21300050: small-icons_25
+    21300052: small-icons_26
+    21300054: small-icons_27
+    21300056: small-icons_28
+    21300058: small-icons_29
+    21300060: small-icons_30
+    21300062: small-icons_31
+    21300064: small-icons_32
+    21300066: small-icons_33
+    21300068: small-icons_34
+    21300070: small-icons_35
+    21300072: small-icons_36
+    21300074: small-icons_37
+    21300076: small-icons_38
+    21300078: small-icons_39
+    21300080: small-icons_40
+    21300082: small-icons_41
+    21300084: small-icons_42
+    21300086: small-icons_43
+    21300088: small-icons_44
+    21300090: small-icons_45
+    21300092: small-icons_46
+    21300094: small-icons_47
+    21300096: small-icons_48
+    21300098: small-icons_49
+    21300100: small-icons_50
+    21300102: small-icons_51
+    21300104: small-icons_52
+    21300106: small-icons_53
+    21300108: small-icons_54
+    21300110: small-icons_55
+    21300112: small-icons_56
+    21300114: small-icons_57
+    21300116: small-icons_58
+    21300118: small-icons_59
+    21300120: small-icons_60
+    21300122: small-icons_61
+    21300124: small-icons_62
+    21300126: small-icons_63
+    21300128: small-icons_64
+    21300130: small-icons_65
+    21300132: small-icons_66
+    21300134: small-icons_67
+    21300136: small-icons_68
+    21300138: small-icons_69
+    21300140: small-icons_70
+    21300142: small-icons_71
+    21300144: small-icons_72
+    21300146: small-icons_73
+    21300148: small-icons_74
+    21300150: small-icons_75
+    21300152: small-icons_76
+    21300154: small-icons_77
+    21300156: small-icons_78
+    21300158: small-icons_79
+    21300160: small-icons_80
+    21300162: small-icons_81
+    21300164: small-icons_82
+    21300166: small-icons_83
+    21300168: small-icons_84
+    21300170: small-icons_85
+    21300172: small-icons_86
+    21300174: small-icons_87
+    21300176: small-icons_88
+    21300178: small-icons_89
+    21300180: small-icons_90
+    21300182: small-icons_91
+    21300184: small-icons_92
+    21300186: small-icons_93
+    21300188: small-icons_94
+    21300190: small-icons_95
+    21300192: small-icons_96
+    21300194: small-icons_97
+    21300196: small-icons_98
+    21300198: small-icons_99
+    21300200: small-icons_100
+    21300202: small-icons_101
+    21300204: small-icons_102
+    21300206: small-icons_103
+    21300208: small-icons_104
+    21300210: small-icons_105
+    21300212: small-icons_106
+    21300214: small-icons_107
+    21300216: small-icons_108
+    21300218: small-icons_109
+    21300220: small-icons_110
+    21300222: small-icons_111
+    21300224: small-icons_112
+    21300226: small-icons_113
+    21300228: small-icons_114
+    21300230: small-icons_115
+    21300232: small-icons_116
+    21300234: small-icons_117
+    21300236: small-icons_118
+    21300238: small-icons_119
+    21300240: small-icons_120
+    21300242: small-icons_121
+    21300244: small-icons_122
+    21300246: small-icons_123
+    21300248: small-icons_124
+    21300250: small-icons_125
+    21300252: small-icons_126
+    21300254: small-icons_127
+    21300256: small-icons_128
+    21300258: small-icons_129
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -2
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: 0
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: small-icons_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 357.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_1
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 357.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_2
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 357.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_3
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 357.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_4
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 357.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_5
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 357.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_6
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 357.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_7
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 357.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_8
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 357.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_9
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 357.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_10
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 357.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_11
+      rect:
+        serializedVersion: 2
+        x: 440
+        y: 357.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_12
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 357.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_13
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 318.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_14
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 318.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_15
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 318.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_16
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 318.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_17
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 318.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_18
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 318.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_19
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 318.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_20
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 318.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_21
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 318.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_22
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 318.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_23
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 318.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_24
+      rect:
+        serializedVersion: 2
+        x: 440
+        y: 318.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_25
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 318.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_26
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 279.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_27
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 279.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_28
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 279.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_29
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 279.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_30
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 279.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_31
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 279.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_32
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 279.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_33
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 279.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_34
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 279.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_35
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 279.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_36
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 279.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_37
+      rect:
+        serializedVersion: 2
+        x: 440
+        y: 279.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_38
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 279.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.299988}
+        - {x: -20, y: -19.700012}
+        - {x: 20, y: -19.700012}
+        - {x: 20, y: 20.299988}
+    - name: small-icons_39
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 240.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_40
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 240.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_41
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 240.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_42
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 240.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_43
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 240.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_44
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 240.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_45
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 240.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_46
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 240.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_47
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 240.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_48
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 240.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_49
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 240.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_50
+      rect:
+        serializedVersion: 2
+        x: 440
+        y: 240.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_51
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 240.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_52
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 201.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_53
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 201.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_54
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 201.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_55
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 201.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_56
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 201.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_57
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 201.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_58
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 201.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_59
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 201.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_60
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 201.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_61
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 201.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_62
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 201.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_63
+      rect:
+        serializedVersion: 2
+        x: 440
+        y: 201.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_64
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 201.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_65
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 162.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_66
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 162.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_67
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 162.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_68
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 162.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_69
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 162.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_70
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 162.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_71
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 162.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_72
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 162.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_73
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 162.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_74
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 162.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_75
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 162.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_76
+      rect:
+        serializedVersion: 2
+        x: 440
+        y: 162.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_77
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 162.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_78
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 123.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_79
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 123.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_80
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 123.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_81
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 123.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_82
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 123.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_83
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 123.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_84
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 123.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_85
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 123.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_86
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 123.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_87
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 123.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_88
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 123.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_89
+      rect:
+        serializedVersion: 2
+        x: 440
+        y: 123.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_90
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 123.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_91
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 84.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_92
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 84.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_93
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 84.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_94
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 84.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_95
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 84.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_96
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 84.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_97
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 84.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_98
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 84.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_99
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 84.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_100
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 84.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_101
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 84.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_102
+      rect:
+        serializedVersion: 2
+        x: 440
+        y: 84.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_103
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 84.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.300003}
+        - {x: -20, y: -19.699997}
+        - {x: 20, y: -19.699997}
+        - {x: 20, y: 20.300003}
+    - name: small-icons_104
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 45.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.3}
+        - {x: -20, y: -19.7}
+        - {x: 20, y: -19.7}
+        - {x: 20, y: 20.3}
+    - name: small-icons_105
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 45.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.3}
+        - {x: -20, y: -19.7}
+        - {x: 20, y: -19.7}
+        - {x: 20, y: 20.3}
+    - name: small-icons_106
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 45.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.3}
+        - {x: -20, y: -19.7}
+        - {x: 20, y: -19.7}
+        - {x: 20, y: 20.3}
+    - name: small-icons_107
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 45.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.3}
+        - {x: -20, y: -19.7}
+        - {x: 20, y: -19.7}
+        - {x: 20, y: 20.3}
+    - name: small-icons_108
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 45.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.3}
+        - {x: -20, y: -19.7}
+        - {x: 20, y: -19.7}
+        - {x: 20, y: 20.3}
+    - name: small-icons_109
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 45.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.3}
+        - {x: -20, y: -19.7}
+        - {x: 20, y: -19.7}
+        - {x: 20, y: 20.3}
+    - name: small-icons_110
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 45.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.3}
+        - {x: -20, y: -19.7}
+        - {x: 20, y: -19.7}
+        - {x: 20, y: 20.3}
+    - name: small-icons_111
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 45.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.3}
+        - {x: -20, y: -19.7}
+        - {x: 20, y: -19.7}
+        - {x: 20, y: 20.3}
+    - name: small-icons_112
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 45.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.3}
+        - {x: -20, y: -19.7}
+        - {x: 20, y: -19.7}
+        - {x: 20, y: 20.3}
+    - name: small-icons_113
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 45.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.3}
+        - {x: -20, y: -19.7}
+        - {x: 20, y: -19.7}
+        - {x: 20, y: 20.3}
+    - name: small-icons_114
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 45.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.3}
+        - {x: -20, y: -19.7}
+        - {x: 20, y: -19.7}
+        - {x: 20, y: 20.3}
+    - name: small-icons_115
+      rect:
+        serializedVersion: 2
+        x: 440
+        y: 45.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.3}
+        - {x: -20, y: -19.7}
+        - {x: 20, y: -19.7}
+        - {x: 20, y: 20.3}
+    - name: small-icons_116
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 45.3
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.3}
+        - {x: -20, y: -19.7}
+        - {x: 20, y: -19.7}
+        - {x: 20, y: 20.3}
+    - name: small-icons_117
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 6.299999
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.3}
+        - {x: -20, y: -19.7}
+        - {x: 20, y: -19.7}
+        - {x: 20, y: 20.3}
+    - name: small-icons_118
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 6.299999
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.3}
+        - {x: -20, y: -19.7}
+        - {x: 20, y: -19.7}
+        - {x: 20, y: 20.3}
+    - name: small-icons_119
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 6.299999
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.3}
+        - {x: -20, y: -19.7}
+        - {x: 20, y: -19.7}
+        - {x: 20, y: 20.3}
+    - name: small-icons_120
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 6.299999
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.3}
+        - {x: -20, y: -19.7}
+        - {x: 20, y: -19.7}
+        - {x: 20, y: 20.3}
+    - name: small-icons_121
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 6.299999
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.3}
+        - {x: -20, y: -19.7}
+        - {x: 20, y: -19.7}
+        - {x: 20, y: 20.3}
+    - name: small-icons_122
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 6.299999
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.3}
+        - {x: -20, y: -19.7}
+        - {x: 20, y: -19.7}
+        - {x: 20, y: 20.3}
+    - name: small-icons_123
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 6.299999
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.3}
+        - {x: -20, y: -19.7}
+        - {x: 20, y: -19.7}
+        - {x: 20, y: 20.3}
+    - name: small-icons_124
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 6.299999
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.3}
+        - {x: -20, y: -19.7}
+        - {x: 20, y: -19.7}
+        - {x: 20, y: 20.3}
+    - name: small-icons_125
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 6.299999
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.3}
+        - {x: -20, y: -19.7}
+        - {x: 20, y: -19.7}
+        - {x: 20, y: 20.3}
+    - name: small-icons_126
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 6.299999
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.3}
+        - {x: -20, y: -19.7}
+        - {x: 20, y: -19.7}
+        - {x: 20, y: 20.3}
+    - name: small-icons_127
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 6.299999
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.3}
+        - {x: -20, y: -19.7}
+        - {x: 20, y: -19.7}
+        - {x: 20, y: 20.3}
+    - name: small-icons_128
+      rect:
+        serializedVersion: 2
+        x: 440
+        y: 6.299999
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.3}
+        - {x: -20, y: -19.7}
+        - {x: 20, y: -19.7}
+        - {x: 20, y: 20.3}
+    - name: small-icons_129
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 6.299999
+        width: 40
+        height: 39.7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20, y: 20.3}
+        - {x: -20, y: -19.7}
+        - {x: 20, y: -19.7}
+        - {x: 20, y: 20.3}
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,393 @@
+fileFormatVersion: 2
+guid: 0a5a8ab7d292ebc428ef91031d550beb
+timeCreated: 1454200453
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: gunsground_0
+    21300002: gunsground_1
+    21300004: gunsground_2
+    21300006: gunsground_4
+    21300008: gunsground_5
+    21300010: gunsground_6
+    21300012: gunsground_7
+    21300014: gunsground_8
+    21300016: gunsground_9
+    21300018: gunsground_10
+    21300020: gunsground_11
+    21300022: gunsground_12
+    21300024: gunsground_13
+    21300026: gunsground_14
+    21300028: AssultRiflePickup
+    21300030: gunsground_16
+    21300032: gunsground_17
+    21300034: gunsground_18
+    21300036: gunsground_19
+    21300038: gunsground_20
+    21300040: gunsground_21
+    21300042: gunsground_22
+    21300044: gunsground_23
+    21300046: gunsground_24
+    21300048: gunsground_25
+    21300050: gunsground_26
+    21300052: gunsground_27
+    21300054: gunsground_28
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 8
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: 0
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 30
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: gunsground_0
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 237
+        width: 21
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: gunsground_1
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 236
+        width: 12
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: gunsground_2
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 236
+        width: 20
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: gunsground_4
+      rect:
+        serializedVersion: 2
+        x: 106
+        y: 236
+        width: 12
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: gunsground_5
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 203
+        width: 16
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: gunsground_6
+      rect:
+        serializedVersion: 2
+        x: 41
+        y: 203
+        width: 14
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: gunsground_7
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 203
+        width: 14
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: gunsground_8
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 203
+        width: 30
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: gunsground_9
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 171
+        width: 29
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: gunsground_10
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 171
+        width: 17
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: gunsground_11
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 170
+        width: 17
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: gunsground_12
+      rect:
+        serializedVersion: 2
+        x: 101
+        y: 168
+        width: 23
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: gunsground_13
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 138
+        width: 23
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: gunsground_14
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 139
+        width: 22
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: AssultRiflePickup
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 138
+        width: 27
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: gunsground_16
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 139
+        width: 30
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: gunsground_17
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 108
+        width: 30
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: gunsground_18
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 107
+        width: 27
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: gunsground_19
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 106
+        width: 27
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: gunsground_20
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 106
+        width: 27
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: gunsground_21
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 76
+        width: 27
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: gunsground_22
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 74
+        width: 32
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: gunsground_23
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 43
+        width: 25
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: gunsground_24
+      rect:
+        serializedVersion: 2
+        x: 43
+        y: 42
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: gunsground_25
+      rect:
+        serializedVersion: 2
+        x: 75
+        y: 42
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: gunsground_26
+      rect:
+        serializedVersion: 2
+        x: 107
+        y: 42
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: gunsground_27
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 74
+        width: 32
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: gunsground_28
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 75
+        width: 31
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

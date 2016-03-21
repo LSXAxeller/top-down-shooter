@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 6312b9067f31a0c4fb92b6f26f19fc8e
+timeCreated: 1445208323
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - MenuTarget: {instanceID: 0}
+  - Subject: {instanceID: 0}
+  - HoverOn: {fileID: 8300000, guid: 9cf755772c80647b5b16783843c1aaa6, type: 3}
+  - HoverOff: {instanceID: 0}
+  - Click: {fileID: 8300000, guid: 37fc4f85d56f84486a6f4de727422bc7, type: 3}
+  - ToggleMainMenu: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
