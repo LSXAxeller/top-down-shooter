@@ -17,14 +17,6 @@ namespace UnityTileMap
         Deadly
     }
 
-    public enum TileEntity
-    {
-        Info_T = 0,
-        Info_CT,
-        Info_Hostage,
-        Info_Rescue
-    }
-
     [ExecuteInEditMode]
     [Serializable]
     public class TileMapBehaviour : MonoBehaviour, IEnumerable<KeyValuePair<Vector2Int, int>>
@@ -39,7 +31,7 @@ namespace UnityTileMap
         private TileSheet m_tileSheet;
 
         [SerializeField]
-        internal Dictionary<Vector2, TileEntity> m_entities = new Dictionary<Vector2, TileEntity>();
+        internal Dictionary<Vector2, EntitiesData.EntityID> m_entities = new Dictionary<Vector2, EntitiesData.EntityID>();
 
         [SerializeField]
         private bool m_activeInEditMode = true;
@@ -136,27 +128,27 @@ namespace UnityTileMap
             get { return ChunkManager.Chunk != null; }
         }
 
-        public void AddEntities(Dictionary<Vector2, TileEntity> entities)
+        public void AddEntities(Dictionary<Vector2, EntitiesData.EntityID> entities)
         {
-            foreach(KeyValuePair<Vector2, TileEntity> entity in entities)
+            foreach(KeyValuePair<Vector2, EntitiesData.EntityID> entity in entities)
             {
                 AddEntity(entity.Key, entity.Value);
             }
         }
 
-        public void AddEntity(Vector2 posiion, TileEntity entity)
+        public void AddEntity(Vector2 posiion, EntitiesData.EntityID entity)
         {
             m_entities[posiion] = entity;
 
             switch(entity)
             {
-                case TileEntity.Info_T:
+                case EntitiesData.EntityID.Info_T:
                     break;
-                case TileEntity.Info_CT:
+                case EntitiesData.EntityID.Info_CT:
                     break;
-                case TileEntity.Info_Hostage:
+                case EntitiesData.EntityID.Info_Hostage:
                     break;
-                case TileEntity.Info_Rescue:
+                case EntitiesData.EntityID.Info_BombSpot:
                     break;
             }
         }
@@ -165,48 +157,19 @@ namespace UnityTileMap
         {
             DestroyEntities();
 
-            foreach(KeyValuePair<Vector2, TileEntity> entry in m_entities)
+            foreach(KeyValuePair<Vector2, EntitiesData.EntityID> entry in m_entities)
             {
-                GameObject entity = Instantiate<GameObject>(Resources.Load<GameObject>("Entities/T_Info_Active"));
+                GameObject entity;
+                if (entry.Value == EntitiesData.EntityID.Info_T)
+                {
+                    entity = Instantiate(GetComponent<TileMapGameBahaviour>().entities[(int)EntitiesData.EntityID.Info_T_Active]);
+                }
+                else
+                {
+                    entity = Instantiate(GetComponent<TileMapGameBahaviour>().entities[(int)entry.Value]);
+                }
                 entity.tag = "Entity_Active";
-                entity.transform.position = entry.Key;
-
-                switch (entry.Value)
-                {
-                    case TileEntity.Info_T:
-                        entity.AddComponent<Info>();
-                        break;
-                    case TileEntity.Info_CT:
-                        entity.AddComponent<Info>();
-                        break;
-                    case TileEntity.Info_Hostage:
-                        entity.AddComponent<Info>();
-                        break;
-                    case TileEntity.Info_Rescue:
-                        entity.AddComponent<Info>();
-                        break;
-                }
-                if(entity.GetComponent<Info>() != null)
-                {
-                    Info info = entity.GetComponent<Info>();
-                    switch (entry.Value)
-                    {
-                        case TileEntity.Info_T:
-                            info.team = Team.T;
-                            break;
-                        case TileEntity.Info_CT:
-                            info.team = Team.CT;
-                            break;
-                        case TileEntity.Info_Hostage:
-                            info.team = Team.CT;
-                            info.isSpecial = true;
-                            break;
-                        case TileEntity.Info_Rescue:
-                            info.team = Team.T;
-                            info.isSpecial = true;
-                            break;
-                    }
-                }
+                entity.transform.position = entry.Key;               
             }
         }
 
@@ -456,10 +419,10 @@ namespace UnityTileMap
         public struct TileMapFile
         {
             public TileMapData tileMapData;
-            public Dictionary<Vector2, TileEntity> entities;
+            public Dictionary<Vector2, EntitiesData.EntityID> entities;
             public float version;
 
-            public TileMapFile(TileMapData data, Dictionary<Vector2, TileEntity> ent)
+            public TileMapFile(TileMapData data, Dictionary<Vector2, EntitiesData.EntityID> ent)
             {
                 tileMapData = data;
                 entities = ent;

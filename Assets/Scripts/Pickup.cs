@@ -24,7 +24,7 @@ public class Pickup : MonoBehaviour {
 
         var subject = col.gameObject.GetComponentInParent<Subject>();
         subject.PickupWeapon(WeaponPrefab);
-        subject.ChangeWeaponToSlot(0);
+        subject.StartCoroutine("ChangeWeaponToSlot", subject.WeaponListRuntime.Count-1);
 
         StartCoroutine(Timeout());
     }

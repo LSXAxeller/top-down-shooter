@@ -216,9 +216,9 @@ public class TileMapGameBahaviour : MonoBehaviour {
                     {
                         Vector2 pos = new Vector2(Mathf.FloorToInt(m_mouseHitPos.x), Mathf.FloorToInt(m_mouseHitPos.y));
                         
-                        m_tileMap.AddEntity(pos, (TileEntity)Mathf.Abs(m_setEntityID));
+                        m_tileMap.AddEntity(pos, (EntitiesData.EntityID)Mathf.Abs(m_setEntityID));
 
-                        GameObject entity = Instantiate<GameObject>(Resources.Load<GameObject>("Entities/T_Info"));
+                        GameObject entity = Instantiate(entities[m_setEntityID]);
                         entity.tag = "Entity";
                         entity.transform.position = pos;
                     }
@@ -309,9 +309,9 @@ public class TileMapGameBahaviour : MonoBehaviour {
     {
         m_tileMap.DestroyEntities();
 
-        foreach (KeyValuePair<Vector2, TileEntity> entry in m_tileMap.m_entities)
+        foreach (KeyValuePair<Vector2, EntitiesData.EntityID> entry in m_tileMap.m_entities)
         {
-            GameObject entity = Instantiate(Resources.Load<GameObject>("Entities/T_Info"));
+            GameObject entity = Instantiate(entities[(int)entry.Value]);
             entity.tag = "Entity";
             entity.transform.position = entry.Key;
         }
@@ -392,11 +392,17 @@ public class TileMapGameBahaviour : MonoBehaviour {
     /// <summary>
     /// This function is invoked when an entity is picked from selection.
     /// </summary>
-    /// <param name="id"></param>
-    public void InfoButton(int id)
+    public void SetInstanceId(int id)
     {
         editMode = EditMode.Entities;
-        m_setEntityID = id;
+        if (id < 0)
+        {
+            m_setEntityID = 0;
+        }
+        else
+        {
+            m_setEntityID = id;
+        }
     }
 
     /// <summary>
