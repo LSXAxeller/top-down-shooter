@@ -31,7 +31,7 @@ namespace UnityTileMap
         private TileSheet m_tileSheet;
 
         [SerializeField]
-        internal Dictionary<Vector2, EntitiesData.EntityID> m_entities = new Dictionary<Vector2, EntitiesData.EntityID>();
+        internal Dictionary<Vector2Int, EntitiesData.EntityID> m_entities = new Dictionary<Vector2Int, EntitiesData.EntityID>();
 
         [SerializeField]
         private bool m_activeInEditMode = true;
@@ -128,17 +128,17 @@ namespace UnityTileMap
             get { return ChunkManager.Chunk != null; }
         }
 
-        public void AddEntities(Dictionary<Vector2, EntitiesData.EntityID> entities)
+        public void AddEntities(Dictionary<Vector2Int, EntitiesData.EntityID> entities)
         {
-            foreach(KeyValuePair<Vector2, EntitiesData.EntityID> entity in entities)
+            foreach(KeyValuePair<Vector2Int, EntitiesData.EntityID> entity in entities)
             {
                 AddEntity(entity.Key, entity.Value);
             }
         }
 
-        public void AddEntity(Vector2 posiion, EntitiesData.EntityID entity)
+        public void AddEntity(Vector2Int position, EntitiesData.EntityID entity)
         {
-            m_entities[posiion] = entity;
+            m_entities[position] = entity;
 
             switch(entity)
             {
@@ -157,7 +157,7 @@ namespace UnityTileMap
         {
             DestroyEntities();
 
-            foreach(KeyValuePair<Vector2, EntitiesData.EntityID> entry in m_entities)
+            foreach(KeyValuePair<Vector2Int, EntitiesData.EntityID> entry in m_entities)
             {
                 GameObject entity;
                 if (entry.Value == EntitiesData.EntityID.Info_T)
@@ -169,7 +169,7 @@ namespace UnityTileMap
                     entity = Instantiate(GetComponent<TileMapGameBahaviour>().entities[(int)entry.Value]);
                 }
                 entity.tag = "Entity_Active";
-                entity.transform.position = entry.Key;               
+                entity.transform.position = new Vector2(entry.Key.x + 0.5f, entry.Key.y + 0.5f);                               
             }
         }
 
@@ -419,10 +419,10 @@ namespace UnityTileMap
         public struct TileMapFile
         {
             public TileMapData tileMapData;
-            public Dictionary<Vector2, EntitiesData.EntityID> entities;
+            public Dictionary<Vector2Int, EntitiesData.EntityID> entities;
             public float version;
 
-            public TileMapFile(TileMapData data, Dictionary<Vector2, EntitiesData.EntityID> ent)
+            public TileMapFile(TileMapData data, Dictionary<Vector2Int, EntitiesData.EntityID> ent)
             {
                 tileMapData = data;
                 entities = ent;
@@ -455,8 +455,12 @@ namespace UnityTileMap
             MeshSettings.TilesY = mapData.SizeY;
 
             m_tileMapData = mapData;
+
             DestroyMesh();
             CreateMesh();
+
+            DestroyEntities();
+            m_entities = new Dictionary<Vector2Int, EntitiesData.EntityID>();
 
             AddEntities(mapFile.entities);
             CreateEntities();            

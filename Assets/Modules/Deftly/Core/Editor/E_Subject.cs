@@ -42,7 +42,7 @@ public class E_Subject : Editor
     private readonly GUIContent _lhIk =             new GUIContent("Hand[L]", "The Left Hand goal will be handled");
 
     // Mecanim data
-    private readonly GUIContent _animHost =         new GUIContent("Animator Host Obj", "The sub-object with the Animator component");
+    private readonly GUIContent _deadBody =         new GUIContent("Dead Body Obj", "The sub-object dead body spawned when you die");
     private readonly GUIContent _horizParam =       new GUIContent("Horizontal Param", "The name of the Horizontal parameter in the targetted Animator Controller");
     private readonly GUIContent _vertiParam =       new GUIContent("Vertical Param", "The name of the Vertical parameter in the targetted Animator Controller");
     private readonly GUIContent _deathParam =       new GUIContent("Death Trigger", "The name of the Trigger which fires the Death animation in the Animator Controller");
@@ -362,31 +362,10 @@ public class E_Subject : Editor
 
         EditorGUIUtility.labelWidth = 120;
         EditorGUI.indentLevel = 1;
-        if (_x.Stats.UseMecanim)
-        {
-            EditorGUI.indentLevel = 0;
-            GUI.color = _x.Stats.AnimatorHostObj != null ? Color.green : Color.red;
-            _x.Stats.AnimatorHostObj = EditorGUILayout.ObjectField(_animHost, _x.Stats.AnimatorHostObj, typeof (GameObject), true) as GameObject;
-            GUI.color = Color.white;
-
-
-            EditorGUI.indentLevel = 1;
-            if (_x.Stats.AnimatorHostObj == null) EditorGUILayout.HelpBox( "You must have an Animator. Specify the GameObject that has the Animator component on it.", MessageType.Error);
-
-            if (_x.Stats.SubjectGroup != SubjectGroup.Intellect)
-            {
-                _x.ControlStats.AnimatorHorizontal = EditorGUILayout.TextField(_horizParam, _x.ControlStats.AnimatorHorizontal);
-                _x.ControlStats.AnimatorVertical = EditorGUILayout.TextField(_vertiParam, _x.ControlStats.AnimatorVertical);
-            }
-            _x.ControlStats.AnimatorDie = EditorGUILayout.TextField(_deathParam, _x.ControlStats.AnimatorDie);
-            _x.ControlStats.AnimatorRevive = EditorGUILayout.TextField(_reviveParam, _x.ControlStats.AnimatorRevive);
-            _x.ControlStats.AnimatorReload = EditorGUILayout.TextField(_reloadParam, _x.ControlStats.AnimatorReload);
-            _x.ControlStats.AnimatorSwap = EditorGUILayout.TextField(_swapParam, _x.ControlStats.AnimatorSwap);
-            _x.ControlStats.AnimatorWeaponType = EditorGUILayout.TextField(_wTypeParam, _x.ControlStats.AnimatorWeaponType);
-        }
 
         EditorGUILayout.Space();
 
+        _x.Stats.DeadBodyObj = EditorGUILayout.ObjectField(_deadBody, _x.Stats.DeadBodyObj, typeof(GameObject), true) as GameObject;
         _x.ControlStats.TurnSpeed = EditorGUILayout.Slider(_turnSpeed, _x.ControlStats.TurnSpeed, 1, 20);
         _x.ControlStats.MoveSpeed = EditorGUILayout.Slider(_moveSpeed, _x.ControlStats.MoveSpeed, 1, 35);
 

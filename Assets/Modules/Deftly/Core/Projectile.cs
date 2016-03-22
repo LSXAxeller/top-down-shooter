@@ -91,7 +91,7 @@ namespace Deftly
 
                     _endPoint = col.contacts[0].point;
                     SetupImpactNormal(col.contacts[0].normal);
-                    PopFx(GetCorrectFx(col.collider.gameObject));
+                    PopFx(GetCorrectFx(col.gameObject));
                     FinishImpact();
                 }
                 else

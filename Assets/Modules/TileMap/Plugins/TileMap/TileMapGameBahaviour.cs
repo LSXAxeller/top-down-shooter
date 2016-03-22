@@ -176,7 +176,7 @@ public class TileMapGameBahaviour : MonoBehaviour {
         {
             case EditMode.Tiles:
                 // Do not process if no tile is selected
-                if (m_setTileID < 0)
+                if (m_setTileID <= 0)
                 {
                     return;
                 }
@@ -214,13 +214,13 @@ public class TileMapGameBahaviour : MonoBehaviour {
                 {
                     if (UpdateMouseHit())
                     {
-                        Vector2 pos = new Vector2(Mathf.FloorToInt(m_mouseHitPos.x), Mathf.FloorToInt(m_mouseHitPos.y));
+                        Vector2Int pos = new Vector2Int(Mathf.FloorToInt(m_mouseHitPos.x), Mathf.FloorToInt(m_mouseHitPos.y));
                         
                         m_tileMap.AddEntity(pos, (EntitiesData.EntityID)Mathf.Abs(m_setEntityID));
 
                         GameObject entity = Instantiate(entities[m_setEntityID]);
                         entity.tag = "Entity";
-                        entity.transform.position = pos;
+                        entity.transform.position = new Vector2(pos.x + 0.5f, pos.y + 0.5f);
                     }
                 }
                 else if (Input.GetMouseButtonDown(1))
@@ -309,11 +309,11 @@ public class TileMapGameBahaviour : MonoBehaviour {
     {
         m_tileMap.DestroyEntities();
 
-        foreach (KeyValuePair<Vector2, EntitiesData.EntityID> entry in m_tileMap.m_entities)
+        foreach (KeyValuePair<Vector2Int, EntitiesData.EntityID> entry in m_tileMap.m_entities)
         {
             GameObject entity = Instantiate(entities[(int)entry.Value]);
             entity.tag = "Entity";
-            entity.transform.position = entry.Key;
+            entity.transform.position = entry.Key.ToVector2();
         }
     }
 

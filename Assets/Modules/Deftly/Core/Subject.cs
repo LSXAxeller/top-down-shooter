@@ -399,7 +399,7 @@ namespace Deftly
 
             if (GetComponent<Intellect>() != null) GetComponent<Agent>().enabled = false;
 
-            GetComponent<Collider>().enabled = false;
+            GetComponent<Collider2D>().enabled = false;
             
             if (Stats.DeathFx) StaticUtil.Spawn(Stats.DeathFx, transform.position, Quaternion.identity);
             if (OnDeath != null) OnDeath();
@@ -422,9 +422,13 @@ namespace Deftly
             // Drop to a crippled state and wait.
             if (Stats.CrippledTime > 0) yield return new WaitForSeconds(Stats.CrippledTime);
             if (Stats.DeathFx) StaticUtil.Spawn(Stats.DeathFx, transform.position, transform.rotation);
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                transform.GetChild(i).gameObject.SetActive(false);
+            }
             // Detatch the corpse model and give it an expiration timer.
-            Stats.AnimatorHostObj.transform.SetParent(null);
-            Lifetimer c = Stats.AnimatorHostObj.AddComponent<Lifetimer>();
+            Stats.DeadBodyObj.SetActive(true);
+            Lifetimer c = Stats.DeadBodyObj.AddComponent<Lifetimer>();
             c.Lifetime = Stats.CorpseTime;
 
             DeSpawn();

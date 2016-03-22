@@ -27,7 +27,7 @@ namespace Deftly
 
         [SerializeField] public bool UseMecanim;
         [SerializeField] public GameObject WeaponMountPoint;
-        [SerializeField] public GameObject AnimatorHostObj;
+        [SerializeField] public GameObject DeadBodyObj;
         [SerializeField] public bool UseWeaponIk;
         [SerializeField] public bool UseLeftHandIk;
         [SerializeField] public bool UseRightHandIk;

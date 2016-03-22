@@ -5,9 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class StartOptions : MonoBehaviour {
 
-
-
-	public int sceneToStart = 1;										//Index number in build settings of scene to load if changeScenes is true
+	public string sceneToStart;										//Index number in build settings of scene to load if changeScenes is true
+    public string sceneToEdit;
 	public bool changeScenes;											//If true, load a new scene when Start is pressed, if false, fade out UI and continue in single scene
 	public bool changeMusicOnStart;										//Choose whether to continue playing menu music or start a new music clip
 	public int musicToChangeTo = 0;										//Array index in array MusicClips to change to if changeMusicOnStart is true.
@@ -22,10 +21,10 @@ public class StartOptions : MonoBehaviour {
 
 	private PlayMusic playMusic;										//Reference to PlayMusic script
 	private float fastFadeIn = .01f;									//Very short fade time (10 milliseconds) to start playing music immediately without a click/glitch
-	private ShowPanels showPanels;										//Reference to ShowPanels script on UI GameObject, to show and hide panels
+	private ShowPanels showPanels;                                      //Reference to ShowPanels script on UI GameObject, to show and hide panels
+    private bool edit;
 
-	
-	void Awake()
+    void Awake()
 	{
 		//Get a reference to ShowPanels attached to UI object
 		showPanels = GetComponent<ShowPanels> ();
@@ -64,8 +63,13 @@ public class StartOptions : MonoBehaviour {
 
 	}
 
+    public void EditButtonClicked()
+    {
+        edit = true;
+        StartButtonClicked();
+    }
 
-	public void LoadDelayed()
+    public void LoadDelayed()
 	{
 		//Pause button now works if escape is pressed since we are no longer in Main menu.
 		inMainMenu = false;
@@ -73,9 +77,12 @@ public class StartOptions : MonoBehaviour {
 		//Hide the main menu UI element
 		showPanels.HideMenu ();
 
-		//Load the selected scene, by scene index number in build settings
-		SceneManager.LoadScene(sceneToStart);
-	}
+        //Load the selected scene, by scene index number in build settings
+        if (edit)
+            SceneManager.LoadScene(sceneToEdit);
+        else
+            SceneManager.LoadScene(sceneToStart);
+    }
 
 
 	public void StartGameInScene()

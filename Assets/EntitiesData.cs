@@ -3,7 +3,7 @@
 public class EntitiesData : MonoBehaviour {
 
     public static EntityID id;
-
+    [System.Serializable]
 	public enum EntityID
     {
         Info_T = 0,
