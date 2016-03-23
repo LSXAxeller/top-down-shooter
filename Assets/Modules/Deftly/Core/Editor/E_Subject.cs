@@ -37,26 +37,9 @@ public class E_Subject : Editor
     // Weapon Data
     private readonly GUIContent _useMecanim =       new GUIContent("Use Mecanim", "Toggle the use of Mecanim and IK features");
     private readonly GUIContent _changeWeapon =     new GUIContent("Change Weapon", "This sound plays every time you swap weapons");
-    private readonly GUIContent _useWeaponIk =      new GUIContent("Use IK", "When on, Mecanim will try to use IK targets. See documentation for more info");
-    private readonly GUIContent _rhIk =             new GUIContent("Hand[R]", "The Right Hand goal will be handled");
-    private readonly GUIContent _lhIk =             new GUIContent("Hand[L]", "The Left Hand goal will be handled");
-
-    // Mecanim data
+    
+    // Physical data
     private readonly GUIContent _deadBody =         new GUIContent("Dead Body Obj", "The sub-object dead body spawned when you die");
-    private readonly GUIContent _horizParam =       new GUIContent("Horizontal Param", "The name of the Horizontal parameter in the targetted Animator Controller");
-    private readonly GUIContent _vertiParam =       new GUIContent("Vertical Param", "The name of the Vertical parameter in the targetted Animator Controller");
-    private readonly GUIContent _deathParam =       new GUIContent("Death Trigger", "The name of the Trigger which fires the Death animation in the Animator Controller");
-    private readonly GUIContent _reviveParam =      new GUIContent("Revive Trigger", "The name of the Trigger which fires the Revive animation in the Animator Controller");
-    private readonly GUIContent _reloadParam =      new GUIContent("Reload Param", "The name of the Bool which fires the Reload Weapon animation in the Animator Controller");
-    private readonly GUIContent _swapParam =        new GUIContent("Swap Param", "The name of the Bool which fires the Swap Weapon animation in the Animator Controller");
-    private readonly GUIContent _wTypeParam =       new GUIContent("Weapon Id Param", "The name of the Int which tells the Animator Controller which type of Weapon the player is holding. \n\nThis could be setup a variety of ways depending on your Controller. ie 1 for melee, 2 for ranged, or unique numbers to change the state for each weapon prefab.");
-    private readonly GUIContent _cScale =           new GUIContent("Character Scale", "Average character is typically 2m tall. Increase/decrease this number to multiply the IK offset.");
-    private readonly GUIContent _thumbDir =         new GUIContent("Thumb Direction", "The local axis of the hand that the thumb is pointing on.");
-    private readonly GUIContent _palmDir =          new GUIContent("Palm Direction", "The local axis of the hand that the palm is facing.");
-    private readonly GUIContent _flipX =            new GUIContent("Flip X", "Some rigs have this axis inverted. If the X axis or the Hand Bone points UP THE ARM then toggle this on.");
-    private readonly GUIContent _lhIndex =          new GUIContent("IK Layer[L]", "The layer ID IK will be called on for the Left Hand.\n\nNOTE: Lower numbers are called first, keep this in mind for dependencies such as RH processed before LH.");
-    private readonly GUIContent _rhIndex =          new GUIContent("IK Layer[R]", "The layer ID IK will be called on for the Right Hand.\n\nNOTE: Lower numbers are called first, keep this in mind for dependencies such as RH processed before LH.");
-    private readonly GUIContent _wpnInHandPos =     new GUIContent("Weapon (In Hand) Offset", "The offset from the local 0,0,0 bone position\n\nThis is for moving where the weapon rests in the Hand. Some 'hand' bones are closer to the wrist than others. Correct that here.\n\nThese are relative to the hand, so if the palm is facing Y, use Y here to move in that facing direction.");
     
     // Control speeds
     private readonly GUIContent _turnSpeed =        new GUIContent("Turn Speed", "The max rate at which the character turns");
@@ -88,9 +71,6 @@ public class E_Subject : Editor
                 EditorUtils.SubjectWeaponData = !EditorUtils.SubjectWeaponData;
             if (EditorUtils.SubjectWeaponData) ShowWeapons();
         }
-
-        if (GUILayout.Button("Mecanim Ik Configuration", EditorStyles.toolbarButton)) EditorUtils.SubjectIk = !EditorUtils.SubjectIk;
-        if (EditorUtils.SubjectIk) ShowIk();
 
         if (_x.Stats.SubjectGroup != SubjectGroup.Other)
         {
@@ -257,105 +237,7 @@ public class E_Subject : Editor
 
         EditorGUILayout.Space();
     }
-    private void ShowIk()
-    {
-        EditorGUILayout.Space();
 
-        EditorGUIUtility.labelWidth = 50;
-        if (!_x.Stats.UseMecanim) _x.Stats.WeaponMountPoint = EditorGUILayout.ObjectField("Weapon Mount", _x.Stats.WeaponMountPoint, typeof (GameObject), true) as GameObject;
-        if (_x.Stats.UseMecanim)
-        {
-            EditorGUILayout.BeginHorizontal();
-            EditorGUIUtility.labelWidth = 50;
-            _x.Stats.UseWeaponIk = EditorGUILayout.Toggle(_useWeaponIk, _x.Stats.UseWeaponIk);
-            _x.Stats.UseRightHandIk = EditorGUILayout.Toggle(_rhIk, _x.Stats.UseRightHandIk);
-            _x.Stats.UseLeftHandIk = EditorGUILayout.Toggle(_lhIk, _x.Stats.UseLeftHandIk);
-            EditorGUILayout.EndHorizontal();
-
-
-            EditorGUILayout.BeginHorizontal();
-            _x.InvertHandForward = EditorGUILayout.Toggle(_flipX, _x.InvertHandForward);
-            _x.ShowGunDebug = EditorGUILayout.Toggle("Debug", _x.ShowGunDebug);
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.BeginHorizontal();
-            EditorGUIUtility.labelWidth = 75;
-            _x.LeftHandIkLayer = EditorGUILayout.IntField(_lhIndex, _x.LeftHandIkLayer);
-            _x.RightHandIkLayer = EditorGUILayout.IntField(_rhIndex, _x.RightHandIkLayer);
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUIUtility.labelWidth = 100;
-            _x.Stats.CharacterScale = EditorGUILayout.Slider(_cScale, _x.Stats.CharacterScale, 0.1f, 2f);
-
-            EditorGUILayout.Space();
-            EditorUtils.AddBlackLine();
-            EditorUtils.AddBlackLine();
-            EditorGUILayout.Space();
-
-            EditorGUIUtility.labelWidth = 110;
-            bool wm = EditorGUIUtility.wideMode;
-            EditorGUIUtility.wideMode = true;
-            _x.ThumbDirection = EditorGUILayout.Vector3Field(_thumbDir, _x.ThumbDirection);
-            _x.PalmDirection = EditorGUILayout.Vector3Field(_palmDir, _x.PalmDirection);
-            EditorGUIUtility.wideMode = wm;
-
-            EditorGUIUtility.labelWidth = 200;
-            float fw = EditorGUIUtility.fieldWidth;
-            EditorGUIUtility.fieldWidth = 20;
-
-            EditorGUILayout.BeginHorizontal();
-            EditorGUIUtility.wideMode = false;
-            GUILayout.Label(EditorGUIUtility.IconContent("MoveTool"));
-            _x.DominantHandPosCorrection = EditorGUILayout.Vector3Field("Dominant Hand Additional Position", _x.DominantHandPosCorrection);
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Label(EditorGUIUtility.IconContent("RotateTool"));
-            _x.DominantHandRotCorrection = EditorGUILayout.Vector3Field("Dominant Hand Additional Rotation", _x.DominantHandRotCorrection);
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Label(EditorGUIUtility.IconContent("ViewToolMove"));
-            _x.WeaponPositionInHandCorrection = EditorGUILayout.Vector3Field(_wpnInHandPos, _x.WeaponPositionInHandCorrection);
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUIUtility.wideMode = wm;
-            EditorGUIUtility.fieldWidth = fw;
-
-
-            EditorGUILayout.Space();
-            EditorUtils.AddBlackLine();
-            EditorUtils.AddBlackLine();
-            EditorGUILayout.Space();
-
-            fw = EditorGUIUtility.fieldWidth;
-            EditorGUIUtility.fieldWidth = 20;
-
-            EditorGUILayout.BeginHorizontal();
-            EditorGUIUtility.wideMode = false;
-            GUILayout.Label(EditorGUIUtility.IconContent("MoveTool"));
-            _x.NonDominantHandPosCorrection = EditorGUILayout.Vector3Field("Non Dominant Hand Additional Position", _x.NonDominantHandPosCorrection);
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Label(EditorGUIUtility.IconContent("RotateTool"));
-            _x.NonDominantHandRotCorrection = EditorGUILayout.Vector3Field("Non Dominant Hand Additional Rotation", _x.NonDominantHandRotCorrection);
-            EditorGUIUtility.wideMode = wm;
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUIUtility.fieldWidth = fw;
-
-            if (!_x.Stats.UseWeaponIk)
-            {
-                //reset these because some stuff targets them directly and hiding the inspector isn't enough.
-                _x.Stats.UseLeftHandIk = false;
-                _x.Stats.UseRightHandIk = false;
-            }
-
-            EditorGUILayout.Space();
-
-        }
-    }
     private void ShowControls()
     {
         EditorGUILayout.Space();

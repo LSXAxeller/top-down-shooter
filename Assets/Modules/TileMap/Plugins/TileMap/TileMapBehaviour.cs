@@ -139,18 +139,6 @@ namespace UnityTileMap
         public void AddEntity(Vector2Int position, EntitiesData.EntityID entity)
         {
             m_entities[position] = entity;
-
-            switch(entity)
-            {
-                case EntitiesData.EntityID.Info_T:
-                    break;
-                case EntitiesData.EntityID.Info_CT:
-                    break;
-                case EntitiesData.EntityID.Info_Hostage:
-                    break;
-                case EntitiesData.EntityID.Info_BombSpot:
-                    break;
-            }
         }
 
         public void CreateEntities()
@@ -170,6 +158,34 @@ namespace UnityTileMap
                 }
                 entity.tag = "Entity_Active";
                 entity.transform.position = new Vector2(entry.Key.x + 0.5f, entry.Key.y + 0.5f);                               
+            }
+        }
+
+        public void RemoveEntity(Vector2Int position)
+        {
+            if (m_entities.ContainsKey(position))
+                m_entities.Remove(position);
+
+            DestroyEntity(position);
+        }
+
+        public void DestroyEntity(Vector2Int pos)
+        {
+            foreach (GameObject g in GameObject.FindGameObjectsWithTag("Entity"))
+            {
+                if(Mathf.FloorToInt(g.transform.position.x) == pos.x && Mathf.FloorToInt(g.transform.position.y) == pos.y)
+                {
+                    Destroy(g);
+                    return;
+                }
+            }
+            foreach (GameObject g in GameObject.FindGameObjectsWithTag("Entity_Active"))
+            {
+                if (Mathf.FloorToInt(g.transform.position.x) == pos.x && Mathf.FloorToInt(g.transform.position.y) == pos.y)
+                {
+                    Destroy(g);
+                    return;
+                }
             }
         }
 

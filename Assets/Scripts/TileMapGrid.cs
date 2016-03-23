@@ -21,7 +21,6 @@ public class TileMapGrid : MonoBehaviour {
     private void Awake()
     {
         cam = GetComponent<Camera>();
-
     }
 
     public void UpdateBackgroundColor()

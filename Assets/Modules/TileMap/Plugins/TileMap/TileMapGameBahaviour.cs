@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System;
 
 [RequireComponent(typeof(TileMapBehaviour))]
 public class TileMapGameBahaviour : MonoBehaviour {
@@ -13,6 +14,7 @@ public class TileMapGameBahaviour : MonoBehaviour {
     public Text TileDetailText;
     public InputField MapNameInput;
     public CanvasGroup MainCanvas;
+    public GameObject MainPanel;
     public GameObject TileGrid;
     public GameObject EntityGrid;
     public GameObject GridItem;
@@ -31,12 +33,11 @@ public class TileMapGameBahaviour : MonoBehaviour {
     private const float FLOAT_ITEM_MARGIN = 6f;
     private TileMapBehaviour m_tileMap;
     private TileMapGrid m_tileMapGrid;
-    private int m_tilesX;
-    private float m_tileSize;
-    private int m_tilesY;
+    private TileMeshSettings m_tileMeshSettings;
     private int m_setTileID = 0;
     internal Vector3 m_mouseHitPos = Vector3.zero;
     private TileSheet m_tileSheet;
+    private int[] m_tileSheetIds;
     private Texture2D m_tempTexture;
     private int ids;
     private int[] idArray;
@@ -45,6 +46,8 @@ public class TileMapGameBahaviour : MonoBehaviour {
     private bool isPlaying = false;
     private Camera m_cam;
     private int m_setEntityID = 0;
+    private bool isHidden;
+    private bool isMovingPanel;
 
     private void Start()
     {
@@ -53,20 +56,16 @@ public class TileMapGameBahaviour : MonoBehaviour {
         m_tileMap = FindObjectOfType<TileMapBehaviour>();
         m_tileSheet = m_tileMap.TileSheet;
         m_tempTexture = new Texture2D(64, 64);
-
-        var meshSettings = m_tileMap.MeshSettings;
-
-        if (meshSettings != null)
-        {
-            m_tilesX = meshSettings.TilesX;
-            m_tilesY = meshSettings.TilesY;
-            m_tileSize = meshSettings.TileSize;
-        }
+        m_tileSheetIds = m_tileSheet.Ids.ToArray();
+        m_tileMeshSettings = m_tileMap.MeshSettings;
+        
         m_tileMap.GetComponentInChildren<TileMeshBehaviour>().transform.localPosition = Vector3.zero;
 
         RefreshTiles();
 
         StartCoroutine(IUpdateMouseHit());
+
+       // FormatMap();
     }
     
     /// <summary>
@@ -181,7 +180,17 @@ public class TileMapGameBahaviour : MonoBehaviour {
                     return;
                 }
 
-                if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetMouseButton(0))
+                if(Input.GetKey(KeyCode.LeftControl) && Input.GetMouseButtonDown(0))
+                {
+                    if (UpdateMouseHit())
+                    {
+                        Vector2Int p1 = new Vector2Int(Mathf.FloorToInt(m_mouseHitPos.x), Mathf.FloorToInt(m_mouseHitPos.y));
+                        
+                        StartCoroutine(SelectWhileDragging(p1));                        
+                    }
+                }
+
+                else if (Input.GetMouseButton(0))
                 {
                     if (UpdateMouseHit())
                     {
@@ -215,12 +224,19 @@ public class TileMapGameBahaviour : MonoBehaviour {
                     if (UpdateMouseHit())
                     {
                         Vector2Int pos = new Vector2Int(Mathf.FloorToInt(m_mouseHitPos.x), Mathf.FloorToInt(m_mouseHitPos.y));
-                        
-                        m_tileMap.AddEntity(pos, (EntitiesData.EntityID)Mathf.Abs(m_setEntityID));
 
-                        GameObject entity = Instantiate(entities[m_setEntityID]);
-                        entity.tag = "Entity";
-                        entity.transform.position = new Vector2(pos.x + 0.5f, pos.y + 0.5f);
+                        if (m_setEntityID == (int)EntitiesData.EntityID.Tool_Eraser)
+                        {
+                            m_tileMap.RemoveEntity(pos);
+                        }
+                        else
+                        {
+                            m_tileMap.AddEntity(pos, (EntitiesData.EntityID)Mathf.Abs(m_setEntityID));
+
+                            GameObject entity = Instantiate(entities[m_setEntityID]);
+                            entity.tag = "Entity";
+                            entity.transform.position = new Vector2(pos.x + 0.5f, pos.y + 0.5f);
+                        }
                     }
                 }
                 else if (Input.GetMouseButtonDown(1))
@@ -242,6 +258,42 @@ public class TileMapGameBahaviour : MonoBehaviour {
         }
     }
 
+    private IEnumerator SelectWhileDragging(Vector2Int p1)
+    {
+        yield return new WaitUntil(() => Input.GetMouseButtonUp(0));
+
+        if (UpdateMouseHit())
+        {
+            Vector2Int p2 = new Vector2Int(Mathf.FloorToInt(m_mouseHitPos.x), Mathf.FloorToInt(m_mouseHitPos.y));
+
+            foreach (Vector2Int pos in SelectionBox(p1, p2))
+            {
+                m_tileMap[pos.x, pos.y] = m_setTileID;
+            }
+        }
+    }
+
+    private List<Vector2Int> SelectionBox(Vector2Int p1, Vector2Int p2)
+    {
+        int lowestX = (p2.x > p1.x) ? p1.x : p2.x;
+        int lowestY = (p2.y > p1.y) ? p1.y : p2.y;
+
+        int highestX = (p2.x > p1.x) ? p2.x : p1.x;
+        int highestY = (p2.y > p1.y) ? p2.y : p1.y;
+
+        List<Vector2Int> tiles = new List<Vector2Int>();
+
+        for (int i = lowestX; i <= highestX; i++)
+        {
+            for (int j = lowestY; j <= highestY; j++)
+            {
+                tiles.Add(new Vector2Int(i, j));
+            }
+        }
+
+        return tiles;
+    }
+
     /// <summary>
     /// Returns true if the mouse is hovering above the map
     /// Updates the mouse hit position at m_mouseHitPos
@@ -260,11 +312,11 @@ public class TileMapGameBahaviour : MonoBehaviour {
             hit = ray.origin + (ray.direction.normalized * distance);
 
         m_mouseHitPos = m_tileMap.transform.InverseTransformPoint(hit);
-        m_mouseHitPos = new Vector3(m_mouseHitPos.x * m_tileSize, m_mouseHitPos.y * m_tileSize, m_mouseHitPos.z);
+        m_mouseHitPos = new Vector3(m_mouseHitPos.x, m_mouseHitPos.y, m_mouseHitPos.z);
 
         if (!UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
         {
-            if (m_mouseHitPos.x >= 0 && m_mouseHitPos.x < m_tilesX * m_tileSize && m_mouseHitPos.y >= 0 && m_mouseHitPos.y < m_tilesY * m_tileSize)
+            if (m_mouseHitPos.x >= 0 && m_mouseHitPos.x < m_tileMeshSettings.TilesX && m_mouseHitPos.y >= 0 && m_mouseHitPos.y < m_tileMeshSettings.TilesY)
             {
                 TileDetailText.text = "Tile Position " + Mathf.FloorToInt(m_mouseHitPos.x) + "|" + Mathf.FloorToInt(m_mouseHitPos.y) + "  -  Tile #" + m_tileMap[Mathf.FloorToInt(m_mouseHitPos.x), Mathf.FloorToInt(m_mouseHitPos.y)];
                 return true;
@@ -279,10 +331,10 @@ public class TileMapGameBahaviour : MonoBehaviour {
         g.transform.SetParent(TileGrid.transform);
         g.transform.SetSiblingIndex(id);
         g.name = "Tile #" + id;
-        Image tile = g.GetComponent<Image>();
-        tile.sprite = m_tileSheet.Get(m_tileSheet.Ids.ToArray()[id]);
-        Button button = g.GetComponent<Button>();
-        button.onClick.AddListener(() => {
+
+        g.GetComponent<Image>().sprite = m_tileSheet.Get(m_tileSheetIds[id]);
+        
+        g.GetComponent<Button>().onClick.AddListener(() => {
             editMode = EditMode.Tiles;
             m_setTileID = idArray[id];
             g.AddComponent<AlphaSinLoop>();
@@ -389,20 +441,24 @@ public class TileMapGameBahaviour : MonoBehaviour {
             m_tileMap.ExportMap(MapNameInput.text);
     }
 
+    public void FormatMap()
+    {
+        for (int x = 0; x < m_tileMeshSettings.TilesX; x++)
+        {
+            for (int y = 0; y < m_tileMeshSettings.TilesY; y++) 
+            {
+                m_tileMap.PaintTile(x, y, Color.black);
+            }
+        }
+    }
+
     /// <summary>
     /// This function is invoked when an entity is picked from selection.
     /// </summary>
     public void SetInstanceId(int id)
     {
         editMode = EditMode.Entities;
-        if (id < 0)
-        {
-            m_setEntityID = 0;
-        }
-        else
-        {
-            m_setEntityID = id;
-        }
+        m_setEntityID = id;
     }
 
     /// <summary>
@@ -417,6 +473,34 @@ public class TileMapGameBahaviour : MonoBehaviour {
             UpdateMouseHit();
             yield return new WaitForSeconds(0.05f);
         }
+    }
+
+    public void SlideSmoothly(float x)
+    {
+        if (isMovingPanel) return;
+        if (isHidden)
+        {
+            StartCoroutine(IMoveSmoothly(new Vector2(MainPanel.transform.position.x + x, MainPanel.transform.position.y)));
+            isHidden = false;
+        }
+        else
+        {
+            StartCoroutine(IMoveSmoothly(new Vector2(MainPanel.transform.position.x - x, MainPanel.transform.position.y)));
+            isHidden = true;
+        }
+    }
+
+    private IEnumerator IMoveSmoothly(Vector2 pos)
+    {
+        isMovingPanel = true;
+        float t = 0;
+        while (t <= 1f)
+        {
+            Vector2 initPos = MainPanel.transform.position;
+            MainPanel.transform.position = Vector2.Lerp(initPos, pos, t);
+            yield return t+=0.1f;
+        }
+        isMovingPanel = false;
     }
       
     #region Experimental

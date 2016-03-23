@@ -11,7 +11,7 @@ public class Info : MonoBehaviour {
     public int range;
     public string infoText;
 
-    private Image icon;
+//    private Image icon;
 
     public void Reset()
     {
@@ -24,6 +24,6 @@ public class Info : MonoBehaviour {
 
     public void OnEnable()
     {
-        icon = GetComponent<Image>();
+//        icon = GetComponent<Image>();
     }
 }
