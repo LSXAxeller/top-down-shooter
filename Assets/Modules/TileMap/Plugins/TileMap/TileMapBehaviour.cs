@@ -287,6 +287,7 @@ namespace UnityTileMap
                     {
                         var go = new GameObject(string.Format("Wall_{0}_{1}", x, y), typeof(BoxCollider2D));
                         go.transform.SetParent(transform);
+                        go.layer = 13;
                         var box = go.GetComponent<BoxCollider2D>();
                         var rect = GetTileBoundsLocal(x, y);
                         go.transform.localPosition = rect.position;

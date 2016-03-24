@@ -81,6 +81,9 @@ public class TileMapGameBahaviour : MonoBehaviour {
         MainCanvas.alpha = 0f;
         MainCanvas.interactable = false;
         MainCanvas.blocksRaycasts = false;
+        TilePropertiesItem.SetActive(false);;
+        MainCanvas.interactable = false;
+        MainCanvas.blocksRaycasts = false;
         m_tileMapGrid.showSelection = false;
         m_tileMapGrid.showGrid = false;
         m_cam.gameObject.SetActive(false);
