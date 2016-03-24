@@ -26,7 +26,7 @@ using UnityEditor.AnimatedValues;
 using BeardedManStudios.Network;
 
 [CustomEditor(typeof(NetworkedMonoBehavior), true), CanEditMultipleObjects]
-public class NetworkedMonoBehavior_Editor : Editor
+public class NetworkedMonoBehavior_Editor : SNMB_Parent_Editor
 {
 	private NetworkedMonoBehavior Target { get { return (NetworkedMonoBehavior)target; } }
 	private AnimBool networkingFoldout;
@@ -36,8 +36,10 @@ public class NetworkedMonoBehavior_Editor : Editor
 	private List<ForgeEditorDisplayButton> _editorButtons = new List<ForgeEditorDisplayButton>();
 	private GUIStyle _editorStyle;
 
-	private void OnEnable()
+	protected override void OnEnable()
 	{
+		base.OnEnable();
+
 		//lerpFoldout = new AnimBool(true);
 		//authoritativeFoldout = new AnimBool(true);
 		networkingFoldout = new AnimBool(false);

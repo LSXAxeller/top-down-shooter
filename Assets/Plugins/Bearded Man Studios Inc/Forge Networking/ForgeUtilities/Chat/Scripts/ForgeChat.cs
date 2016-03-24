@@ -19,6 +19,7 @@
 
 
 
+#if !BARE_METAL
 using System.Text;
 using UnityEngine;
 using BeardedManStudios.Network;
@@ -126,3 +127,4 @@ public class ForgeChat : SimpleNetworkedMonoBehavior
 		return ((int)(value * 255)).ToString("x2");
 	}
 }
+#endif

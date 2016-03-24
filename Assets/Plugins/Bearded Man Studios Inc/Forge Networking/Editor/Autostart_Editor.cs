@@ -1,5 +1,6 @@
 using UnityEditor;
 using UnityEngine;
+using System.Collections;
 
 namespace BeardedManStudios.Network.Unity
 {
@@ -45,7 +46,11 @@ namespace BeardedManStudios.Network.Unity
 			string[] levels = new string[2];
 			for (int i = 0; i < EditorBuildSettings.scenes.Length; i++)
 			{
+                #if UNITY_4_6 || UNITY_4_7
+                if (EditorBuildSettings.scenes[i].path.Contains(EditorApplication.currentScene))
+                #else
 				if (EditorBuildSettings.scenes[i].path.Contains(UnitySceneManager.GetCurrentEditorSceneName()))
+				#endif
 					levels[0] = EditorBuildSettings.scenes[i].path;
 				else if (EditorBuildSettings.scenes[i].path.Contains(Target.sceneName))
 					levels[1] = EditorBuildSettings.scenes[i].path;

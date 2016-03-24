@@ -94,14 +94,22 @@ public class ServerListManager : MonoBehaviour
 		if (socket.Connected)
 		{
 			Networking.SetPrimarySocket(socket);
+#if UNITY_4_6 || UNITY_4_7
+            Application.LoadLevel(host.sceneName);
+#else
 			BeardedManStudios.Network.Unity.UnitySceneManager.LoadScene(host.sceneName);
+#endif
 		}
 		else
 		{
 			socket.connected += delegate()
 			{
 				Networking.SetPrimarySocket(socket);
+#if UNITY_4_6 || UNITY_4_7
+                Application.LoadLevel(host.sceneName);
+#else
 				BeardedManStudios.Network.Unity.UnitySceneManager.LoadScene(host.sceneName);
+#endif
 			};
 		}
 	}

@@ -82,9 +82,9 @@ namespace BeardedManStudios.Network
 				return;
 
 #if NETFX_CORE
-			IEnumerable<PropertyInfo> properties = stream.GetType().GetRuntimeProperties();
+			var properties = stream.GetType().GetRuntimeProperties();
 #else
-			PropertyInfo[] properties = stream.GetType().GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+			var properties = stream.GetType().GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 #endif
 			foreach (PropertyInfo property in properties)
 			{

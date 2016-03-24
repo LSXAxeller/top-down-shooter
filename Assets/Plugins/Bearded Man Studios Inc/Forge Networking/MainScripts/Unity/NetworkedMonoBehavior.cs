@@ -38,6 +38,10 @@ namespace BeardedManStudios.Network
 	[AddComponentMenu("Forge Networking/Networked MonoBehavior")]
 	public class NetworkedMonoBehavior : SimpleNetworkedMonoBehavior
 	{
+#if BARE_METAL
+		public NetworkedMonoBehavior(string name, string type) : base(name, type) { }
+#endif
+
 		/// <summary>
 		/// A delegate for execuing input events from the client on the server
 		/// </summary>
@@ -391,7 +395,11 @@ namespace BeardedManStudios.Network
 			public void Setup(bool trackPos, bool trackRotation, bool trackScale)
 			{
 				_trackPos = trackPos;
+#if BARE_METAL
+				_posTimeStamp = (float)BareMetal.BareMetalTime.time;
+#else
 				_posTimeStamp = Time.time;
+#endif
 				_trackRotation = trackRotation;
 				_trackScale = trackScale;
 
@@ -929,10 +937,18 @@ namespace BeardedManStudios.Network
 		/// <returns></returns>
 		new public static NetworkedMonoBehavior Locate(ulong id)
 		{
-			// TODO:  Check if it is null or not
-
-			if (networkedBehaviors.ContainsKey(id))
-				return (NetworkedMonoBehavior)networkedBehaviors[id];
+            if (networkedBehaviors.ContainsKey(id))
+            {
+                if (networkedBehaviors[id] == null)
+                {
+#if UNITY_EDITOR
+                    Debug.LogError("Null id [" + id + "] found in the behaviors! Did you delete an object instead of calling NetworkDestroy or Transition Scenes with Multiple Network Managers?");
+#endif
+                    networkedBehaviors.Remove(id); //Removing the ID as it is invalid.
+                    return null;
+                }
+                return (NetworkedMonoBehavior)networkedBehaviors[id];
+            }
 
 			return null;
 		}
@@ -941,6 +957,7 @@ namespace BeardedManStudios.Network
 		{
 			if (NetworkingManager.IsOnline)
 			{
+#if !BARE_METAL
 				rigidbodyRef = GetComponent<Rigidbody>();
 				colliderRef = GetComponent<Collider>();
 
@@ -949,6 +966,7 @@ namespace BeardedManStudios.Network
 					colliderRef.enabled = false;
 					turnedOffCollider = true;
 				}
+#endif
 			}
 
 			base.Reflect();
@@ -1040,6 +1058,7 @@ namespace BeardedManStudios.Network
 		{
 			base.Setup(owningSocket, isOwner, networkId, ownerId, isSceneObject);
 
+#if !BARE_METAL
 			bool foundServerAuthority = false, clientPrediction = false;
 
 			foreach (NetworkedMonoBehavior behavior in GetComponents<NetworkedMonoBehavior>())
@@ -1072,6 +1091,7 @@ namespace BeardedManStudios.Network
 					colliderRef.enabled = true;
 				}
 			}
+#endif
 		}
 
 		[BRPC]
@@ -1296,7 +1316,7 @@ namespace BeardedManStudios.Network
 
 			if (Input.GetKeyDown(keyCode))
 			{
-				RPC("KeyDownRequest", NetworkReceivers.Server, (int)keyCode, NetworkingManager.Instance.CurrentFrame);
+				RPC("KeyDownRequest", NetworkReceivers.Server, (int)keyCode, (int)NetworkingManager.Instance.CurrentFrame);
 
 				if (clientSidePrediction)
 					KeyDownRequest((int)keyCode, NetworkingManager.Instance.CurrentFrame);
@@ -1304,7 +1324,7 @@ namespace BeardedManStudios.Network
 			
 			if (Input.GetKeyUp(keyCode))
 			{
-				RPC("KeyUpRequest", NetworkReceivers.Server, (int)keyCode, NetworkingManager.Instance.CurrentFrame);
+				RPC("KeyUpRequest", NetworkReceivers.Server, (int)keyCode, (int)NetworkingManager.Instance.CurrentFrame);
 
 				if (clientSidePrediction)
 					KeyUpRequest((int)keyCode, NetworkingManager.Instance.CurrentFrame);
@@ -1318,7 +1338,7 @@ namespace BeardedManStudios.Network
 
 			if (Input.GetMouseButtonDown(index))
 			{
-				RPC("MouseDownRequest", NetworkReceivers.Server, index, NetworkingManager.Instance.CurrentFrame);
+				RPC("MouseDownRequest", NetworkReceivers.Server, index, (int)NetworkingManager.Instance.CurrentFrame);
 
 				if (clientSidePrediction)
 					MouseDownRequest(index, NetworkingManager.Instance.CurrentFrame);
@@ -1326,10 +1346,40 @@ namespace BeardedManStudios.Network
 			
 			if (Input.GetMouseButtonUp(index))
 			{
-				RPC("MouseUpRequest", NetworkReceivers.Server, index, NetworkingManager.Instance.CurrentFrame);
+				RPC("MouseUpRequest", NetworkReceivers.Server, index, (int)NetworkingManager.Instance.CurrentFrame);
 
 				if (clientSidePrediction)
 					MouseUpRequest(index, NetworkingManager.Instance.CurrentFrame);
+			}
+		}
+
+#if BARE_METAL
+        private Quaternion QuaternionFromEuler(Vector3 v)
+        {
+            float yaw = v.y;
+            float pitch = -v.x;
+            float roll = -v.z;
+            Quaternion quaternion = new Quaternion();
+            quaternion.x = (((float)Math.Cos(yaw * 0.5f) * (float)Math.Sin(pitch * 0.5f)) * (float)Math.Cos(roll * 0.5f)) + (((float)Math.Sin(yaw * 0.5f) * (float)Math.Cos(pitch * 0.5f)) * (float)Math.Sin(roll * 0.5f));
+            quaternion.y = (((float)Math.Sin(yaw * 0.5f) * (float)Math.Cos(pitch * 0.5f)) * (float)Math.Cos(roll * 0.5f)) - (((float)Math.Cos(yaw * 0.5f) * (float)Math.Sin(pitch * 0.5f)) * (float)Math.Sin(roll * 0.5f));
+            quaternion.z = (((float)Math.Cos(yaw * 0.5f) * (float)Math.Cos(pitch * 0.5f)) * (float)Math.Sin(roll * 0.5f)) - (((float)Math.Sin(yaw * 0.5f) * (float)Math.Sin(pitch * 0.5f)) * (float)Math.Cos(roll * 0.5f));
+            quaternion.w = (((float)Math.Cos(yaw * 0.5f) * (float)Math.Cos(pitch * 0.5f)) * (float)Math.Cos(roll * 0.5f)) + (((float)Math.Sin(yaw * 0.5f) * (float)Math.Sin(pitch * 0.5f)) * (float)Math.Sin(roll * 0.5f));
+            return quaternion;
+        }
+#endif
+
+		// JM: added support to run netsync and other network updates in fixed loop
+		protected override void UnityFixedUpdate ()
+		{
+			// TODO:  Look into this
+			if (this == null)
+				return;
+			
+			base.UnityFixedUpdate ();
+
+			if (Networking.UseFixedUpdate) 
+			{
+				NetworkUpdate ();
 			}
 		}
 
@@ -1339,13 +1389,23 @@ namespace BeardedManStudios.Network
 			if (this == null)
 				return;
 
-			HasSerialized = false;
-
 			base.UnityUpdate();
 
+			if (!Networking.UseFixedUpdate) 
+			{
+				NetworkUpdate ();
+			}
+		}
+
+		// JM: logic moved to function to be reused
+		private void NetworkUpdate() 
+		{
 			if (!NetworkingManager.IsOnline)
 				return;
 
+			HasSerialized = false;
+
+#if !BARE_METAL
 			if (serverIsAuthority && (OwningNetWorker.IsServer || (IsOwner && clientSidePrediction)))
 			{
 				if (inputRequest != null)
@@ -1360,6 +1420,7 @@ namespace BeardedManStudios.Network
 						mouseRequest(button);
 				}
 			}
+#endif
 
 			if ((Properties == null || Properties.Count == 0) &&
 				serializePosition == SerializeVector3Properties.None &&
@@ -1381,7 +1442,11 @@ namespace BeardedManStudios.Network
 			{
 				if (networkTimeDelay > 0)
 				{
+#if BARE_METAL
+					timeDelayCounter += (float)BareMetal.BareMetalTime.deltaTime;
+#else
 					timeDelayCounter += Time.deltaTime;
+#endif
 
 					if (timeDelayCounter < networkTimeDelay)
 					{
@@ -1440,6 +1505,9 @@ namespace BeardedManStudios.Network
 					{
 						if (!serverIsAuthority || !IsOwner || !clientSidePrediction)
 						{
+#if BARE_METAL
+							transform.position = targetPosition;
+#else
 							if (!lerpPosition || skipInterpolation ||
 								Vector3.Distance(transform.position, targetPosition) > authoritativeTeleportSyncDistance)
 								transform.position = targetPosition;
@@ -1450,16 +1518,25 @@ namespace BeardedManStudios.Network
 								if (Vector3.Distance(transform.position, targetPosition) <= lerpStopOffset)
 									transform.position = targetPosition;
 							}
+#endif
 						}
 					}
 				}
 
 				if (serializeRotation != SerializeVector3Properties.None && transform.eulerAngles != targetRotation)
 				{
+#if BARE_METAL
+					transform.eulerAngles = targetRotation;
+					//convertedTargetRotation = QuaternionFromEuler(targetRotation);
+#else
 					convertedTargetRotation = Quaternion.Euler(targetRotation);
+#endif
 
 					if (!serverIsAuthority || !IsOwner || !clientSidePrediction || (Quaternion.Angle(transform.rotation, convertedTargetRotation) > authoritativeSyncRotation))
 					{
+#if BARE_METAL
+						transform.rotation = convertedTargetRotation;
+#else
 						if (!lerpRotation || skipInterpolation)
 							transform.rotation = convertedTargetRotation;
 						else
@@ -1469,11 +1546,15 @@ namespace BeardedManStudios.Network
 							if (Quaternion.Angle(transform.rotation, convertedTargetRotation) <= lerpAngleStopOffset)
 								transform.rotation = convertedTargetRotation;
 						}
+#endif
 					}
 				}
 
 				if (serializeScale != SerializeVector3Properties.None && transform.localScale != targetScale)
 				{
+#if BARE_METAL
+					transform.localScale = targetScale;
+#else
 					if (!lerpScale || skipInterpolation)
 						transform.localScale = targetScale;
 					else
@@ -1483,6 +1564,7 @@ namespace BeardedManStudios.Network
 						if (Vector3.Distance(transform.localScale, targetScale) <= lerpStopOffset)
 							transform.localScale = targetScale;
 					}
+#endif
 				}
 
 				foreach (NetRef<object> obj in Properties)
@@ -1585,7 +1667,9 @@ namespace BeardedManStudios.Network
 			if (newData.Ready)
 			{
 				newData.Reset();
+#if !BARE_METAL
 				if (turnedOffCollider) { turnedOffCollider = false; colliderRef.enabled = true; }
+#endif
 				if (skipInterpolation) skipInterpolation = false;
 			}
 		}

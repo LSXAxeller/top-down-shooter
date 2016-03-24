@@ -60,6 +60,8 @@ namespace BeardedManStudios.Network
 			}
 			else if (type == typeof(BMSByte))
 				obj = MapBMSByte(stream);
+			else if(type.IsEnum())
+				obj = MapBasicType(Enum.GetUnderlyingType(type), stream);
 			else
 				obj = MapBasicType(type, stream);
 
@@ -77,19 +79,22 @@ namespace BeardedManStudios.Network
 		{
 			stream.StartPeek();
 			object obj = null;
+            var genericType = typeof (T);
 
-			if (typeof(T) == typeof(string))
-				obj = MapString(stream);
-			else if (typeof(T) == typeof(Vector3))
+            if (genericType == typeof(string))
+                obj = MapString(stream);
+            else if (genericType == typeof(Vector3))
 				obj = MapVector3(stream);
-			else if (typeof(T) == typeof(Vector4) || typeof(T) == typeof(Color) || typeof(T) == typeof(Quaternion))
-				obj = MapVector4(typeof(T), stream);
-			else if (typeof(T) == typeof(byte[]))
+            else if (genericType == typeof(Vector4) || genericType == typeof(Color) || genericType == typeof(Quaternion))
+                obj = MapVector4(genericType, stream);
+            else if (genericType == typeof(byte[]))
 				obj = MapByteArray(stream);
-			else if (typeof(T) == typeof(BMSByte))
+            else if (genericType == typeof(BMSByte))
 				obj = MapBMSByte(stream);
+            else if (genericType.IsEnum())
+                obj = MapBasicType(Enum.GetUnderlyingType(genericType), stream);
 			else
-				obj = MapBasicType(typeof(T), stream);
+                obj = MapBasicType(genericType, stream);
 
 			stream.StopPeek();
 
@@ -104,22 +109,25 @@ namespace BeardedManStudios.Network
 		/// <returns>Returns a mapped value from the Networking Stream</returns>
 		public static T Map<T>(NetworkingStream stream)
 		{
-			object obj = null;
+            object obj = null;
+            var genericType = typeof(T);
 
-			if (typeof(T) == typeof(string))
-				obj = MapString(stream);
-			else if (typeof(T) == typeof(Vector2))
-				obj = MapVector2(stream);
-			else if (typeof(T) == typeof(Vector3))
-				obj = MapVector3(stream);
-			else if (typeof(T) == typeof(Vector4) || typeof(T) == typeof(Color) || typeof(T) == typeof(Quaternion))
-				obj = MapVector4(typeof(T), stream);
-			else if (typeof(T) == typeof(byte[]))
-				obj = MapByteArray(stream);
-			else if (typeof(T) == typeof(BMSByte))
-				obj = MapBMSByte(stream);
+            if (genericType == typeof(string))
+			   obj = MapString(stream);
+            else if (genericType == typeof(Vector2))
+			   obj = MapVector2(stream);
+            else if (genericType == typeof(Vector3))
+			   obj = MapVector3(stream);
+            else if (genericType == typeof(Vector4) || genericType == typeof(Color) || genericType == typeof(Quaternion))
+               obj = MapVector4(genericType, stream);
+            else if (genericType == typeof(byte[]))
+			   obj = MapByteArray(stream);
+            else if (genericType == typeof(BMSByte))
+			   obj = MapBMSByte(stream);
+            else if (genericType.IsEnum())
+               obj = MapBasicType(Enum.GetUnderlyingType(genericType), stream);
 			else
-				obj = MapBasicType(typeof(T), stream);
+               obj = MapBasicType(genericType, stream);
 
 			return (T)obj;
 		}
@@ -181,12 +189,7 @@ namespace BeardedManStudios.Network
 				//throw new NetworkException(12, "Attempted to read a string that doesn't exist");
 			}
 
-			string obj = Encoding.UTF8.GetString(stream.Read(length), 0, length);
-			if (obj.Length == 12 && obj != "Hello World!")
-			{
-				//int x = 0;
-			}
-			return obj;
+			return Encoding.UTF8.GetString(stream.Read(length), 0, length);
 #endif
 		}
 
@@ -287,86 +290,99 @@ namespace BeardedManStudios.Network
 
 				Type type = o.GetType();
 
-				if (type == typeof(string))
-				{
-					var strBytes = Encoding.UTF8.GetBytes((string)o);
-					// TODO:  Need to make custom string serialization to binary
-					bytes.Append(BitConverter.GetBytes(strBytes.Length));
-
-					if (strBytes.Length > 0)
-						bytes.Append(strBytes);
-				}
-				else if (type == typeof(sbyte))
-					bytes.BlockCopy<sbyte>(o, 1);
-				else if (type == typeof(byte))
-					bytes.BlockCopy<byte>(o, 1);
-				else if (type == typeof(char))
-					bytes.BlockCopy<char>(o, 1);
-				else if (type == typeof(bool))
-					bytes.Append(BitConverter.GetBytes((bool)o));
-				else if (type == typeof(short))
-					bytes.Append(BitConverter.GetBytes((short)o));
-				else if (type == typeof(ushort))
-					bytes.Append(BitConverter.GetBytes((ushort)o));
-				else if (type == typeof(int))
-					bytes.Append(BitConverter.GetBytes((int)o));
-				else if (type == typeof(uint))
-					bytes.Append(BitConverter.GetBytes((uint)o));
-				else if (type == typeof(long))
-					bytes.Append(BitConverter.GetBytes((long)o));
-				else if (type == typeof(ulong))
-					bytes.Append(BitConverter.GetBytes((ulong)o));
-				else if (type == typeof(float))
-					bytes.Append(BitConverter.GetBytes((float)o));
-				else if (type == typeof(double))
-					bytes.Append(BitConverter.GetBytes((double)o));
-				else if (type == typeof(Vector2))
-				{
-					bytes.Append(BitConverter.GetBytes(((Vector2)o).x));
-					bytes.Append(BitConverter.GetBytes(((Vector2)o).y));
-				}
-				else if (type == typeof(Vector3))
-				{
-					bytes.Append(BitConverter.GetBytes(((Vector3)o).x));
-					bytes.Append(BitConverter.GetBytes(((Vector3)o).y));
-					bytes.Append(BitConverter.GetBytes(((Vector3)o).z));
-				}
-				else if (type == typeof(Vector4))
-				{
-					bytes.Append(BitConverter.GetBytes(((Vector4)o).x));
-					bytes.Append(BitConverter.GetBytes(((Vector4)o).y));
-					bytes.Append(BitConverter.GetBytes(((Vector4)o).z));
-					bytes.Append(BitConverter.GetBytes(((Vector4)o).w));
-				}
-				else if (type == typeof(Color))
-				{
-					bytes.Append(BitConverter.GetBytes(((Color)o).r));
-					bytes.Append(BitConverter.GetBytes(((Color)o).g));
-					bytes.Append(BitConverter.GetBytes(((Color)o).b));
-					bytes.Append(BitConverter.GetBytes(((Color)o).a));
-				}
-				else if (type == typeof(Quaternion))
-				{
-					bytes.Append(BitConverter.GetBytes(((Quaternion)o).x));
-					bytes.Append(BitConverter.GetBytes(((Quaternion)o).y));
-					bytes.Append(BitConverter.GetBytes(((Quaternion)o).z));
-					bytes.Append(BitConverter.GetBytes(((Quaternion)o).w));
-				}
-				else if (type == typeof(byte[]))
-				{
-					bytes.Append(BitConverter.GetBytes(((byte[])o).Length));
-					bytes.Append((byte[])o);
-				}
-				else if (type == typeof(BMSByte))
-				{
-					bytes.Append(BitConverter.GetBytes(((BMSByte)o).Size));
-					bytes.BlockCopy(((BMSByte)o).byteArr, ((BMSByte)o).StartIndex(), ((BMSByte)o).Size);
-				}
-				else
-					throw new NetworkException(11, "The type " + type.ToString() + " is not allowed to be sent over the network (yet)");
+				GetBytes(o, type, ref bytes);
 			}
 
 			return bytes;
+		}
+
+		/// <summary>
+		/// Gets the bytes for the Instance of an Object and appends them to a <c>BMSByte</c>.
+		/// </summary>
+		/// <param name="o">The Instance of the Object.</param>
+		/// <param name="type">The Type of the Object.</param>
+		/// <param name="bytes"><c>BMSByte</c> to which the bytes should be added.</param>
+		private static void GetBytes(object o, Type type, ref BMSByte bytes)
+		{
+			if (type == typeof(string))
+			{
+				var strBytes = Encoding.UTF8.GetBytes((string)o);
+				// TODO:  Need to make custom string serialization to binary
+				bytes.Append(BitConverter.GetBytes(strBytes.Length));
+
+				if (strBytes.Length > 0)
+					bytes.Append(strBytes);
+			}
+			else if (type == typeof(sbyte))
+				bytes.BlockCopy<sbyte>(o, 1);
+			else if (type == typeof(byte))
+				bytes.BlockCopy<byte>(o, 1);
+			else if (type == typeof(char))
+				bytes.BlockCopy<char>(o, 1);
+			else if (type == typeof(bool))
+				bytes.Append(BitConverter.GetBytes((bool)o));
+			else if (type == typeof(short))
+				bytes.Append(BitConverter.GetBytes((short)o));
+			else if (type == typeof(ushort))
+				bytes.Append(BitConverter.GetBytes((ushort)o));
+			else if (type == typeof(int))
+				bytes.Append(BitConverter.GetBytes((int)o));
+			else if (type == typeof(uint))
+				bytes.Append(BitConverter.GetBytes((uint)o));
+			else if (type == typeof(long))
+				bytes.Append(BitConverter.GetBytes((long)o));
+			else if (type == typeof(ulong))
+				bytes.Append(BitConverter.GetBytes((ulong)o));
+			else if (type == typeof(float))
+				bytes.Append(BitConverter.GetBytes((float)o));
+			else if (type == typeof(double))
+				bytes.Append(BitConverter.GetBytes((double)o));
+			else if (type == typeof(Vector2))
+			{
+				bytes.Append(BitConverter.GetBytes(((Vector2)o).x));
+				bytes.Append(BitConverter.GetBytes(((Vector2)o).y));
+			}
+			else if (type == typeof(Vector3))
+			{
+				bytes.Append(BitConverter.GetBytes(((Vector3)o).x));
+				bytes.Append(BitConverter.GetBytes(((Vector3)o).y));
+				bytes.Append(BitConverter.GetBytes(((Vector3)o).z));
+			}
+			else if (type == typeof(Vector4))
+			{
+				bytes.Append(BitConverter.GetBytes(((Vector4)o).x));
+				bytes.Append(BitConverter.GetBytes(((Vector4)o).y));
+				bytes.Append(BitConverter.GetBytes(((Vector4)o).z));
+				bytes.Append(BitConverter.GetBytes(((Vector4)o).w));
+			}
+			else if (type == typeof(Color))
+			{
+				bytes.Append(BitConverter.GetBytes(((Color)o).r));
+				bytes.Append(BitConverter.GetBytes(((Color)o).g));
+				bytes.Append(BitConverter.GetBytes(((Color)o).b));
+				bytes.Append(BitConverter.GetBytes(((Color)o).a));
+			}
+			else if (type == typeof(Quaternion))
+			{
+				bytes.Append(BitConverter.GetBytes(((Quaternion)o).x));
+				bytes.Append(BitConverter.GetBytes(((Quaternion)o).y));
+				bytes.Append(BitConverter.GetBytes(((Quaternion)o).z));
+				bytes.Append(BitConverter.GetBytes(((Quaternion)o).w));
+			}
+			else if (type == typeof(byte[]))
+			{
+				bytes.Append(BitConverter.GetBytes(((byte[])o).Length));
+				bytes.Append((byte[])o);
+			}
+			else if (type == typeof(BMSByte))
+			{
+				bytes.Append(BitConverter.GetBytes(((BMSByte)o).Size));
+				bytes.BlockCopy(((BMSByte)o).byteArr, ((BMSByte)o).StartIndex(), ((BMSByte)o).Size);
+			}
+			else if (type.IsEnum())
+				GetBytes(o, Enum.GetUnderlyingType(type), ref bytes);
+			else
+				throw new NetworkException(11, "The type " + type.ToString() + " is not allowed to be sent over the network (yet)");
 		}
 	}
 }

@@ -1,11 +1,26 @@
 Support Email:  support@beardedmangames.com
-Main developer portal:  http://developers.forgearcade.com/
-Main tutorial portal:  http://developers.forgearcade.com/Tutorials
-Main Forums:  http://forums.forgearcade.com/
-Main Feedback Portal:  http://developers.forgearcade.com/Feedback
+Main developer portal:  http://developers.forgepowered.com/
+Main tutorial portal:  http://developers.forgepowered.com/Tutorials
+Main Forums:  http://forums.forgepowered.com/
+Main Feedback Portal:  http://developers.forgepowered.com/Feedback
 Main Unity Forum Thread:  http://forum.unity3d.com/threads/superpowered-cross-platform-networking-library-including-windows-universal-apps.286900/
 Beginner Videos:   https://www.youtube.com/playlist?list=PLaMPnrbpanJ7DazlqTkZHHBSt8D5dx4Um
 Intermediate Videos:  https://www.youtube.com/playlist?list=PLaMPnrbpanJ6DC4RmaEbyHgcnqi6HrfTt
+
+Release V19.1:
+	Bug fixes for Resources are now loading all subfolders instead of the listed folder
+	Additional null reference checks on instantiate for offline play
+Release V19:
+	Allowed optional params in RPC
+	Resources are now loading all subfolders instead of the listed folder
+	Offline play fixes
+	Additional null checks if connected or not
+	Added additional Debug Logs for the null Locate
+	Fixed WinRT (Windows Phone Builds)
+	Removed warnings on project
+	Added 4_7 Support
+	Fix CurrentFrame being sent as byte for Authoritative Input Events
+	Fixed a possible null reference in the networking
 
 Release V18:
 	Fixed issue with Cross Platform UDP sending an extra byte

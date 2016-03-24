@@ -17,8 +17,6 @@
 |                                                             |
 \------------------------------+-----------------------------*/
 
-
-
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -81,6 +79,11 @@ namespace BeardedManStudios.Network.Unity
 		/// <param name="action">The method that is to be run on the main thread</param>
 		public static void Run(Action action)
 		{
+#if BARE_METAL
+			action();
+			return;
+#else
+
 			// Only create this object on the main thread
 #if NETFX_CORE
 			if (ReferenceEquals(Instance, null))
@@ -97,6 +100,7 @@ namespace BeardedManStudios.Network.Unity
 			{
 				mainThreadActions.Add(action);
 			}
+#endif
 		}
 
 		private void HandleActions() {
@@ -128,8 +132,8 @@ namespace BeardedManStudios.Network.Unity
 		private void Update()
 		{
 			// JM: added support for actions to be handled in fixed loop
-			if (!Networking.RunActionsInFixedLoop) 
-				HandleActions ();
+			if (!Networking.UseFixedUpdate) 
+				HandleActions();
 
 			if (unityUpdate != null)
 				unityUpdate();
@@ -138,7 +142,7 @@ namespace BeardedManStudios.Network.Unity
 		private void FixedUpdate()
 		{
 			// JM: added support for actions to be handled in fixed loop
-			if (Networking.RunActionsInFixedLoop) 
+			if (Networking.UseFixedUpdate) 
 				HandleActions ();
 				
 			if (unityFixedUpdate != null)

@@ -24,6 +24,7 @@
 #endif
 
 using System;
+using System.Net;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -32,14 +33,17 @@ using System.Collections.Generic;
 
 #if !NETFX_CORE
 using System.Threading;
-using System.Net;
 #else
 using Windows.Networking.Sockets;
 #endif
 
 namespace BeardedManStudios.Network
 {
+#if BARE_METAL
+	public abstract class NetWorker : MarshalByRefObject
+#else
 	public abstract class NetWorker
+#endif
 	{
 		public const string CLIENT_READY_DYNAMIC_COMMAND = "ready";
 
@@ -61,7 +65,7 @@ namespace BeardedManStudios.Network
 		/// <summary>
 		/// The maximum connections allowed on this NetWorker(Socket)
 		/// </summary>
-		public int MaxConnections { get; protected set; }
+		public int MaxConnections { get; set; } // JM: made set public in case server wants to change value after startup
 
 		/// <summary>
 		/// Current amount of connections
@@ -99,8 +103,8 @@ namespace BeardedManStudios.Network
 
 		// JM: Added for threaded lan discovery
 		public delegate void LANEndPointFound(IPEndPoint endpoint);
-
-		/// <summary>
+		
+      /// <summary>
 		/// Network Exception response delegate
 		/// </summary>
 		/// <param name="exception">Exception thrown</param>
@@ -188,11 +192,11 @@ namespace BeardedManStudios.Network
 		/// </summary>
 		public static ulong BandwidthOut { get; protected set; }
 
+        protected IPEndPoint hostEndpoint = null;
+
 #if NETFX_CORE
-		protected IPEndPointWinRT hostEndpoint = null;
 		protected object groupEP = null;
 #else
-		protected IPEndPoint hostEndpoint = null;
 		protected IPEndPoint groupEP = null;
 #endif
 
@@ -370,15 +374,14 @@ namespace BeardedManStudios.Network
 		{
 			if (playerConnectedInvoker != null)
 			{
-				if (Networking.IsBareMetal)
-					playerConnectedInvoker(player);
-				else
+#if BARE_METAL
+				playerConnectedInvoker(player);
+#else
+				Unity.MainThreadManager.Run(delegate()
 				{
-					Unity.MainThreadManager.Run(delegate()
-					{
-						playerConnectedInvoker(player);
-					});
-				}
+					playerConnectedInvoker(player);
+				});
+#endif
 			}
 
 			Connections++;
@@ -431,40 +434,37 @@ namespace BeardedManStudios.Network
 			Connected = true;
 			Disconnected = false;
 
-			if (Networking.IsBareMetal)
-			{
-				if (connectedInvoker != null)
-					connectedInvoker();
-			}
-			else
-			{
-				if (connectedInvoker != null)
-				{
-					try
-					{
-						if (!UsingUnityEngine)
-							connectedInvoker();
-						else
-						{
-							// If there is not a MAIN_THREAD_MANAGER then throw the error and disconnect
-							Unity.MainThreadManager.Run(delegate ()
-							{
-								connectedInvoker();
-							});
-						}
-					}
-#if UNITY_EDITOR
-					catch (Exception e)
-					{
-						UnityEngine.Debug.LogException(e);
+#if BARE_METAL
+            if (connectedInvoker != null)
+                connectedInvoker();
 #else
-					catch
-					{
+            if (connectedInvoker != null)
+            {
+                try
+                {
+                    if (!UsingUnityEngine)
+                        connectedInvoker();
+                    else
+                    {
+                        // If there is not a MAIN_THREAD_MANAGER then throw the error and disconnect
+                        Unity.MainThreadManager.Run(delegate ()
+                        {
+                            connectedInvoker();
+                        });
+                    }
+                }
+#if UNITY_EDITOR
+                catch (Exception e)
+                {
+                    UnityEngine.Debug.LogException(e);
+#else
+                catch
+                {
 #endif
-						Disconnect();
-					}
-				}
-			}
+                    Disconnect();
+                }
+            }
+#endif
 		}
 
 		protected void OnDisconnected()
@@ -500,10 +500,11 @@ namespace BeardedManStudios.Network
 		{
 			if (errorInvoker != null)
 			{
-				if (Networking.IsBareMetal)
-					errorInvoker(exception);
-				else
-					Unity.MainThreadManager.Run(delegate() { errorInvoker(exception); });
+#if BARE_METAL
+				errorInvoker(exception);
+#else
+				Unity.MainThreadManager.Run(delegate() { errorInvoker(exception); });
+#endif
 			}
 		}
 
@@ -694,15 +695,14 @@ namespace BeardedManStudios.Network
 
 			if (playerDisconnectedInvoker != null)
 			{
-				if (Networking.IsBareMetal)
-					playerDisconnectedInvoker(player);
-				else
+#if BARE_METAL
+				playerDisconnectedInvoker(player);
+#else
+				Unity.MainThreadManager.Run(delegate ()
 				{
-					Unity.MainThreadManager.Run(delegate()
-					{
-						playerDisconnectedInvoker(player);
-					});
-				}
+					playerDisconnectedInvoker(player);
+				});
+#endif
 			}
 
 			Connections--;
@@ -754,9 +754,9 @@ namespace BeardedManStudios.Network
 		/// </summary>
 		public NetWorker()
 		{
-			if (!Networking.IsBareMetal)
-				Unity.NetWorkerKiller.AddNetWorker(this);
-
+#if !BARE_METAL
+			Unity.NetWorkerKiller.AddNetWorker(this);
+#endif
 			UsingUnityEngine = true;
 		}
 
@@ -767,7 +767,9 @@ namespace BeardedManStudios.Network
 		public NetWorker(int maxConnections)
 		{
 			MaxConnections = maxConnections;
+#if !BARE_METAL
 			Unity.NetWorkerKiller.AddNetWorker(this);
+#endif
 			UsingUnityEngine = true;
 		}
 
@@ -1233,11 +1235,7 @@ namespace BeardedManStudios.Network
 
 		public void Ping(object endpoint = null, object overrideHost = null)
 		{
-#if NETFX_CORE
-			IPEndPointWinRT overridedHost = (IPEndPointWinRT)overrideHost;
-#else
-			IPEndPoint overridedHost = (IPEndPoint)overrideHost;
-#endif
+			var overridedHost = overrideHost as IPEndPoint;
 
 			if (IsServer && endpoint == null)
 			{
@@ -1250,15 +1248,17 @@ namespace BeardedManStudios.Network
 			byte[] ping = new byte[1] { 3 };
 			try
 			{
-				if (overridedHost != null)
-					Send(ping, ping.Length, overridedHost);
-				else
-				{
-					if (IsServer)
-						Send(ping, ping.Length, endpoint);
-					else
-						Send(ping, ping.Length, hostEndpoint);
-				}
+			   if (overridedHost != null)
+			   {
+			      Send(ping, ping.Length, overridedHost);
+			   }
+			   else
+			   {
+			      if (IsServer)
+			         Send(ping, ping.Length, endpoint);
+			      else
+			         Send(ping, ping.Length, hostEndpoint);
+			   }
 			}
 			catch
 			{
@@ -1290,12 +1290,14 @@ namespace BeardedManStudios.Network
 						
 						if (sender == null)
 						{
+						    var splitEndpoint = endpoint.Split('+');
+
 #if NETFX_CORE
-							Ping(new IPEndPointWinRT() { ipAddress = endpoint.Split('+')[0], port = int.Parse(endpoint.Split('+')[1]) });
+                            Ping(new IPEndPoint(splitEndpoint[0], int.Parse(splitEndpoint[1]) ));
 #else
-							Ping(new IPEndPoint(IPAddress.Parse(endpoint.Split('+')[0]), int.Parse(endpoint.Split('+')[1])));
+							Ping(new IPEndPoint(IPAddress.Parse(splitEndpoint[0]), int.Parse(splitEndpoint[1])));
 #endif
-						}
+                  }
 						else
 							Ping(sender.SocketEndpoint);
 					}

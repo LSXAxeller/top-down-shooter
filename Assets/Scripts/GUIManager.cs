@@ -14,6 +14,21 @@ public class GUIManager : MonoBehaviour {
         Pause = 3
     };
 
+    public int SelectedMapIndex
+    {
+        get
+        {
+            return SelectedMapIndex;
+        }
+        set
+        {
+            SelectedMapIndex = value;
+            BMSByte data = GameManager.Instance.gameData;
+            GameManager.Instance.SerializeGameData(MapNameInput.text, data[1], data.GetString(2), data.GetBasicType<int>(3), data.GetBasicType<int>(4));
+            GameManager.Instance.ChangeMap(value);
+        }
+    }
+    
     public CanvasGroup HUD;
     public CanvasGroup Scoreboard;
     public CanvasGroup GameSetup;
@@ -28,7 +43,10 @@ public class GUIManager : MonoBehaviour {
     public Text NotificationText;
     public Text PlayersReadyText;
     public Slider HealthBarSlider;
-    public Slider AmmoBarSlider;
+    public Text AmmoBulletsText;
+    public Text SelectedWeaponText;
+    public Image PrimaryWeaponIcon;
+    public Image SecondaryWeaponIcon;
     public GameObject LeftTeamList;
     public GameObject RightTeamList;
     public GameObject VerticalScrollItem;
@@ -36,6 +54,7 @@ public class GUIManager : MonoBehaviour {
 
     private List<string> pendingNotifications = new List<string>();
     private string currentNotification;
+    private float notificationTimer = 1.0f;
     private static GUIManager _instance; 
 
     public static GUIManager Instance
@@ -50,7 +69,11 @@ public class GUIManager : MonoBehaviour {
                     _instance = GameObject.FindGameObjectWithTag("GUIManager").GetComponent<GUIManager>();
                     if (_instance == null)
                     {
-                        return null;
+                        _instance = FindObjectOfType<GUIManager>();
+                        if (_instance == null)
+                        {
+                            return null;
+                        }
                     }
                 }
             }
@@ -71,25 +94,35 @@ public class GUIManager : MonoBehaviour {
             AddNotification("A team ID is required to start the game!");
             throw new MissingReferenceException("Team ID cannot be empty!");
         }
-        GameManager.Instance.SpawnPlayer(PlayerNameInput.text, int.Parse(TeamInput.text), 0);
+
+        GameManager.Instance.StartGame(PlayerNameInput.text, int.Parse(TeamInput.text), 0);
     }
 
-    public void GUISelectMap()
+    public void GUIChangeMap(int index)
     {
-        BMSByte data =  GameManager.Instance.gameData;
-        GameManager.Instance.SerializeGameData(MapNameInput.text, data[1], data.GetString(2), data.GetBasicType<int>(3), data.GetBasicType<int>(4));
-        FindObjectOfType<UnityTileMap.TileMapBehaviour>().ImportMap(MapNameInput.text);
+        SelectedMapIndex = index;
+    }
+
+    public void GUIChangeMap(string name)
+    {
+        SelectedMapIndex = GameManager.Instance.maps.IndexOf(name);
+    }
+
+    public void UpdatePlayersReadyText()
+    {
+        PlayersReadyText.text = GameManager.Instance.PlayersReady + "/" + NetworkingManager.ControllingSocket.ServerPlayerCounter + " players are ready.";
     }
 
     public void GUIReadyUp()
     {
         GameManager.Instance.OwnerReadyUp(0);
-        PlayersReadyText.text = GameManager.Instance.PlayersReady + "/" + GameManager.Instance.PlayerList.Count + " players are ready.";
+        UpdatePlayersReadyText();
     }
 
     public void GUIReadyDown()
     {
         GameManager.Instance.OwnerReadyUp(1);
+        UpdatePlayersReadyText();
     }
 
     public void GUIGameType()
@@ -134,10 +167,21 @@ public class GUIManager : MonoBehaviour {
         Application.Quit();
     }
 
-    public void AddVerticalScrollItem(BMSByte playerData)
+    private void Update ()
+    {
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            ShowCanvas(1);
+        }
+        if(Input.GetKeyUp(KeyCode.Escape))
+        {
+            ShowCanvas(0);
+        }
+    }
+
+    public void AddVerticalScrollItem(string name, int teamID)
     {
         GameObject item = Instantiate(VerticalScrollItem);
-        int teamID = playerData[1];
 
         if(teamID == 0)
         {          
@@ -152,11 +196,18 @@ public class GUIManager : MonoBehaviour {
             item.GetComponent<Image>().color = TeamColors[1];
         }
 
-        item.GetComponentInChildren<Text>().text = "Name: " + playerData[0];
+        item.GetComponentInChildren<Text>().text = "Name: " + name;
     }
 
     public void AddNotification(string notification)
     {
+        notificationTimer = 1.0f;
+        pendingNotifications.Add(notification);
+    }
+
+    public void AddNotification(string notification, float time)
+    {
+        notificationTimer = time;
         pendingNotifications.Add(notification);
     }
 
@@ -169,41 +220,42 @@ public class GUIManager : MonoBehaviour {
                 currentNotification = pendingNotifications[0];
                 pendingNotifications.RemoveAt(0);
                 NotificationText.text = currentNotification;
-                yield return new WaitForSeconds(1.0f);
+                yield return new WaitForSeconds(notificationTimer);
             }
             else
             {
                 NotificationText.text = string.Empty;
-                yield return new WaitForSeconds(1.0f);
+                yield return new WaitForSeconds(notificationTimer);
             }
         }
     }
 
-    public void SetHealthBar(float health, float maxHealth)
+    public void UpdateWeaponStats(Sprite primary, Sprite secondary, string selectedWeaponName)
     {
-        HealthBarSlider.value = health / maxHealth;
+        PrimaryWeaponIcon.sprite = primary;
+        SecondaryWeaponIcon.sprite = secondary;
+        SelectedWeaponText.text = selectedWeaponName.TrimEnd('(');
     }
 
-    public void SetAmmoBar(float ammo, float maxAmmo)
+    public void SetHealthBar(float health, float maxHealth)
     {
-        AmmoBarSlider.value = ammo / maxAmmo;
+        HealthBarSlider.maxValue = maxHealth;
+        HealthBarSlider.value = health;
+    }
+
+    public void SetAmmoBar(float ammo)
+    {
+        string ammoText = "";
+        for(int i=0; i<ammo; i++)
+        {
+            ammoText += "I";
+        }
+        AmmoBulletsText.text = ammoText;
     }
 
     private void Start()
     {
         StartCoroutine(DisplayNotification());
-    }
-
-    public void Update()
-    {
-        if (Input.GetKey(KeyCode.Escape))
-        {
-            ShowCanvas(2);
-        }
-        else if (Input.GetKeyUp(KeyCode.Escape))
-        {
-            ShowCanvas(0);
-        }
     }
 
     public void ShowCanvas(int index)

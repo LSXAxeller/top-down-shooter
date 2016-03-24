@@ -21,6 +21,8 @@ namespace UnityTileMap
     [Serializable]
     public class TileMapBehaviour : MonoBehaviour, IEnumerable<KeyValuePair<Vector2Int, int>>
     {
+        public GameObject[] entities;
+
         [SerializeField]
         private TileMapData m_tileMapData;
 
@@ -65,7 +67,7 @@ namespace UnityTileMap
                 }
             }
         }
-
+        
         public TileMeshSettings MeshSettings
         {
             get { return m_tileMeshSettings; }
@@ -85,12 +87,10 @@ namespace UnityTileMap
                 m_tileMapData.SetSize(m_tileMeshSettings.TilesX, m_tileMeshSettings.TilesY);
             }
         }
-
         public TileSheet TileSheet
         {
             get { return m_tileSheet; }
         }
-
         public int TileCount
         {
             get
@@ -98,7 +98,7 @@ namespace UnityTileMap
                 return m_tileMapData.Count;
             }
         }
-
+        
         public List<int> WallTileProperty;
         public List<int> ObstacleTileProperty;
         public List<int> FloorTileProperty;
@@ -150,14 +150,26 @@ namespace UnityTileMap
                 GameObject entity;
                 if (entry.Value == EntitiesData.EntityID.Info_T)
                 {
-                    entity = Instantiate(GetComponent<TileMapGameBahaviour>().entities[(int)EntitiesData.EntityID.Info_T_Active]);
+                    entity = Instantiate(entities[(int)EntitiesData.EntityID.Info_T_Active]);
                 }
                 else
                 {
-                    entity = Instantiate(GetComponent<TileMapGameBahaviour>().entities[(int)entry.Value]);
+                    entity = Instantiate(entities[(int)entry.Value]);
                 }
                 entity.tag = "Entity_Active";
-                entity.transform.position = new Vector2(entry.Key.x + 0.5f, entry.Key.y + 0.5f);                               
+                entity.transform.position = entry.Key.ToTileVector2();                               
+            }
+        }
+
+        public void DisplayEntities()
+        {
+            DestroyEntities();
+
+            foreach (KeyValuePair<Vector2Int, EntitiesData.EntityID> entry in m_entities)
+            {
+                GameObject entity = Instantiate(entities[(int)entry.Value]);
+                entity.tag = "Entity";
+                entity.transform.position = entry.Key.ToTileVector2();
             }
         }
 
@@ -479,7 +491,7 @@ namespace UnityTileMap
             m_entities = new Dictionary<Vector2Int, EntitiesData.EntityID>();
 
             AddEntities(mapFile.entities);
-            CreateEntities();            
+            DisplayEntities();            
         }
 
         public static void Serialize(object t, string path)

@@ -23,6 +23,7 @@ using BeardedManStudios.Network;
 using BeardedManStudios.Network.Unity;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Net;
 
 namespace BeardedManStudios.Forge.Examples
 {
@@ -66,7 +67,7 @@ namespace BeardedManStudios.Forge.Examples
 		{
 			get
 			{
-#if UNITY_4_6
+#if UNITY_4_6 || UNITY_4_7 || BARE_METAL
 				return Application.platform == RuntimePlatform.MetroPlayerARM ||
 					Application.platform == RuntimePlatform.MetroPlayerX86 ||
 					Application.platform == RuntimePlatform.MetroPlayerX64;
@@ -138,7 +139,7 @@ namespace BeardedManStudios.Forge.Examples
 		public void ServerBrowser()
 		{
 #if UNITY_5_3
-			UnitySceneManager.LoadScene(sceneName);
+			UnitySceneManager.LoadScene(serverBrowserScene);
 #else
 			Application.LoadLevel(serverBrowserScene);
 #endif
@@ -192,7 +193,7 @@ namespace BeardedManStudios.Forge.Examples
 			Networking.LanDiscovery((ushort)port, 5000, protocolType, IsWinRT);
 		}
 
-		private void FoundEndpoint(System.Net.IPEndPoint endpoint)
+		private void FoundEndpoint(IPEndPoint endpoint)
 		{
 			isBusyFindingLan = false;
 			Networking.lanEndPointFound -= FoundEndpoint;
@@ -252,11 +253,8 @@ namespace BeardedManStudios.Forge.Examples
 			socket.connected -= LoadScene;
 			Networking.SetPrimarySocket(socket);
 
-#if UNITY_5_3
-			UnitySceneManager.LoadScene(sceneName);
-#else
-			Application.LoadLevel(sceneName);
-#endif
-		}
-	}
+			GetComponent<StartOptions>().StartButtonClicked();
+
+        }
+    }
 }

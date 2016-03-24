@@ -88,7 +88,11 @@ namespace BeardedManStudios.Network.Unity
 		private void LoadScene()
 		{
 			Networking.SetPrimarySocket(socket);
+#if UNITY_4_6 || UNITY_4_7
+            Application.LoadLevel(sceneName);
+#else
 			UnitySceneManager.LoadScene(sceneName);
+#endif
 		}
 	}
 }

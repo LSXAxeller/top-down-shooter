@@ -7,6 +7,7 @@ public class Pickup : MonoBehaviour {
     public GameObject WeaponPrefab;
     public GameObject WeaponDroppedPrefab;
     public float respawnTime = 5.0f;
+    public bool isRespawnable = true;
 
     private SpriteRenderer spr;
     private bool isPickable = false;

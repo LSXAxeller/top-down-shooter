@@ -143,6 +143,7 @@ namespace Deftly
             {
                 HealthText.text = Subject.Health.ToString();
             }
+            GUIManager.Instance.SetHealthBar(Subject.Health, Subject.Stats.Health.Max);
             if (ArmorText != null)
             {
                 ArmorText.text = Subject.Armor.ToString();

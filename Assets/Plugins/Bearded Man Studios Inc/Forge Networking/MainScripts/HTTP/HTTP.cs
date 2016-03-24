@@ -291,7 +291,9 @@ namespace BeardedManStudios.Network
 #if NETFX_CORE
 					callback(e)
 #else
-					return e;
+                    //TODO: If you need to see the error message, please debug it here.
+                    e = null;
+					return e; // JM: don't output the error to screen
 #endif
 				}
 #endif

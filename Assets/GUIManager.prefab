@@ -39,18 +39,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f59711ada3c58ea4287e59b0cccf7c32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NotificationText: {fileID: 0}
-  HealthBarSlider: {fileID: 0}
-  AmmoBarSlider: {fileID: 0}
-  WeaponNamePrimary: {fileID: 0}
-  WeaponNameSecondary: {fileID: 0}
-  GameSelectionMenu: {fileID: 0}
-  GameTypeDropDown: {fileID: 0}
+  HUD: {fileID: 0}
+  Scoreboard: {fileID: 0}
+  GameSetup: {fileID: 0}
+  Pause: {fileID: 0}
+  PlayerNameInput: {fileID: 0}
+  BanPlayerInput: {fileID: 0}
+  ServerNameInput: {fileID: 0}
+  MapNameInput: {fileID: 0}
+  TeamInput: {fileID: 0}
   PointLimitInput: {fileID: 0}
-  NickNameInput: {fileID: 0}
-  TeamIdInput: {fileID: 0}
-  ContinueButton: {fileID: 0}
-  PausePanel: {fileID: 0}
+  GameTypeInput: {fileID: 0}
+  NotificationText: {fileID: 0}
+  PlayersReadyText: {fileID: 0}
+  HealthBarSlider: {fileID: 0}
+  AmmoBulletsText: {fileID: 0}
+  SelectedWeaponText: {fileID: 0}
+  PrimaryWeaponIcon: {fileID: 0}
+  SecondaryWeaponIcon: {fileID: 0}
+  LeftTeamList: {fileID: 0}
+  RightTeamList: {fileID: 0}
+  VerticalScrollItem: {fileID: 168464, guid: 33d10a61217ff1140b1b3a1545e51bf6, type: 2}
+  TeamColors:
+  - {r: 0.41911763, g: 0.6875254, b: 1, a: 0}
+  - {r: 1, g: 0, b: 0, a: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

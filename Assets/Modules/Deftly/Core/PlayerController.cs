@@ -110,8 +110,9 @@ namespace Deftly
             else _aimInput = _aimCache;
 
             Vector3 mouse = _cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y));
+            Vector3 middle = transform.position;
             // Get Angle in Radians
-            float AngleRad = Mathf.Atan2(mouse.y - _go.transform.position.y, mouse.x - _go.transform.position.x);
+            float AngleRad = Mathf.Atan2(mouse.y - middle.y, mouse.x - middle.x);
             // Get Angle in Degrees
             float AngleDeg = Mathf.Rad2Deg * AngleRad;
             // Rotate Object
@@ -139,18 +140,11 @@ namespace Deftly
         }
         void Move()
         {
-            // The camera can be at any angle, so its inaccurate to use TransformDirection directly.
-            // Soooo... we have an Arbiter Object above the average position with a corrected angle.
-            // Once I find a better way to solve the transform formula i'll remove the arbiter and simplify this.
-
             // This is the input after including control variables.
             Vector3 input = GetMovementAxis;
 
-            // This corrects the movement direction to be relative to the camera angle and applies it.
-            Vector3 movement = _arbiter.transform.TransformDirection(input);
-
             // Now use the result to move the player
-            _rb.MovePosition(_go.transform.position + movement * .01f);
+            _rb.MovePosition(_go.transform.position + input * .01f);
         }
 
         public Vector3 GetMovementAxis {
@@ -159,6 +153,12 @@ namespace Deftly
                 return new Vector3(Input.GetAxis(Horizontal) * _subject.ControlStats.MoveSpeed, Input.GetAxis(Vertical) * _subject.ControlStats.MoveSpeed, 0f);
             }
         }
+
+        private void OnDestroy()
+        {
+            Camera.main.GetComponent<DeftlyCamera>().enabled = false;
+        }
+
         public Vector3 GetAimAxis { get { return Input.mousePosition; }}
         public float GetInputFire1 { get { return Input.GetAxis(Fire1); } }
         public float GetInputFire2 { get { return Input.GetAxis(Fire2); } }

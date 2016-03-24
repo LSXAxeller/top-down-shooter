@@ -27,6 +27,10 @@ public class PoweredByForge : MonoBehaviour
 
 		yield return new WaitForSeconds(1.5f);
 
+#if UNITY_4_6 || UNITY_4_7
+        Application.LoadLevel(SceneToLoad);
+#else
 		BeardedManStudios.Network.Unity.UnitySceneManager.LoadScene(SceneToLoad);
+#endif
 	}
 }

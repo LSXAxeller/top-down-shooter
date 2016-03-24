@@ -34,6 +34,14 @@ namespace BeardedManStudios.Network
 	/// </summary>
 	public class NetworkingManager : SimpleNetworkedMonoBehavior
 	{
+#if BARE_METAL
+		//public delegate SimpleNetworkedMonoBehavior CreateObjectEvent(string name, string typeName);
+		//public static CreateObjectEvent createObject = null;
+		//public CreateObjectEvent CreateObject { get { return createObject; } set { createObject = value; } }
+		public NetworkingManager(string name, string type) : base(name, type) { instance = this; }
+		public ulong CallGenerateUniqueId() { return GenerateUniqueId(); }
+#endif
+
 		// TODO:  Invent ping commands
 		private BMSByte loadLevelPing = new BMSByte();
 
@@ -134,11 +142,29 @@ namespace BeardedManStudios.Network
 		/// The amount of time in seconds to update the time from the server
 		/// </summary>
 		public float updateTimeInterval = 1.0f;
-		
+
+#if BARE_METAL
+		public static Dictionary<string, string[]> BehaviorsAndRefCount = new Dictionary<string, string[]>();
+		public Dictionary<string, string[]> behaviorsAndRefCount { get { return BehaviorsAndRefCount; } set { BehaviorsAndRefCount = value; } }
+#else
 		private static Dictionary<string, int> behaviorsAndRefCount = new Dictionary<string, int>();
+#endif
+
+		private void Begin()
+		{
+
+		}
+
+		public void BareMetalAwake()
+		{
+#if BARE_METAL
+			Awake();
+#endif
+		}
 
 		private void Awake()
 		{
+#if !BARE_METAL
 			bool callInitialize = false;
 
 			if (instance != null)
@@ -156,12 +182,14 @@ namespace BeardedManStudios.Network
 			}
 			else
 				Unity.UnityEventObject.onDestroy += SkipResetOnDestroy;
+#endif
 
 			List<SimpleNetworkedMonoBehavior> allCurrentNetworkBehaviors = new List<SimpleNetworkedMonoBehavior>();
 
 			if (startNetworkedSceneBehaviors != null)
 				allCurrentNetworkBehaviors.AddRange(startNetworkedSceneBehaviors);
 
+#if !BARE_METAL
 			SimpleNetworkedMonoBehavior[] behaviors = FindObjectsOfType<SimpleNetworkedMonoBehavior>().Union(allCurrentNetworkBehaviors).ToArray();
 
 			foreach (SimpleNetworkedMonoBehavior behavior in behaviors)
@@ -176,9 +204,11 @@ namespace BeardedManStudios.Network
 			instance = this;
 
 			DontDestroyOnLoad(gameObject);
+#endif
 
 			dontDestroyOnLoad = true;
 
+#if !BARE_METAL
 			CreateUnityEventObject();
 
 			if (networkInstantiates != null)
@@ -220,6 +250,7 @@ namespace BeardedManStudios.Network
 
 			if (callInitialize)
 				Initialize(ControllingSocket);
+#endif
 		}
 
 		/// <summary>
@@ -227,6 +258,7 @@ namespace BeardedManStudios.Network
 		/// </summary>
 		public bool Populate(NetWorker socket)
 		{
+#if !BARE_METAL
 			List<SimpleNetworkedMonoBehavior> allBehaviors = new List<SimpleNetworkedMonoBehavior>(startNetworkedSceneBehaviors);
 			// Find all objects in the scene that have SNMB
 			SimpleNetworkedMonoBehavior[] behaviors = FindObjectsOfType<SimpleNetworkedMonoBehavior>();
@@ -274,6 +306,10 @@ namespace BeardedManStudios.Network
 				foreach (Action execute in setupActions)
 					execute();
 			}
+#else
+			ControllingSocket = socket;
+			OwningNetWorker = ControllingSocket;
+#endif
 
 			OwningNetWorker.AddCustomDataReadEvent(WriteCustomMapping.NETWORKING_MANAGER_POLL_PLAYERS, PollPlayersResponse, true);
 
@@ -286,12 +322,20 @@ namespace BeardedManStudios.Network
 			{
 				uniqueId = GenerateUniqueId();
 
+#if BARE_METAL
+				if (BehaviorsAndRefCount[obj].Length > 1)
+				{
+					for (int i = 1; i < BehaviorsAndRefCount[obj].Length; i++)
+						GenerateUniqueId();
+				}
+#else
 				// If there are multiple network behaviors on this object then update the ids
 				if (behaviorsAndRefCount[obj] > 1)
 				{
 					for (int i = 1; i < behaviorsAndRefCount[obj]; i++)
 						GenerateUniqueId();
 				}
+#endif
 			}
 
 			return true;
@@ -372,11 +416,14 @@ namespace BeardedManStudios.Network
 
 		public static SimpleNetworkedMonoBehavior[] GetAllSimpleMonoBehaviors(GameObject o)
 		{
+#if !BARE_METAL
 			List<SimpleNetworkedMonoBehavior> behaviors = new List<SimpleNetworkedMonoBehavior>(o.GetComponents<SimpleNetworkedMonoBehavior>());
 
 			for (int i = 0; i < o.transform.childCount; i++)
 				behaviors.AddRange(GetAllSimpleMonoBehaviors(o.transform.GetChild(i).gameObject));
-
+#else
+			List<SimpleNetworkedMonoBehavior> behaviors = new List<SimpleNetworkedMonoBehavior>();
+#endif
 			return behaviors.ToArray();
 		}
 
@@ -389,6 +436,32 @@ namespace BeardedManStudios.Network
 					return;
 
 				SimpleNetworkedMonoBehavior[] netBehaviors = null;
+
+#if BARE_METAL
+				netBehaviors = new SimpleNetworkedMonoBehavior[behaviorsAndRefCount[name].Length];
+
+				for (int i = 0; i < netBehaviors.Length; i++)
+				{
+					//if (CreateObject != null)
+					//	netBehaviors[i] = CreateObject(name + "(Clone)(Child)" + i, behaviorsAndRefCount[name][i]);
+
+					if (behaviorsAndRefCount[name][i] == typeof(SimpleNetworkedMonoBehavior).ToString() || behaviorsAndRefCount[name][i] == typeof(NetworkedMonoBehavior).ToString())
+					{
+						netBehaviors[i] = (SimpleNetworkedMonoBehavior)Activator.CreateInstance(typeof(SimpleNetworkedMonoBehavior).Assembly.GetType(behaviorsAndRefCount[name][i]), name, behaviorsAndRefCount[name][i]);
+					}
+					else
+					{
+						foreach (System.Reflection.Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+						{
+							if (assembly.FullName.Contains("ForgeBareMetalGame"))
+							{
+								netBehaviors[i] = (SimpleNetworkedMonoBehavior)Activator.CreateInstance(assembly.GetType(behaviorsAndRefCount[name][i]), name, behaviorsAndRefCount[name][i]);
+								break;
+							}
+						}
+					}
+				}
+#else
 
 				GameObject o = Instance.PullObject((ownerId != OwningNetWorker.Me.NetworkId ? name + "(Remote)" : name), name);
 				netBehaviors = GetAllSimpleMonoBehaviors(o);
@@ -403,6 +476,7 @@ namespace BeardedManStudios.Network
 
 				GameObject tmp = (Instantiate(o, position, rotation) as GameObject);
 				netBehaviors = GetAllSimpleMonoBehaviors(tmp);
+#endif
 
 				while (ObjectCounter < startNetworkId + (ulong)netBehaviors.Length - 1)
 				{
@@ -412,8 +486,13 @@ namespace BeardedManStudios.Network
 				for (int i = 0; i < netBehaviors.Length; i++)
 					netBehaviors[i].Setup(OwningNetWorker, OwningNetWorker.Uniqueidentifier == ownerId, startNetworkId + (ulong)i, ownerId);
 
+#if !BARE_METAL
 				if (ownerId == OwningNetWorker.Me.NetworkId)
 					Networking.RunInstantiateCallback(callbackId, netBehaviors[0].GetComponent<SimpleNetworkedMonoBehavior>());
+#else
+				if (ownerId == OwningNetWorker.Me.NetworkId)
+					Networking.RunInstantiateCallback(callbackId, netBehaviors[0]);
+#endif
 			}
 		}
 
@@ -437,7 +516,15 @@ namespace BeardedManStudios.Network
 				if (obj.name == name)
 					return obj;
 
-			GameObject find = Resources.Load<GameObject>(resourcesDirectory + "/" + name);
+            GameObject find = null;
+
+            foreach (GameObject obj in Resources.LoadAll(resourcesDirectory))
+            {
+                if (obj.name == name)
+                {
+                    find = obj;
+                }
+            }
 
 			if (find == null)
 			{
@@ -572,7 +659,11 @@ namespace BeardedManStudios.Network
 			Unity.MainThreadManager.Run(() =>
 			{
 				// The level that was loaded is not the current level
+				#if UNITY_4_6 || UNITY_4_7
+				if (levelLoaded != Application.loadedLevel)
+				#else
 				if (levelLoaded != Unity.UnitySceneManager.GetCurrentSceneBuildIndex())
+				#endif
 					return;
 
 				if (clientLoadedLevel != null)
@@ -595,8 +686,8 @@ namespace BeardedManStudios.Network
 
 			if (OwningNetWorker == null)
 				loadLevelFireOnConnect = () => { TellServerLevelLoaded(level); };
-
-			Initialize(OwningNetWorker);
+            else
+                Initialize(OwningNetWorker);
 		}
 
 		private void TellServerLevelLoaded(int level)
@@ -611,7 +702,9 @@ namespace BeardedManStudios.Network
 
 		private void CreateUnityEventObject()
 		{
+#if !BARE_METAL
 			new GameObject("UnityEventObject").AddComponent<Unity.UnityEventObject>();
+#endif
 		}
 
 		private void SkipResetOnDestroy()

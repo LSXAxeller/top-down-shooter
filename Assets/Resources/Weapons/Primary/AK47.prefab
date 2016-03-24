@@ -127,7 +127,7 @@ MonoBehaviour:
   Stats:
     Title: Derpzooka
     WeaponType: 0
-    UiImage: {fileID: 21300028, guid: 0a5a8ab7d292ebc428ef91031d550beb, type: 3}
+    UiImage: {fileID: 21300036, guid: 0a5a8ab7d292ebc428ef91031d550beb, type: 3}
     FireStyle: 0
     EffectiveRange: 10.9
     SwapTime: 0.2
@@ -174,7 +174,7 @@ MonoBehaviour:
   Mask:
     serializedVersion: 2
     m_Bits: 0
-  PickupReference: {fileID: 190084, guid: 3a458422b02a36c40bb6a923c401b126, type: 2}
+  PickupReference: {fileID: 114104, guid: 3d0df9495fefad3428b52087d52415df, type: 2}
   Owner: {fileID: 0}
   IsReloading: 0
   Attacking: 0

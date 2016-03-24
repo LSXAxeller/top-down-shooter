@@ -205,7 +205,7 @@ namespace BeardedManStudios.Network
 								DataRead(Players[i], stream);
 
 								// Write what was read to all the clients
-								Write(new NetworkingStream(stream.ProtocolType).Prepare(this, stream.identifierType, stream.NetworkedBehavior, stream.Bytes));
+								Write(new NetworkingStream(stream.ProtocolType).Prepare(this, stream.identifierType, stream.NetworkedBehavior.NetworkedId, stream.Bytes));
 							}
 						}
 
@@ -252,8 +252,7 @@ namespace BeardedManStudios.Network
 			{
 				ObjectMapper.MapBytes(tmp, "Max Players Reached On Server");
 
-				WriteAndClose(args.Socket, new NetworkingStream(Networking.ProtocolType.TCP).Prepare(this,
-					NetworkingStream.IdentifierType.Disconnect, null, tmp));
+				WriteAndClose(args.Socket, new NetworkingStream(Networking.ProtocolType.TCP).Prepare(this, NetworkingStream.IdentifierType.Disconnect, 0, tmp));
 				
 				return;
 			}
@@ -268,8 +267,7 @@ namespace BeardedManStudios.Network
 			tmp.Clear();
 			ObjectMapper.MapBytes(tmp, player.NetworkId);
 
-			Write(player, new NetworkingStream(Networking.ProtocolType.TCP).Prepare(this,
-				NetworkingStream.IdentifierType.Player, null, tmp));
+			Write(player, new NetworkingStream(Networking.ProtocolType.TCP).Prepare(this, NetworkingStream.IdentifierType.Player, 0, tmp));
 		}
 #endif
 	}

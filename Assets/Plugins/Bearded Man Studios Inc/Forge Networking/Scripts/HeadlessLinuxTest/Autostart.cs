@@ -20,6 +20,8 @@
 
 
 using UnityEngine;
+using BeardedManStudios.Network;
+
 #if UNITY_EDITOR && !UNITY_WEBPLAYER
 using System.Collections;
 #endif
@@ -48,7 +50,7 @@ namespace BeardedManStudios.Network.Unity
 		{
 			get
 			{
-#if UNITY_4_6
+#if UNITY_4_6 || UNITY_4_7 || BARE_METAL
 				return Application.platform == RuntimePlatform.MetroPlayerARM ||
 					Application.platform == RuntimePlatform.MetroPlayerX86 ||
 					Application.platform == RuntimePlatform.MetroPlayerX64;
@@ -129,7 +131,11 @@ namespace BeardedManStudios.Network.Unity
 		private void LoadScene()
 		{
 			Networking.SetPrimarySocket(socket);
+			#if UNITY_4_6 || UNITY_4_7
+			Application.LoadLevel(sceneName);
+			#else
 			UnitySceneManager.LoadScene(sceneName);
+			#endif
 		}
 
 #if UNITY_EDITOR && !UNITY_WEBPLAYER

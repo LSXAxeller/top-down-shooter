@@ -36,14 +36,9 @@ namespace Deftly
             return ((1 << objInQuestion.layer) & approvedLayers) != 0;
         }
 
-        public static void SpawnLoot(GameObject prefab, Vector3 location, bool bounceAndSpin)
+        public static void SpawnLoot(GameObject prefab, Vector3 location)
         {
-            GameObject newLoot = (GameObject)Object.Instantiate(prefab, location + Vector3.up, Random.rotation);
-            if (bounceAndSpin)
-            {
-                Rigidbody rb = newLoot.GetComponent<Rigidbody>();
-                if (rb != null) rb.AddExplosionForce(25, location, 2);
-            }
+            GameObject newLoot = (GameObject)Object.Instantiate(prefab, location + Vector3.up, Quaternion.identity);           
         }
 
         /// <summary>Wrapper for your pooling solution integration.</summary>

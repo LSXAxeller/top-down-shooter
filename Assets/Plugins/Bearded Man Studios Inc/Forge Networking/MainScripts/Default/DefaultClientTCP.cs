@@ -61,7 +61,7 @@ namespace BeardedManStudios.Network
 		{
 			Host = hostAddress;
 
-#if UNITY_WEBPLAYER
+#if UNITY_WEBPLAYER && !BARE_METAL
 			if (UnityEngine.Application.isWebPlayer)
 				UnityEngine.Security.PrefetchSocketPolicy(hostAddress, 843);	// TODO:  Make this configurable
 #endif
@@ -200,7 +200,9 @@ namespace BeardedManStudios.Network
 			}
 			catch (Exception e)
 			{
+#if !BARE_METAL
 				UnityEngine.Debug.LogException(e);
+#endif
 				Disconnect();
 			}
 		}

@@ -250,7 +250,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 143122}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9.128734, y: 10.862717, z: 0}
+  m_LocalPosition: {x: 8.2820635, y: 2.6374316, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 486776}
@@ -626,6 +626,11 @@ MonoBehaviour:
   WeaponPositionInHandCorrection: {x: 0, y: 0, z: 0}
   RightHandIkLayer: 0
   LeftHandIkLayer: 1
+  Skins:
+  - {fileID: 193682}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!212 &21215996
 SpriteRenderer:
   m_ObjectHideFlags: 1

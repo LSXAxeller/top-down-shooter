@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
 using BeardedManStudios.Network;
@@ -29,11 +27,37 @@ public class GameManager : NetworkedMonoBehavior {
     public delegate void ScoreChangedEventHandler();
     public ScoreChangedEventHandler OnScoreChanged;
 
+    /// <summary>
+    /// Paths to map files from StreamingAssets folder
+    /// </summary>
+    public List<string> maps = new List<string>();
+
     public int FragLimit;
 
-    public GameState State = GameState.Waiting;
+    public GameState State
+    {
+        get
+        {
+            return State;
+        }
+        set
+        {
+            switch(value)
+            {
+                case GameState.Waiting:
+                    GUIManager.Instance.ShowCanvas(2);
+                    break;
+                case GameState.Ready:
+                    GUIManager.Instance.ShowCanvas(0);
+                    break;
+                case GameState.GameOver:
+                    GUIManager.Instance.ShowCanvas(2);
+                    break;
+            }
+        }
+    }
     public GameMode CurGameMode;
-    public List<Deftly.Subject> PlayerList;
+    public List<Subject> PlayerList;
     public int PlayersReady = 0;
 
     private static GameManager _instance;
@@ -67,13 +91,58 @@ public class GameManager : NetworkedMonoBehavior {
 
     private void Awake()
     {
+        maps.Add("Test_Map_1");
+        MapManager.ImportMap(Application.streamingAssetsPath + "/" + maps[0] + ".map");
+
         ownerPlayerData = ObjectMapper.MapBytes(ownerPlayerData, "Test Subject 1", 1, 0);
         gameData = ObjectMapper.MapBytes(gameData, "aaa", 1, "Test Server 1", 16, 10);
     }
 
     public void Start()
     {
-        PlayerList = new List<Deftly.Subject>();
+        PlayerList = new List<Subject>();
+        State = GameState.Waiting;
+        NetworkingManager.Socket.playerConnected += Socket_playerConnected;
+    }
+
+    private void Socket_playerConnected(NetworkingPlayer player)
+    {
+        GUIManager.Instance.AddVerticalScrollItem(player.Name, 0);
+    }
+
+    protected override void NetworkStart()
+    {
+        base.NetworkStart();
+        GUIManager.Instance.UpdatePlayersReadyText();
+        OwningNetWorker.playerConnected += (player) =>
+        {
+            AddToPlayerList(player.PlayerObject.GetComponent<Subject>());
+        };
+    }
+
+    public void StartGame(string name, int teamId, int skinId)
+    {
+        State = GameState.Ready;
+
+        ConnectPlayer();
+
+        SerializePlayerData(GUIManager.Instance.PlayerNameInput.text, int.Parse(GUIManager.Instance.TeamInput.text), 0);
+
+        MyPlayer.GetComponent<Subject>().SetInputPermission(true, false, false);
+
+        StartCoroutine(CountDown(5));
+    }
+
+    private IEnumerator CountDown(int time)
+    {
+        int seconds = time;
+        while (seconds >= 0)
+        {
+            GUIManager.Instance.AddNotification(seconds.ToString(), 1f);
+            seconds--;
+            yield return new WaitForSeconds(1.0f);
+        }
+        MyPlayer.GetComponent<Subject>().SetInputPermission(true, true, true);
     }
 
     private void SetGameMode()
@@ -95,73 +164,70 @@ public class GameManager : NetworkedMonoBehavior {
         }
     }
 
-    public void SpawnPlayer(string name, int teamID, int subjectSkin)
+    public void ChangeMap(int index)
     {
-        if (string.IsNullOrEmpty(name)) return;
-
-        SerializePlayerData(name, teamID, subjectSkin);
-        SpawnPlayer();
+        RPC("ChangeMapRPC", index);
     }
 
-    public void SpawnPlayer()
+    public void ConnectPlayer()
     {
         if (NetworkingManager.Socket.Connected)
         {
-            Networking.PrimarySocket.AddCustomDataReadEvent(55000, (NetworkingPlayer sender, NetworkingStream stream) => {
-                ownerPlayerData = (BMSByte)ObjectMapper.MapBMSByte(stream);
-                Subject sub = sender.PlayerObject.GetComponent<Subject>();
-                sub.Stats.Title = ownerPlayerData.GetString(0);
-                sub.Stats.TeamId = ownerPlayerData.GetBasicType<int>(1);
-                sub.Stats.SubjectSkin = ownerPlayerData.GetBasicType<int>(2);
-                AddToPlayerList(sub);
-            });
-            Networking.PrimarySocket.AddCustomDataReadEvent(22000, (NetworkingPlayer sender, NetworkingStream stream) => {
-                gameData = (BMSByte)ObjectMapper.MapBMSByte(stream);
-                MapName = gameData.GetString(0);
-                MapManager.ImportMap(Application.streamingAssetsPath + "/" + MapName);
-            });
-            if (ownerPlayerData[1] == 0)
-            {
-                Networking.Instantiate("Spectator", SpawnManager.Instance.GetRandomSpawn(), Quaternion.identity, NetworkReceivers.AllBuffered);
-            }
-            else
-            {
-                Networking.Instantiate("Player", NetworkReceivers.AllBuffered);
-            }
+            SpawnPlayer();
         }
         else
         {
-            NetworkingManager.Instance.OwningNetWorker.connected += delegate ()
+            NetworkingManager.Socket.connected += delegate ()
             {
-                Networking.PrimarySocket.AddCustomDataReadEvent(55000, (NetworkingPlayer sender, NetworkingStream stream) => {
-                    ownerPlayerData = (BMSByte)ObjectMapper.MapBMSByte(stream);
-                    Subject sub = sender.PlayerObject.GetComponent<Subject>();
-                    sub.Stats.Title = ownerPlayerData.GetString(0);
-                    sub.Stats.TeamId = ownerPlayerData.GetBasicType<int>(1);
-                    sub.Stats.SubjectSkin = ownerPlayerData.GetBasicType<int>(2);
-                    AddToPlayerList(sub);
-                });
-                Networking.PrimarySocket.AddCustomDataReadEvent(22000, (NetworkingPlayer sender, NetworkingStream stream) => {
-                    gameData = (BMSByte)ObjectMapper.MapBMSByte(stream);
-                    MapName = gameData.GetString(0);
-                    MapManager.ImportMap(Application.streamingAssetsPath + "/" + MapName);
-                });
-                if (ownerPlayerData[1] == 0)
-                {
-                    Networking.Instantiate("Spectator", SpawnManager.Instance.GetRandomSpawn(), Quaternion.identity, NetworkReceivers.AllBuffered);
-                }
-                else
-                {
-                    Networking.Instantiate("Player", NetworkReceivers.AllBuffered);
-                }
+                SpawnPlayer();
             };
         }
     }
 
+    private void SpawnPlayer()
+    {
+        Networking.PrimarySocket.AddCustomDataReadEvent((uint)55000, (NetworkingPlayer sender, NetworkingStream stream) => {
+            ownerPlayerData = (BMSByte)ObjectMapper.MapBMSByte(stream);
+            Subject sub = sender.PlayerObject.GetComponent<Subject>();
+            sub.Stats.Title = ownerPlayerData.GetString(0);
+            sub.Stats.TeamId = ownerPlayerData.GetBasicType<int>(1);
+            sub.Stats.SubjectSkin = ownerPlayerData.GetBasicType<int>(2);
+            AddToPlayerList(sub);
+        });
+        Networking.PrimarySocket.AddCustomDataReadEvent((uint)22000, (NetworkingPlayer sender, NetworkingStream stream) => {
+            gameData = (BMSByte)ObjectMapper.MapBMSByte(stream);
+            MapName = gameData.GetString(0);
+            MapManager.ImportMap(Application.streamingAssetsPath + "/" + MapName);
+        });
+        if (ownerPlayerData[1] == 2)
+        {
+            Networking.Instantiate("Spectator", SpawnManager.Instance.GetRandomSpawnPosition(), Quaternion.identity, NetworkReceivers.AllBuffered);
+        }
+        else
+        {
+            Networking.Instantiate("Player", SpawnManager.Instance.GetTeamSpawnPosition(ownerPlayerData[1]), Quaternion.identity, NetworkReceivers.AllBuffered, (player) => {
+                player.GetComponent<Subject>().SetSkin(0);
+            });
+        }
+
+        Camera.main.GetComponent<DeftlyCamera>().enabled = true;
+    }
+
     public void SerializePlayerData(string name, int teamID, int subjectSkin)
     {
-        ownerPlayerData.Clone(ObjectMapper.MapBytes(ownerPlayerData, teamID, subjectSkin));
-        Networking.WriteCustom(55000, OwningNetWorker, ownerPlayerData, true);
+        if (NetworkingManager.Socket.Connected)
+        {
+            ownerPlayerData.Clone(ObjectMapper.MapBytes(ownerPlayerData, teamID, subjectSkin));
+            Networking.WriteCustom((uint)55000, NetworkingManager.Socket, ownerPlayerData, true);
+        }
+        else
+        {
+            NetworkingManager.Socket.connected += delegate ()
+            {
+                ownerPlayerData.Clone(ObjectMapper.MapBytes(ownerPlayerData, teamID, subjectSkin));
+                Networking.WriteCustom((uint)55000, NetworkingManager.Socket, ownerPlayerData, true);
+            };
+        }
     }
 
     public void SerializeGameData(string mapName, int gameMode, string serverName, int maxPlayers, int pointLimit)
@@ -195,7 +261,6 @@ public class GameManager : NetworkedMonoBehavior {
         if (_addToList)
         {
             PlayerList.Add(player);
-            GUIManager.Instance.AddVerticalScrollItem(ownerPlayerData);
         }
     }
 
@@ -208,6 +273,13 @@ public class GameManager : NetworkedMonoBehavior {
     public void OwnerReadyUp(byte state)
     {
         RPC("ReadyUp", state);
+    }
+
+    [BRPC]
+    private void ChangeMapRPC(int index)
+    {
+        MapManager.ImportMap(Application.streamingAssetsPath + "/" + maps[index]);
+        Debug.Log("Map changed to " + maps[index]);
     }
 
     [BRPC]
@@ -224,6 +296,12 @@ public class GameManager : NetworkedMonoBehavior {
     {
         Debug.Log("My master, my sir LEFT ME!");
         Networking.Disconnect();
+        SceneManager.LoadScene(1);
+    }
+
+    protected override void NetworkDisconnect()
+    {
+        base.NetworkDisconnect();
         SceneManager.LoadScene(1);
     }
 }

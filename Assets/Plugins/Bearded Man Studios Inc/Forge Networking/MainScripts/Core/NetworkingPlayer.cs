@@ -21,18 +21,28 @@
 
 using System;
 
-namespace BeardedManStudios.Network
+#if NETFX_CORE && !UNITY_EDITOR
+
+namespace System.Net
 {
-#if NETFX_CORE
-	public class IPEndPointWinRT
-	{
-		public string ipAddress = string.Empty;
-		public string Address { get { return ipAddress; } }
-		public int port = 0;
-		public int Port { get { return port; } }
-	}
+   public class IPEndPoint
+   {
+      public IPEndPoint(string address, int port)
+      {
+         ipAddress = address ?? string.Empty;
+         this.port = port;
+      }
+
+      public string ipAddress = string.Empty;
+      public string Address { get { return ipAddress; } }
+      public int port = 0;
+      public int Port { get { return port; } }
+   }
+}
 #endif
 
+namespace BeardedManStudios.Network
+{
 	public class NetworkingPlayer : NetworkingSerialized
 	{
 		/// <summary>

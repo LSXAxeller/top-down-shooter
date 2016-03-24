@@ -64,7 +64,11 @@ namespace SimpleJSON
 		ByteValue = 11
 	}
 
-	public abstract class JSONNode
+#if BARE_METAL
+	public abstract class JSONNode : MarshalByRefObject
+#else
+    public abstract class JSONNode
+#endif
 	{
 		#region common interface
 

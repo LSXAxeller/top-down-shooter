@@ -14,7 +14,7 @@ public class ForgeUtilities
 			GameObject evt = new GameObject("Event System");
 			evt.AddComponent<EventSystem>();
 			evt.AddComponent<StandaloneInputModule>();
-#if !UNITY_5_3
+#if UNITY_4_6 || UNITY_4_7
 			evt.AddComponent<TouchInputModule>();
 #endif
 		}

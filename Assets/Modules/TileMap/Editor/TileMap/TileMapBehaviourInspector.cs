@@ -80,8 +80,6 @@ public class TileMapBehaviourInspector : Editor
 
     public override void OnInspectorGUI()
     {
-        //		base.OnInspectorGUI();
-
         m_showMapSettings = EditorGUILayout.Foldout(m_showMapSettings, "Map Settings");
         if (m_showMapSettings)
         {
@@ -265,6 +263,12 @@ public class TileMapBehaviourInspector : Editor
                     GUILayout.Box("", GUILayout.ExpandWidth(true), GUILayout.Height(1));
             }
         }
+
+        SerializedProperty entities = serializedObject.FindProperty("entities");
+        EditorGUI.BeginChangeCheck();
+        EditorGUILayout.PropertyField(entities, true);
+        if (EditorGUI.EndChangeCheck())
+            serializedObject.ApplyModifiedProperties();
 
         EditorUtility.SetDirty(this);
     }

@@ -101,10 +101,11 @@ namespace Deftly
                 if (LogDebug) Debug.Log("Health After Damage: " + Health);
                 if (Health <= Stats.Health.Min) Die();
                 if (Health > Stats.Health.Max) Stats.Health.Actual = Stats.Health.Max;
-                if (OnHealthChanged != null) OnHealthChanged();
-                GUIManager.Instance.SetHealthBar(value, Stats.Health.Max);
+                if (OnHealthChanged != null) OnHealthChanged();               
             }
         }
+
+        public GameObject[] Skins = new GameObject[4];
 
         #endregion
 
@@ -165,6 +166,16 @@ namespace Deftly
             ControlStats.TurnSpeed = 5;
             ControlStats.MoveSpeed = 5;
         }
+
+        public void SetSkin(int index)
+        {
+            for(int i=0; i>4 && i!=index; i++)
+            {
+                Skins[i].SetActive(false);
+            }
+            Skins[index].SetActive(true);
+        }
+
         void Awake()
         {          
             _myRigidbody = GetComponent<Rigidbody2D>();
@@ -172,7 +183,7 @@ namespace Deftly
             IsDead = false;
             _myControls = GetComponent<PlayerController>();
             WeaponListRuntime = new List<GameObject>();
-
+            Stats.MaxWeaponSlots = 2;
             if (Stats.SubjectGroup == SubjectGroup.Intellect) _intellect = GetComponent<Intellect>();
             if (_myControls != null) _isControllable = true;
         }
@@ -189,6 +200,14 @@ namespace Deftly
 
         private void Start()
         {
+            if (IsOwner)
+            {
+                SetInputPermission(true, true, true);
+                OnHealthChanged += Subject_OnHealthChanged;
+                OnSwitchedWeapon += Subject_OnSwitchedWeapon;
+                OnReload += Subject_OnReload;
+                OnFire += Subject_OnFire;         
+            }
             isPlayer = true;
             serializePosition = SerializeVector3Properties.XY;
             serializeRotation = SerializeVector3Properties.Z;
@@ -227,6 +246,47 @@ namespace Deftly
             foreach (GameObject boomboom in WeaponListEditor) PickupWeapon(boomboom);
             StartCoroutine(ChangeWeaponToSlot(0));
             _initialized = true;
+        }
+
+        private void Subject_OnFire(Subject whoFired)
+        {
+            GUIManager.Instance.SetAmmoBar(GetCurrentWeaponComponent().Stats.CurrentAmmo);
+        }
+
+        private void Subject_OnReload()
+        {
+            GUIManager.Instance.SetAmmoBar(GetCurrentWeaponComponent().Stats.CurrentAmmo);
+        }
+
+        private void Subject_OnSwitchedWeapon(GameObject currentWeapon)
+        {
+            if (currentWeapon == null) return;
+
+            Sprite primary = new Sprite();
+            Sprite secondary = new Sprite();
+
+            if (WeaponListRuntime.Count >= 2)
+            {
+                primary = WeaponListRuntime[0].GetComponent<Weapon>().Stats.UiImage;
+                secondary = WeaponListRuntime[1].GetComponent<Weapon>().Stats.UiImage;
+                GUIManager.Instance.UpdateWeaponStats(primary, secondary, currentWeapon.name);
+            }
+            else if (WeaponListRuntime.Count <= 1)
+            {
+                primary = WeaponListRuntime[0].GetComponent<Weapon>().Stats.UiImage;
+                GUIManager.Instance.UpdateWeaponStats(primary, secondary, currentWeapon.name);
+            }
+            else
+            {
+                GUIManager.Instance.UpdateWeaponStats(primary, secondary, "");
+            }
+
+            GUIManager.Instance.SetAmmoBar(currentWeapon.GetComponent<Weapon>().Stats.CurrentAmmo);           
+        }
+
+        private void Subject_OnHealthChanged()
+        {
+            GUIManager.Instance.SetHealthBar(Stats.Health.Actual, Stats.Health.Max);
         }
 
         private IEnumerator InputLoop()
@@ -324,7 +384,7 @@ namespace Deftly
                 _switchingWeapons = false;
                 yield break;
             }
-            StaticUtil.SpawnLoot(WeaponListRuntime[_currentWeapon].GetComponent<Weapon>().PickupReference, transform.position, true);
+            StaticUtil.SpawnLoot(WeaponListRuntime[_currentWeapon].GetComponent<Weapon>().PickupReference, transform.position);
 
             GameObject droppingThis = WeaponListRuntime[_currentWeapon];
             WeaponListRuntime.RemoveAt(_currentWeapon);
@@ -351,7 +411,7 @@ namespace Deftly
             }
             if (WeaponListRuntime.Count == 0)
             {
-                if (LogDebug) Debug.Log("No weapons left to switch to. Disabling IK, sending null switch.");
+                if (LogDebug) Debug.Log("No weapons left to switch to. Sending null switch.");
                 _currentWeapon = 0;
                 if (OnSwitchedWeapon != null) OnSwitchedWeapon(null);
                 _switchingWeapons = false;

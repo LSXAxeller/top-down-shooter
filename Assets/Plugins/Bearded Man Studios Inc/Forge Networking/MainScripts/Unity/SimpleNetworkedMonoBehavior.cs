@@ -28,6 +28,7 @@ using System.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using UnityEngine;
 
@@ -37,8 +38,16 @@ namespace BeardedManStudios.Network
 	/// This is the base class for all objects that are to be established on the network
 	/// </summary>
 	[AddComponentMenu("Forge Networking/Simple Networked MonoBehavior")]
+#if BARE_METAL
+	public class SimpleNetworkedMonoBehavior : BareMetalMonoBehavior, INetworkingSerialized
+#else
 	public class SimpleNetworkedMonoBehavior : MonoBehaviour, INetworkingSerialized
+#endif
 	{
+#if BARE_METAL
+		public SimpleNetworkedMonoBehavior(string name, string type) : base(name, type) { }
+#endif
+
 		/// <summary>
 		/// This is the main attribute class that is used to describe RPC methods
 		/// </summary>
@@ -224,7 +233,11 @@ namespace BeardedManStudios.Network
 
 			// Destroy the object from the scene and remove it from the lookup
 
+#if !BARE_METAL
 			GameObject.Destroy(behavior.gameObject);
+#else
+			Destroy(behavior);
+#endif
 
 			lock (networkedBehaviorsMutex)
 			{
@@ -376,8 +389,12 @@ namespace BeardedManStudios.Network
 				{
 					initialSetup = true;
 
+#if !BARE_METAL
 					if (NetworkingManager.Instance == null)
 						Instantiate(Resources.Load<GameObject>("BeardedManStudios/Networking Manager"));
+#else
+					NetworkingManager.Instance.BareMetalAwake();
+#endif
 
 					if (!NetworkingManager.Instance.Populate(socket))
 						Networking.connected += DelayedInitialize;
@@ -394,7 +411,7 @@ namespace BeardedManStudios.Network
 
 		private void ThrowNetworkerException()
 		{
-#if UNITY_EDITOR
+#if UNITY_EDITOR && !BARE_METAL
 			Debug.Log("Try using the Forge Quick Start Menu and setting the \"Scene Name\" on the \"Canvas\" to the scene you are loading. Then running from that scene.");
 #endif
 
@@ -422,12 +439,15 @@ namespace BeardedManStudios.Network
 				}
 			}
 
+
+#if !BARE_METAL
 			Unity.MainThreadManager.unityUpdate += UnityUpdate;
 			Unity.MainThreadManager.unityFixedUpdate += UnityFixedUpdate;
 
 			// Just make sure that Unity doesn't destroy this objeect on load
 			if (dontDestroyOnLoad)
 				DontDestroyOnLoad(gameObject);
+#endif
 		}
 
 		// JM: added for offline
@@ -474,7 +494,11 @@ namespace BeardedManStudios.Network
 				ThrowNetworkerException();
 
 			int count = 0;
+#if BARE_METAL
+			while (!(this is NetworkingManager) && !NetworkingManager.Instance.IsSetup)
+#else
 			while (NetworkingManager.Instance != this && !NetworkingManager.Instance.IsSetup)
+#endif
 			{
 #if NETFX_CORE
 				await Task.Delay(TimeSpan.FromMilliseconds(25));
@@ -517,6 +541,15 @@ namespace BeardedManStudios.Network
 
 			NetworkStart();
 		}
+
+		public void BareMetalUpdate()
+        {
+#if !BARE_METAL
+            return;
+#else
+            UnityUpdate();
+#endif
+        }
 
 		public int MaxRPCBatch = 10000;
 		public void ExecuteRPCStack()
@@ -630,7 +663,7 @@ namespace BeardedManStudios.Network
 
 		protected virtual void UnityUpdate()
 		{
-			if (!Networking.RunActionsInFixedLoop) // JM: option for RPCs to run off fixed loop
+			if (!Networking.UseFixedUpdate) // JM: option for RPCs to run off fixed loop
 			{
 				ExecuteRPCStack();
 			}
@@ -640,7 +673,7 @@ namespace BeardedManStudios.Network
 
 		protected virtual void UnityFixedUpdate()
 		{
-			if (Networking.RunActionsInFixedLoop) // JM: option for RPCs to run off fixed loop
+			if (Networking.UseFixedUpdate) // JM: option for RPCs to run off fixed loop
 			{
 				ExecuteRPCStack();
 			}
@@ -655,6 +688,75 @@ namespace BeardedManStudios.Network
 
 		protected virtual void NonOwnerFixedUpdate() { }
 
+		private int TranslateChildRPC(int currentId)
+		{
+#if BARE_METAL
+			string snmb = typeof(SimpleNetworkedMonoBehavior).ToString();
+			string nmb = typeof(NetworkedMonoBehavior).ToString();
+			string nm = typeof(NetworkingManager).ToString();
+
+			if (ClassType == snmb || ClassType == nmb || ClassType == nm)
+				return currentId;
+
+			string method = ClassMap.ValidRPC(currentId, ClassType);
+
+			if (string.IsNullOrEmpty(method))
+				return -1;
+
+			string parentType = ClassMap.GetParent(ClassType);
+
+			string[] parentMethods = null;
+			if (parentType == nmb || parentType == snmb)
+			{
+				if (parentType == nmb)
+					parentMethods = ClassMap.GetMethodList(nmb);
+				else if (parentType == snmb)
+					parentMethods = ClassMap.GetMethodList(snmb);
+
+				for (int i = 0; i < parentMethods.Length; i++)
+				{
+					if (method == parentMethods[i])
+					{
+						currentId = i;
+						break;
+					}
+				}
+			}
+#endif
+
+			return currentId;
+		}
+
+		private int TranslateParentRPC(int currentId)
+		{
+#if BARE_METAL
+			string snmb = typeof(SimpleNetworkedMonoBehavior).ToString();
+			string nmb = typeof(NetworkedMonoBehavior).ToString();
+			string nm = typeof(NetworkingManager).ToString();
+
+			if (ClassType == snmb || ClassType == nmb || ClassType == nm)
+				return currentId;
+
+			string method = ClassMap.ValidRPC(currentId, nmb);
+
+			if (string.IsNullOrEmpty(method))
+				return -1;
+
+			string[] childMethods = ClassMap.GetMethodList(ClassType);
+
+			for (int i = 0; i < childMethods.Length; i++)
+			{
+				if (method == childMethods[i])
+				{
+					currentId = i;
+					break;
+				}
+			}
+#endif
+
+			return currentId;
+		}
+
 		int tmpRPCMapId = 0;
 		/// <summary>
 		/// To Invoke an RPC on a given Networking Stream RPC
@@ -663,6 +765,15 @@ namespace BeardedManStudios.Network
 		public bool InvokeRPC(NetworkingStreamRPC stream)
 		{
 			tmpRPCMapId = ObjectMapper.Map<int>(stream);
+
+#if BARE_METAL
+                tmpRPCMapId = TranslateChildRPC(tmpRPCMapId);
+
+                if (tmpRPCMapId < 0)
+                    return false;
+
+                // TODO:  Use Bare Metal RPC intercept plugin
+#endif
 
 			if (!RPCs.ContainsKey(tmpRPCMapId))
 				return true;
@@ -742,8 +853,14 @@ namespace BeardedManStudios.Network
 					if (!NetworkingManager.IsOnline)
 						return rpc.Key;
 
+					int rpcId = rpc.Key;
+
+#if BARE_METAL
+					rpcId = TranslateParentRPC(rpc.Key);
+#endif
+
 					getStreamBuffer.Clear();
-					ObjectMapper.MapBytes(getStreamBuffer, rpc.Key);
+					ObjectMapper.MapBytes(getStreamBuffer, rpcId);
 
 #if UNITY_EDITOR
 					int argCount = 0;
@@ -997,6 +1114,148 @@ namespace BeardedManStudios.Network
 
 			ObjectCounter = 0;
 			missingIdBuffer.Clear();
+		}
+
+		/// <summary>
+		/// Call an RPC method with arguments
+		/// </summary>
+		/// <param name="method">Method(Function) to call</param>
+		public void RPC(Expression<Action> method)
+		{
+			RPC(method, OwningNetWorker);
+		}
+
+		/// <summary>
+		/// Call an RPC method with a NetWorker(Socket) and arguments
+		/// </summary>
+		/// <param name="method">Method(Function) to call</param>
+		/// <param name="socket">The NetWorker(Socket) being used</param>
+		public void RPC(Expression<Action> method, NetWorker socket)
+		{
+			RPC(method, socket, NetworkReceivers.All);
+		}
+
+		/// <summary>
+		/// Call an RPC method with a receiver and arguments
+		/// </summary>
+		/// <param name="method">Method(Function) to call</param>
+		/// <param name="receivers">Who shall receive the RPC</param>
+		public void RPC(Expression<Action> method, NetworkReceivers receivers)
+		{
+			RPC(method, OwningNetWorker, receivers);
+		}
+
+		/// <summary>
+		/// Call an RPC method on a NetWorker(Socket) with receivers and arguments
+		/// </summary>
+		/// <param name="method">Method(Function) to call</param>
+		/// <param name="socket">The NetWorker(Socket) being used</param>
+		/// <param name="receivers">Who shall receive the RPC</param>
+		public void RPC(Expression<Action> method, NetWorker socket, NetworkReceivers receivers)
+		{
+			MethodCallExpression call = GetMethodCallExpression(method);
+
+			RPC(call.Method.Name, socket, receivers, GetAttributesFromMethodCall(call));
+		}
+
+		/// <summary>
+		/// Call an Unreliable RPC method with a receiver and arguments
+		/// </summary>
+		/// <param name="method">Method(Function) to call</param>
+		/// <param name="receivers">Who shall receive the RPC</param>
+		public void URPC(Expression<Action> method, NetworkReceivers receivers)
+		{
+			URPC(method, OwningNetWorker, receivers);
+		}
+
+		/// <summary>
+		/// Call an Unreliable RPC method on a NetWorker(Socket) with receivers and arguments
+		/// </summary>
+		/// <param name="method">Method(Function) to call</param>
+		/// <param name="socket">The NetWorker(Socket) being used</param>
+		/// <param name="receivers">Who shall receive the RPC</param>
+		public void URPC(Expression<Action> method, NetWorker socket, NetworkReceivers receivers)
+		{
+			MethodCallExpression call = GetMethodCallExpression(method);
+
+			URPC(call.Method.Name, socket, receivers, GetAttributesFromMethodCall(call));
+		}
+
+		/// <summary>
+		/// Used for the server to call an RPC method on a NetWorker(Socket) on a particular player
+		/// </summary>
+		/// <param name="method">Method(Function) to call</param>
+		/// <param name="socket">The NetWorker(Socket) being used</param>
+		/// <param name="player">The NetworkingPlayer who will execute this RPC</param>
+		public void AuthoritativeRPC(Expression<Action> method, NetWorker socket, NetworkingPlayer player, bool runOnServer)
+		{
+			MethodCallExpression call = GetMethodCallExpression(method);
+
+			AuthoritativeRPC(call.Method.Name, socket, player, runOnServer, GetAttributesFromMethodCall(call));
+		}
+
+		/// <summary>
+		/// Used for the server to call an URPC method on a NetWorker(Socket) on a particular player
+		/// </summary>
+		/// <param name="method">Method(Function) to call</param>
+		/// <param name="socket">The NetWorker(Socket) being used</param>
+		/// <param name="player">The NetworkingPlayer who will execute this RPC</param>
+		public void AuthoritativeURPC(Expression<Action> method, NetWorker socket, NetworkingPlayer player, bool runOnServer)
+		{
+			MethodCallExpression call = GetMethodCallExpression(method);
+
+			AuthoritativeURPC(call.Method.Name, socket, player, runOnServer, GetAttributesFromMethodCall(call));
+		}
+
+		/// <summary>
+		/// Goes through all the Arguments in a MethodCallExpression and gets all
+		/// there values and returns them.
+		/// </summary>
+		/// <param name="call">The MethodCallExpression for which the Argument values should be obtained.</param>
+		/// <returns>An object Array with all the values.</returns>
+		private static object[] GetAttributesFromMethodCall(MethodCallExpression call)
+		{
+			object[] arguments = new object[call.Arguments.Count];
+
+			for (int i = 0; i < call.Arguments.Count; i++)
+			{
+				arguments[i] = GetExpressionValue(call.Arguments[i]);
+			}
+
+			return arguments;
+		}
+
+		/// <summary>
+		/// Creates a getter for the Expression and calls it to retrieve the value of said Expression.
+		/// </summary>
+		/// <param name="expression">The Expression for which the value should be obtained.</param>
+		/// <returns>The value of the Expression.</returns>
+		private static object GetExpressionValue(Expression expression)
+		{
+			UnaryExpression unaryExpression = Expression.Convert(expression, typeof(object));
+			Expression<Func<object>> lambda = Expression.Lambda<Func<object>>(unaryExpression);
+			Func<object> getter = lambda.Compile();
+
+			return getter();
+		}
+
+		/// <summary>
+		/// Checks if the expression contains a MethodCallExpression in its Body and returns it,
+		/// otherwise an Exception gets thrown.
+		/// </summary>
+		/// <param name="expression">The Expression to check.</param>
+		/// <returns>The MethodCallExpression if it exists.</returns>
+		private static MethodCallExpression GetMethodCallExpression(LambdaExpression expression)
+		{
+			MethodCallExpression outermostExpression = expression.Body as MethodCallExpression;
+
+			//The Lambda didn't contain a method call
+			if (outermostExpression == null)
+			{
+				throw new ArgumentException("Expression must have a MethodCall as its Body");
+			}
+
+			return outermostExpression;
 		}
 	}
 }

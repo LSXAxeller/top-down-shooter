@@ -127,7 +127,9 @@ namespace BeardedManStudios.Network
 			}
 			catch (Exception e)
 			{
+#if !BARE_METAL
 				UnityEngine.Debug.LogException(e);
+#endif
 				Disconnect();
 			}
 		}
@@ -266,7 +268,9 @@ namespace BeardedManStudios.Network
 				}
 				catch (Exception ex)
 				{
+#if !BARE_METAL
 					UnityEngine.Debug.LogException(ex);
+#endif
 				}
 			}
 		}
@@ -326,7 +330,9 @@ namespace BeardedManStudios.Network
 				}
 				catch (NetworkException exception)
 				{
+#if !BARE_METAL
 					UnityEngine.Debug.LogException(exception);
+#endif
 					Disconnect();
 				}
 			}

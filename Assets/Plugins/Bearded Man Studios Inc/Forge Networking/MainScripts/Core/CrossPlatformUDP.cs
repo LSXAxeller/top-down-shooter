@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Net;
 #if NETFX_CORE
 using Windows.Networking.Sockets;
 using System.Threading.Tasks;
@@ -31,7 +32,6 @@ using System.Runtime.InteropServices.WindowsRuntime;
 #else
 using System.Net.Sockets;
 using System.ComponentModel;
-using System.Net;
 using System.Threading;
 #endif
 
@@ -357,8 +357,10 @@ namespace BeardedManStudios.Network
 		{
 			Host = hostAddress;
 
-			if (!IsServer && !Networking.IsBareMetal)
+#if !BARE_METAL
+			if (!IsServer)
 				SocketPolicyServer.CheckWebplayer(hostAddress);
+#endif
 
 			string localIp = "127.0.0.1";
 
@@ -525,9 +527,7 @@ namespace BeardedManStudios.Network
 				if (!IsServer)
 				{
 #if NETFX_CORE
-					hostEndpoint = new IPEndPointWinRT();
-					hostEndpoint.ipAddress = hostAddress;
-					hostEndpoint.port = port;
+                    hostEndpoint = new IPEndPoint(hostAddress, port);
 #endif
 
 					server = new NetworkingPlayer(0, hostEndpoint.Address.ToString() + "+" + hostEndpoint.Port, hostEndpoint, "SERVER");
@@ -550,8 +550,9 @@ namespace BeardedManStudios.Network
 					// JM: uncommented out timeout code
 					Threading.Task.Run(() =>
 					{
-						Thread.Sleep(ConnectTimeout);
-
+#if !NETFX_CORE
+                        Thread.Sleep(ConnectTimeout);
+#endif
 						if (!Connected)
 							OnConnectTimeout();
 					}, ConnectTimeout);
@@ -1407,7 +1408,7 @@ namespace BeardedManStudios.Network
 				if (Connections >= MaxConnections)
 				{
 #if NETFX_CORE
-								Disconnect("BMS_INTERNAL_DC_Max_Players", newConnection, "Max Players Reached On Server");
+					Disconnect("BMS_INTERNAL_DC_Max_Players", newConnection, "Max Players Reached On Server");
 #else
 					Disconnect("BMS_INTERNAL_DC_Max_Players", groupEP, "Max Players Reached On Server");
 #endif
@@ -1417,9 +1418,9 @@ namespace BeardedManStudios.Network
 				else if (banList.ContainsKey(endpoint.Split('+')[0]))
 				{
 #if NETFX_CORE
-					Disconnect("BMS_INTERNAL_DC_Banned", newConnection, "You have been baned from the server for " + Math.Ceiling((banList[endpoint.Split('+')[0]] - DateTime.Now).TotalMinutes) + " more minutes");
+					Disconnect("BMS_INTERNAL_DC_Banned", newConnection, "You have been banned from the server for " + Math.Ceiling((banList[endpoint.Split('+')[0]] - DateTime.Now).TotalMinutes) + " more minutes");
 #else
-					Disconnect("BMS_INTERNAL_DC_Banned", groupEP, "You have been baned from the server for " + Math.Ceiling((banList[groupEP.Address.ToString()] - DateTime.Now).TotalMinutes) + " more minutes");
+					Disconnect("BMS_INTERNAL_DC_Banned", groupEP, "You have been banned from the server for " + Math.Ceiling((banList[groupEP.Address.ToString()] - DateTime.Now).TotalMinutes) + " more minutes");
 #endif
 					return false;
 				}
@@ -1427,7 +1428,7 @@ namespace BeardedManStudios.Network
 				ClientManager.RunActionOnPlayerEndpoint(endpoint, (player) => { Disconnect(player); });
 
 #if NETFX_CORE
-				sender = new NetworkingPlayer(ServerPlayerCounter++, endpoint, newConnection, name);
+                sender = new NetworkingPlayer(ServerPlayerCounter++, endpoint, newConnection, "");
 #else
 				sender = new NetworkingPlayer(ServerPlayerCounter++, endpoint, new IPEndPoint(groupEP.Address, groupEP.Port), "");
 #endif
@@ -1723,20 +1724,19 @@ namespace BeardedManStudios.Network
 				}
 				catch (Exception ex)
 				{
-					if (Networking.IsBareMetal)
-						Console.WriteLine(ex.Message + " | " + ex.StackTrace);
-					else
-					{
-						UnityEngine.Debug.LogException(ex);
+#if BARE_METAL
+					Console.WriteLine(ex.Message + " | " + ex.StackTrace);
+#else
+					UnityEngine.Debug.LogException(ex);
 #if UNITY_STANDALONE
-						string file = "Forge-" + (IsServer ? "Server" : "Client-" + Me.NetworkId) + "-error.txt";
-						string message = ex.Message + "\r\n" + ex.StackTrace;
-						if (!System.IO.File.Exists(file))
-							System.IO.File.WriteAllText(file, message);
-						else
-							System.IO.File.AppendAllText(file, message);
+                    string file = "Forge-" + (IsServer ? "Server" : "Client-" + Me.NetworkId) + "-error.txt";
+                    string message = ex.Message + "\r\n" + ex.StackTrace;
+                    if (!System.IO.File.Exists(file))
+                        System.IO.File.WriteAllText(file, message);
+                    else
+                        System.IO.File.AppendAllText(file, message);
 #endif
-					}
+#endif
 				}
 			} while (ignoreError);
 #endif

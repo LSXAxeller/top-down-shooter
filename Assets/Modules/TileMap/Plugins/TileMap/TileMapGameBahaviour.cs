@@ -8,8 +8,7 @@ using System;
 
 [RequireComponent(typeof(TileMapBehaviour))]
 public class TileMapGameBahaviour : MonoBehaviour {
-
-    public GameObject[] entities;
+    
     public GameObject playerPrefab, cameraPrefab;
     public Text TileDetailText;
     public InputField MapNameInput;
@@ -162,7 +161,7 @@ public class TileMapGameBahaviour : MonoBehaviour {
         }
         m_tileMap.DestroyColliders();
         m_tileMap.DestroyEntities();
-        DisplayEntities();
+        m_tileMap.DisplayEntities();
     }
 
     /// <summary>
@@ -233,9 +232,9 @@ public class TileMapGameBahaviour : MonoBehaviour {
                         {
                             m_tileMap.AddEntity(pos, (EntitiesData.EntityID)Mathf.Abs(m_setEntityID));
 
-                            GameObject entity = Instantiate(entities[m_setEntityID]);
+                            GameObject entity = Instantiate(m_tileMap.entities[m_setEntityID]);
                             entity.tag = "Entity";
-                            entity.transform.position = new Vector2(pos.x + 0.5f, pos.y + 0.5f);
+                            entity.transform.position = pos.ToTileVector2();
                         }
                     }
                 }
@@ -348,35 +347,41 @@ public class TileMapGameBahaviour : MonoBehaviour {
         GameObject g = Instantiate(TilePropertiesItem);
         g.transform.SetParent(TilePropertiesList.transform);
         g.transform.SetSiblingIndex(id);
-        g.name = "Tile #" + id;
+        g.name = "Tile #" + id+1;
         Image tile = g.GetComponent<Image>();
         tile.sprite = m_tileSheet.Get(m_tileSheet.Ids.ToArray()[id]);
         Button button = g.GetComponent<Button>();
         button.onClick.AddListener(() => {
-
+            TilePropertiesDropdown.value = (int)m_tileMap.GetTileProperty(id+1);
+            UpdateTilePropertiesInfo(id+1);
         });
     }
 
-    public void DisplayEntities()
+    /// <summary>
+    /// left: -1
+    /// right: 1
+    /// </summary>
+    /// <param name="direction"></param>
+    public void UpdateTileProperty(int direction)
     {
-        m_tileMap.DestroyEntities();
+        int id = TilePropertiesScrollSnap.CurrentPage() + 1;
 
-        foreach (KeyValuePair<Vector2Int, EntitiesData.EntityID> entry in m_tileMap.m_entities)
-        {
-            GameObject entity = Instantiate(entities[(int)entry.Value]);
-            entity.tag = "Entity";
-            entity.transform.position = entry.Key.ToVector2();
-        }
+        //TilePropertiesDropdown.value = (int)m_tileMap.GetTileProperty(id + direction);
+        UpdateTilePropertiesInfo(id + direction);
     }
 
-    public void RefreshTileProperties()
+    public void SetTileProperty()
     {
-        TilePropertiesScrollSnap.onPageChange += (int id) =>
-        {
-            TilePropertiesDropdown.value = (int)m_tileMap.GetTileProperty(id);
-            m_tileMap.SetTileProperty(id, (TileProperty)TilePropertiesDropdown.value);
-            TilePropertiesInfoText.text = string.Format("Tile#{0}, {1}", id, m_tileMap.GetTileProperty(id).ToString("D"));
-        };
+        int id = TilePropertiesScrollSnap.CurrentPage() + 1;
+
+        m_tileMap.SetTileProperty(id, (TileProperty)TilePropertiesDropdown.value);
+
+        UpdateTilePropertiesInfo(id);
+    }
+
+    public void UpdateTilePropertiesInfo(int id)
+    {
+        TilePropertiesInfoText.text = string.Format("Tile#{0}, {1}", id, m_tileMap.GetTileProperty(id).ToString());
     }
     
     private void Update()

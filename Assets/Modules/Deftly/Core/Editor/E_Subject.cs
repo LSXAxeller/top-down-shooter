@@ -79,6 +79,12 @@ public class E_Subject : Editor
             if (EditorUtils.SubjectControls) ShowControls();
         }
 
+        SerializedProperty tps = serializedObject.FindProperty("Skins");
+        EditorGUI.BeginChangeCheck();
+        EditorGUILayout.PropertyField(tps, true);
+        if (EditorGUI.EndChangeCheck())
+            serializedObject.ApplyModifiedProperties();
+
         EditorGUILayout.Space();
         EditorGUILayout.Space();
 

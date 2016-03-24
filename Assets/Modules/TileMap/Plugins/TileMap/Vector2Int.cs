@@ -17,6 +17,11 @@ public class Vector2Int
         return new Vector2(x, y);
     }
 
+    public Vector2 ToTileVector2()
+    {
+        return new Vector2(x + 0.5f, y + 0.5f);
+    }
+
     public override string ToString()
     {
         return string.Format("({0}, {1})", x, y);

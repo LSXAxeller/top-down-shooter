@@ -1,8 +1,27 @@
-﻿using BeardedManStudios.Network;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SpawnManager : MonoBehaviour {
+
+    public float mainSpawnDelay = 0.4f;		// Spawn each enemy after certain time
+
+	public List<SpawnPosition> spawnPositions = new List<SpawnPosition>();
+	public EnemyType[] enemyTypes;
+    public Wave[] waves;
+
+    private Enemy[] currentEnemies; 	    // All our currently spawned enemies
+	private int startingAmount = 8;			// Start amount of emenies
+	private int addEachWave = 5;			// How much we will add each wave
+                                               
+	private int amountToSpawn = 0;			// Current amount of enemies
+	private int spawnedAmount = 0;			// How much we have spawned
+	private int currentlyAlive = 0;            
+	private int leftAmount = 0;                
+	private int MAX_ENEMY_AMOUNT = 8;       // Maximum amount of emenies in scene
+                                               
+	private int currentWave = 1;		    // Current wave
+	private const byte waitBeforeSpawn = 5; // How much wait before each wave spawning
 
     static SpawnManager _instance;
 
@@ -21,45 +40,33 @@ public class SpawnManager : MonoBehaviour {
             return _instance;
         }
     }
-
-    private void Start(){
-		//--Rect set up--
-		rect_message_nextWave = new Rect(Screen.width/2-80,
-		                                 10,
-		                                 160,
-		                                 30);
-
-		WaveFinished (true);
-	}
-
-	//========Spawn Postions========
-	//Should be set from inspector
-	[System.Serializable]
-	public class SpawnPosition{
+	
+	[Serializable]
+	public class SpawnPosition
+    {
 		public Transform transform;	//drag and drop from inspector
 		public bool canBeUsed;		//can this spawn be used, in case you to lock certain points
 		public float spawnDelay;    //delay for each spawned enemy
         public int teamID;
+
+        public SpawnPosition(Vector2Int position, int teamID)
+        {
+            this.transform = new GameObject("SpawnPoint", typeof(Spawn)).transform;
+            this.transform.position = position.ToTileVector2();
+            this.teamID = teamID;
+            canBeUsed = true;
+        }
+	};	
+   
+    /// <summary>
+    /// This is for keeping needed enemies to be spawned
+    /// </summary>
+    private struct Enemy{
+		public int index; 		//Index of the enemy type
+		public bool spawned;	//when this enemy is spawned we toggle it as true, so we would not spawn this specific enemy again
 	};
-	public SpawnPosition[] spawnPositions;
-
-	//This will change spawn delay for certain spawn point
-	//It receives <spawnposition index, new delay>
-	private void SpawnDelay(short index, float newDelay){
-		//In case received index is not valid
-		if(index >= spawnPositions.Length || index < 0) Debug.Log("ERROR:[SpawnDelay] Received index "+index+" is not a valid index.");
-
-		//Received information can be set
-		else{
-			spawnPositions[index].spawnDelay = newDelay;	//Set new delay for spawn position
-		}
-	}
-	//==============================
-
-
-	//========Enemy Types========
-	//Should be set from inspector
-	[System.Serializable]
+    
+	[Serializable]
 	public class EnemyType{
 		public GameObject enemyPrefab;		//Drag your enemy prefab here
 		public int[] preferedSpawnPoints;	//In case special type of enemy can (or should) spawn at specific locations, if size = 0 -> no prefered locations
@@ -68,28 +75,64 @@ public class SpawnManager : MonoBehaviour {
 		public float ratio;					//This is used only if <onStart> is false, for example, if ratio is 1.5 and amount of enemies this wave is 15, then this will be spawned 1 time.|.
 	};
 
-	public EnemyType[] enemyTypes;
-	//===========================
-
-
-	//========Caching actual Enemies========
-	//Inner structure, no need for inspector
-	//This is for keeping needed enemies to be spawned
-	private struct Enemy{
-		public int index; 		//Index of the enemy type
-		public bool spawned;	//when this enemy is spawned we toggle it as true, so we would not spawn this specific enemy again
-	};
-	private Enemy[] currentEnemies; 	//All our currently spawned enemies
-
-	//Launched from
-	public void EnemyKilled(){
-		currentlyAlive--;
+    /// <summary>
+    /// In case you want to unlock specific enemies only after certain wave
+    /// </summary>
+    [Serializable]
+    public class Wave_Enemy{
+		public int index;
+		public int amount;
 	}
 
-    public Vector3 GetRandomSpawn()
+	[Serializable]
+	public class Wave
     {
-        int[] spawnPointIndexes = new int[spawnPositions.Length];
-        for (int i = 0; i < spawnPositions.Length; i++)
+		public int wave; 					//wave we want to affect with these changes
+		public Wave_Enemy[] enemies;		//enemies we want to add/spawn only this wave
+		public bool spawnOnlyThisWave;		//Add for all continuing waves OR spwn just for this wave
+	};
+
+    [Serializable]
+    public class Teams
+    {
+        public Spawn[] team1Spawns;
+        public Spawn[] team2Spawns;      
+    };
+    
+	/// <summary>
+    /// This will change spawn delay for certain spawn point
+    /// </summary>
+    private void SpawnDelay(short index, float newDelay)
+    {
+        if (index >= spawnPositions.Count || index < 0)
+            Debug.Log("ERROR:[SpawnDelay] Received index " + index + " is not a valid index.");
+        else
+            spawnPositions[index].spawnDelay = newDelay;    //Set new delay for spawn position
+	}
+
+    /// <summary>
+    /// This will extract the spawnpoints from the map data's entities
+    /// </summary>
+    public void SetupSpawnPoints()
+    {
+        spawnPositions.Clear();
+
+        var entities = FindObjectOfType<UnityTileMap.TileMapBehaviour>().m_entities;
+        foreach(var entity in entities)
+        {
+            if(entity.Value == EntitiesData.EntityID.Info_CT || entity.Value == EntitiesData.EntityID.Info_T)
+            {
+                spawnPositions.Add(new SpawnPosition(entity.Key, (int)entity.Value));
+            }
+        }
+    }
+
+    public Vector3 GetRandomSpawnPosition()
+    {
+        SetupSpawnPoints();
+
+        int[] spawnPointIndexes = new int[spawnPositions.Count];
+        for (int i = 0; i < spawnPositions.Count; i++)
         {
             spawnPointIndexes[i] = i;
         }
@@ -111,10 +154,12 @@ public class SpawnManager : MonoBehaviour {
         return Vector3.one;
     }
 
-    public Vector3 GetTeamSpawn(int teamID)
+    public Vector3 GetTeamSpawnPosition(int teamID)
     {
-        int[] spawnPointIndexes = new int[spawnPositions.Length];
-        for (int i = 0; i < spawnPositions.Length; i++)
+        SetupSpawnPoints();
+
+        int[] spawnPointIndexes = new int[spawnPositions.Count];
+        for (int i = 0; i < spawnPositions.Count; i++)
         {
             spawnPointIndexes[i] = i;
         }
@@ -135,54 +180,92 @@ public class SpawnManager : MonoBehaviour {
         }
         return Vector3.one;
     }
-    //======================================
 
+    /// <summary>
+    /// Spawns actual emenies
+    /// </summary>
+    private void WaveSpawner(){
+		//all enemies have not been spawned, yet
+		if(! GetAllEnemiesStatus()){
+			//check if scene already does not contain max enemies
+			if(currentlyAlive < MAX_ENEMY_AMOUNT){
 
-    //========Wave Logic========
-    //In case you want to unlock specific enemies only after certain wave
-    [System.Serializable]
-	public class Wave_Enemy{
-		public int index;
-		public int amount;
+				for(int i =0; i <currentEnemies.Length; i++){
+					//This enemy has not been spawned yet
+					if(!currentEnemies[i].spawned){
+						int thisEnemyTypeIndex = currentEnemies[i].index;
+
+						//============Does this enemy type have preffered spawn point?=======
+						//Spawn point indexes which will be used for this enemy
+						int[] spawnPointIndexes;
+						int prefferedSpawnPointsIndexesSize = enemyTypes[ thisEnemyTypeIndex ].preferedSpawnPoints.Length;
+						//no preffered spawn points for this enemy
+						if(prefferedSpawnPointsIndexesSize == 0){
+							spawnPointIndexes = new int[spawnPositions.Count];
+							//assign positions
+							for(int yyy =0; yyy <spawnPositions.Count; yyy++){
+								spawnPointIndexes[yyy] = yyy;
+							}
+						}
+						//enemy does have preffered spawn points
+						else{
+							spawnPointIndexes = new int[ prefferedSpawnPointsIndexesSize ];
+							
+							//assign positions for preffered spawn points
+							for(int yy =0; yy < prefferedSpawnPointsIndexesSize; yy++){
+								int prefIndex = enemyTypes[ thisEnemyTypeIndex ].preferedSpawnPoints[yy]; //get the index
+								
+								spawnPointIndexes[yy] = prefIndex;
+							}
+						}
+						//===================================================================
+						//random spawn destination
+						int randomPos = UnityEngine.Random.Range(0, spawnPointIndexes.Length);
+
+						for(int j =0; j <spawnPointIndexes.Length; j++){
+							int spawnArrIndex = spawnPointIndexes[randomPos];
+							//can this spawn be accessed
+							if(spawnPositions[spawnArrIndex].canBeUsed){
+								//is there a cool down on this spawn point
+								if(spawnPositions[spawnArrIndex].transform.gameObject.GetComponent<Spawn>().Status()){
+									Instantiate(enemyTypes[ thisEnemyTypeIndex ].enemyPrefab, spawnPositions[spawnArrIndex].transform.position, Quaternion.identity);
+
+									//mark this enemy as spawned
+									currentEnemies[i].spawned = true;
+									currentlyAlive++;
+									spawnedAmount++;
+									
+									//delay for spawn point
+									spawnPositions[spawnArrIndex].transform.gameObject.GetComponent<Spawn>().Spawned( spawnPositions[spawnArrIndex].spawnDelay );
+
+									return;
+								}
+							}
+
+							//increment random spawn position
+							randomPos++;
+							if(randomPos >= spawnPointIndexes.Length-1) randomPos = 0; //be sure it does contain corretn index
+						}
+					}
+				}
+			}
+		}
+
+		else if(currentlyAlive <= 0){
+			CancelInvoke();
+			WaveFinished(false);
+		}
 	}
 
-	[System.Serializable]
-	public class Wave{
-		public int wave; 					//wave we want to affect with these changes
-		public Wave_Enemy[] enemies;		//enemies we want to add/spawn only this wave
-		public bool spawnOnlyThisWave;		//Add for all continuing waves OR spwn just for this wave
-	};
-	public Wave[] waves;
-
-    //==========================
-
-    //--------Team DeathMatch Logic------
-    [System.Serializable]
-    public class Teams
+    /// <summary>
+    /// This is called when wave is finished
+    /// </summary>
+    private void WaveFinished(bool firstLaunch)
     {
-        public Spawn[] team1Spawns;
-        public Spawn[] team2Spawns;      
-    };
-
-    //========Actual Spawning Module========
-    private float spawnDelay = 0.4f;		//spawn each enemy after certain time
-	private int startingAmount = 8;			//start amount of emenies
-	private int addEachWave = 5;				//how much we will add each wave
-
-	private int amountToSpawn = 0;			//Current amount of enemies
-	private int spawnedAmount = 0;			//How much we have spawned
-	private int currentlyAlive = 0;
-	private int leftAmount = 0;
-	private int MAX_ENEMY_AMOUNT = 8; //maximum amount of emenies in scene
-
-	private int currentWave = 1;		//current wave
-	private const byte waitBeforeSpawn = 5;	//How much wait before each wave spawning
-
-	//This is called when wave is finished
-	private void WaveFinished(bool firstLaunch){
 		if(!firstLaunch) currentWave ++; //add wave count
 
-		else{
+		else
+        {
 			if(MAX_ENEMY_AMOUNT < 20){
 				MAX_ENEMY_AMOUNT++;
 			}
@@ -196,31 +279,39 @@ public class SpawnManager : MonoBehaviour {
 
 		leftAmount = EnemyAmountLeft(); //calculate how much enemies there will be next wave
 		SetSpawnEnemiesIndexes ();		//Set current Enemies structure, what enemies to spawn and their order
+    }
 
-		Message_NextWave();				//activate GUI time count down before next wave
+	private void SpawnNextWave()
+    {
+		InvokeRepeating("Spawner",0, mainSpawnDelay); 
 	}
 
-	private void SpawnNextWave(){
-		InvokeRepeating("Spawner",0, spawnDelay); 
-	}
-	
-	//Returns amount, how much emenies we still have to spawn
-	private int EnemyAmountLeft(){
+    /// <summary>
+    /// Returns amount, how much emenies we still have to spawn
+    /// </summary>
+    private int EnemyAmountLeft()
+    {
 		return amountToSpawn - spawnedAmount;
 	}
 
-	//Returns true if all enemies are spawned in this wave, else, returns false
-	private bool GetAllEnemiesStatus(){
-		//check all current enemies
-		for(int i = 0; i < currentEnemies.Length; i++) {
+    /// <summary>
+    /// Returns true if all enemies are spawned in this wave, else, returns false
+    /// </summary>
+    private bool GetAllEnemiesStatus()
+    {
+		for(int i = 0; i < currentEnemies.Length; i++)
+        {
 			if(! currentEnemies[i].spawned) return false;
 		}
 
 		return true;
 	}
 
-	//Create enemy type index array from enemy types indes - array of enemy numbers to be spawned
-	private void SetSpawnEnemiesIndexes(){
+    /// <summary>
+    /// Create enemy type index array from enemy types indes - array of enemy numbers to be spawned
+    /// </summary>
+    private void SetSpawnEnemiesIndexes()
+    {
 		bool specialWaveEvent = false;
 		int specialWave = 0;
 		//check if there is special "WAVE" event
@@ -313,137 +404,19 @@ public class SpawnManager : MonoBehaviour {
 		}
 	}
 
-	//Reset current enemies to default
-	private void ResetCurrentEnemies(){
+    private void Start()
+    {
+        SetupSpawnPoints();
+    }
+
+    /// <summary>
+    /// Reset current enemies to default
+    /// </summary>
+    private void ResetCurrentEnemies()
+    {
 		for(int vv = 0; vv < currentEnemies.Length; vv++){
 			currentEnemies[vv].index = -1;
 			currentEnemies[vv].spawned = false;
 		}
 	}
-
-	//Spawns actual emenies
-	private void Spawner(){
-		//all enemies have not been spawned, yet
-		if(! GetAllEnemiesStatus()){
-			//check if scene already does not contain max enemies
-			if(currentlyAlive < MAX_ENEMY_AMOUNT){
-
-				for(int i =0; i <currentEnemies.Length; i++){
-					//This enemy has not been spawned yet
-					if(!currentEnemies[i].spawned){
-						int thisEnemyTypeIndex = currentEnemies[i].index;
-
-						//============Does this enemy type have preffered spawn point?=======
-						//Spawn point indexes which will be used for this enemy
-						int[] spawnPointIndexes;
-						int prefferedSpawnPointsIndexesSize = enemyTypes[ thisEnemyTypeIndex ].preferedSpawnPoints.Length;
-						//no preffered spawn points for this enemy
-						if(prefferedSpawnPointsIndexesSize == 0){
-							spawnPointIndexes = new int[spawnPositions.Length];
-							//assign positions
-							for(int yyy =0; yyy <spawnPositions.Length; yyy++){
-								spawnPointIndexes[yyy] = yyy;
-							}
-						}
-						//enemy does have preffered spawn points
-						else{
-							spawnPointIndexes = new int[ prefferedSpawnPointsIndexesSize ];
-							
-							//assign positions for preffered spawn points
-							for(int yy =0; yy < prefferedSpawnPointsIndexesSize; yy++){
-								int prefIndex = enemyTypes[ thisEnemyTypeIndex ].preferedSpawnPoints[yy]; //get the index
-								
-								spawnPointIndexes[yy] = prefIndex;
-							}
-						}
-						//===================================================================
-						//random spawn destination
-						int randomPos = UnityEngine.Random.Range(0, spawnPointIndexes.Length);
-
-						for(int j =0; j <spawnPointIndexes.Length; j++){
-							int spawnArrIndex = spawnPointIndexes[randomPos];
-							//can this spawn be accessed
-							if(spawnPositions[spawnArrIndex].canBeUsed){
-								//is there a cool down on this spawn point
-								if(spawnPositions[spawnArrIndex].transform.gameObject.GetComponent<Spawn>().Status()){
-									Instantiate(enemyTypes[ thisEnemyTypeIndex ].enemyPrefab, spawnPositions[spawnArrIndex].transform.position, Quaternion.identity);
-
-									//mark this enemy as spawned
-									currentEnemies[i].spawned = true;
-									currentlyAlive++;
-									spawnedAmount++;
-									
-									//delay for spawn point
-									spawnPositions[spawnArrIndex].transform.gameObject.GetComponent<Spawn>().Spawned( spawnPositions[spawnArrIndex].spawnDelay );
-
-									return;
-								}
-							}
-
-							//increment random spawn position
-							randomPos++;
-							if(randomPos >= spawnPointIndexes.Length-1) randomPos = 0; //be sure it does contain corretn index
-						}
-					}
-				}
-			}
-		}
-
-		else if(currentlyAlive <= 0){
-			CancelInvoke();
-			WaveFinished(false);
-		}
-	}
-	//======================================
-
-
-	//======================================================
-	private Rect rect_currentWave = new Rect(10,10, 120,20);
-	private Rect rect_enemiesLeft = new Rect(10,40, 120,20);
-	private Rect rect_message_nextWave;
-	private float amount_message_nextWave;
-	public GUIStyle style_numbers;
-
-	private bool message_nextWave = false;
-
-	private void Message_NextWave(){
-		amount_message_nextWave = waitBeforeSpawn;
-		message_nextWave = true;
-	}
-
-	private void OnGUI()
-    {
-        if(GameManager.Instance.CurGameMode == GameManager.GameMode.Survival)
-        {
-            GUI.Label(rect_currentWave, "Wave: " + currentWave, style_numbers); //renders currect wave
-            GUI.Label(rect_enemiesLeft, "Enemies left: " + EnemyAmountLeft().ToString(), style_numbers);
-
-            if (message_nextWave) {
-                GUI.Label(rect_message_nextWave, "Wave starting in: " + amount_message_nextWave.ToString("F1"), style_numbers);
-
-                //Disable GUI mesage when time is out
-                if (amount_message_nextWave <= 0) {
-                    message_nextWave = false;
-                    SpawnNextWave();
-                }
-            }
-        }
-        else if(GameManager.Instance.CurGameMode == GameManager.GameMode.TeamDeathMatch)
-        {
-            // HANDLED BY GAME MANAGER
-        }
-	}
-
-
-
-    private void Update(){
-		if(message_nextWave){
-			amount_message_nextWave -= Time.deltaTime;
-		}
-	}
-
-    private void OnDestroy()
-    {
-        GUIManager.Instance.AddNotification("ENDED AT WAVE " + currentWave);
-    }
 }

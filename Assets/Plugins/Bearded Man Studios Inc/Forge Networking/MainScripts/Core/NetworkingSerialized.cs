@@ -26,7 +26,11 @@ using System.Reflection;
 
 namespace BeardedManStudios.Network
 {
+#if BARE_METAL
+	public abstract class NetworkingSerialized : MarshalByRefObject, INetworkingSerialized
+#else
 	public abstract class NetworkingSerialized : INetworkingSerialized
+#endif
 	{
 		private List<PropertyInfo> Properties { get; set; }
 
