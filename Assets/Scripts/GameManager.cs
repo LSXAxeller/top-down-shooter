@@ -4,6 +4,7 @@ using System.Collections;
 using BeardedManStudios.Network;
 using Deftly;
 using UnityEngine.SceneManagement;
+using System;
 
 public enum GameState
 {
@@ -142,7 +143,17 @@ public class GameManager : NetworkedMonoBehavior {
             seconds--;
             yield return new WaitForSeconds(1.0f);
         }
+        OnGameStart();
+    }
+
+    private void OnGameStart()
+    {
         MyPlayer.GetComponent<Subject>().SetInputPermission(true, true, true);
+
+        if(CurGameMode == GameMode.TeamDeathMatch)
+        {
+            MapManager.CreateEntities();
+        }
     }
 
     private void SetGameMode()

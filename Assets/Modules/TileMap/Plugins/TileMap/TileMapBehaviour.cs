@@ -152,6 +152,10 @@ namespace UnityTileMap
                 {
                     entity = Instantiate(entities[(int)EntitiesData.EntityID.Info_T_Active]);
                 }
+                else if (entry.Value == EntitiesData.EntityID.Info_CT)
+                {
+                    entity = Instantiate(entities[(int)EntitiesData.EntityID.Info_CT_Active]);
+                }
                 else
                 {
                     entity = Instantiate(entities[(int)entry.Value]);
