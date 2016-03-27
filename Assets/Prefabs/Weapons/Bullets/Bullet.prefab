@@ -122,12 +122,15 @@ MonoBehaviour:
     m_Bits: 4294967295
   AttackEffect: {fileID: 130324, guid: 53889d4f5d155d547a9a3f5b1b08de78, type: 2}
   ImpactTagNames:
-  - 
+  - Entity
+  - Entity_Active
   ImpactSounds:
   - {fileID: 8300000, guid: f96754f1d064dcd428bd435a6d860749, type: 3}
+  - {fileID: 8300000, guid: 586780a6a622ca046b261c075e198945, type: 3}
   ImpactEffects:
-  - {fileID: 164330, guid: 4eaecd9b43a5c414cb24a328cf192ee3, type: 2}
-  ImpactStyle: 1
+  - {fileID: 100000, guid: dc4bb1168c41c9b4ea319722547466e1, type: 2}
+  - {fileID: 100000, guid: 01fd1b04868ceb94fb71dbb76f0ee941, type: 2}
+  ImpactStyle: 2
   Owner: {fileID: 0}
   DetachOnDestroy: {fileID: 0}
   LogDebug: 0

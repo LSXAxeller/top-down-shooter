@@ -156,7 +156,10 @@ namespace Deftly
 
         private void OnDestroy()
         {
-            Camera.main.GetComponent<DeftlyCamera>().enabled = false;
+            if (Camera.main.GetComponent<DeftlyCamera>() != null)
+            {
+                Camera.main.GetComponent<DeftlyCamera>().enabled = false;
+            }
         }
 
         public Vector3 GetAimAxis { get { return Input.mousePosition; }}

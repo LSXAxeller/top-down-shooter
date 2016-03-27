@@ -3,7 +3,8 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class LoadAdditiveScene : MonoBehaviour {
-    
+
+    public string SceneToLoad;
     public int delayTime; 
 
     void Awake()
@@ -14,6 +15,7 @@ public class LoadAdditiveScene : MonoBehaviour {
     IEnumerator WaitUntilLoad(int seconds)
     {
         yield return new WaitForSeconds(seconds);
-        SceneManager.LoadScene(1);
+        Destroy(Camera.main.gameObject);
+        SceneManager.LoadScene(SceneToLoad, LoadSceneMode.Additive);
     }
 }

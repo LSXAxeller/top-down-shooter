@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Collections;
 using BeardedManStudios.Network;
+using System;
 
 public class GUIManager : MonoBehaviour {
 
@@ -13,21 +14,6 @@ public class GUIManager : MonoBehaviour {
         GameSetup = 2,
         Pause = 3
     };
-
-    public int SelectedMapIndex
-    {
-        get
-        {
-            return SelectedMapIndex;
-        }
-        set
-        {
-            SelectedMapIndex = value;
-            BMSByte data = GameManager.Instance.gameData;
-            GameManager.Instance.SerializeGameData(MapNameInput.text, data[1], data.GetString(2), data.GetBasicType<int>(3), data.GetBasicType<int>(4));
-            GameManager.Instance.ChangeMap(value);
-        }
-    }
     
     public CanvasGroup HUD;
     public CanvasGroup Scoreboard;
@@ -49,8 +35,11 @@ public class GUIManager : MonoBehaviour {
     public Image SecondaryWeaponIcon;
     public GameObject LeftTeamList;
     public GameObject RightTeamList;
+    public GameObject[] ServerOnlyGameSetupList;
     public GameObject VerticalScrollItem;
     public Color[] TeamColors;
+    public GameObject StartGame;
+    public Button MapNameButton;
 
     private List<string> pendingNotifications = new List<string>();
     private string currentNotification;
@@ -81,78 +70,104 @@ public class GUIManager : MonoBehaviour {
         }
     }
 
-    public void GUIStartGame()
+    public void GUIChangeMap()
     {
-        if (string.IsNullOrEmpty(PlayerNameInput.text))
-        {
-            AddNotification("A player name is required to start the game!");
-            throw new MissingReferenceException("Player name cannot be empty!");
-        }
-
-        if(string.IsNullOrEmpty(TeamInput.text))
-        {
-            AddNotification("A team ID is required to start the game!");
-            throw new MissingReferenceException("Team ID cannot be empty!");
-        }
-
-        GameManager.Instance.StartGame(PlayerNameInput.text, int.Parse(TeamInput.text), 0);
+        ChangeMap(MapNameInput.text);
     }
 
-    public void GUIChangeMap(int index)
+    public void ChangeMap(int index)
     {
-        SelectedMapIndex = index;
+        GameManager.Instance.SelectedMapIndex = index;
     }
 
-    public void GUIChangeMap(string name)
+    public void ChangeMap(string name)
     {
-        SelectedMapIndex = GameManager.Instance.maps.IndexOf(name);
+        GameManager.Instance.SelectedMapIndex = GameManager.Instance.maps.IndexOf(name);
     }
 
     public void UpdatePlayersReadyText()
     {
-        PlayersReadyText.text = GameManager.Instance.PlayersReady + "/" + NetworkingManager.ControllingSocket.ServerPlayerCounter + " players are ready.";
+        PlayersReadyText.text = GameManager.Instance.PlayersReady + "/" + Networking.PrimarySocket.ServerPlayerCounter + " players are ready.";
     }
 
     public void GUIReadyUp()
     {
-        GameManager.Instance.OwnerReadyUp(0);
+        GameManager.Instance.OwnerReadyUp(true);
         UpdatePlayersReadyText();
+    }
+
+    public void SetupGUIServer()
+    {
+        StartGame.GetComponentInChildren<Text>().text = "Start Game";
+        StartGame.GetComponentInChildren<Button>().onClick.AddListener(() =>
+        {
+            if (GameManager.Instance.isReady)
+            {
+                GUIReadyDown();
+                StartGame.GetComponentInChildren<Button>().gameObject.GetComponentInChildren<Text>().text = "Ready Up";
+            }
+            else
+            {
+                GUIReadyUp();
+                StartGame.GetComponentInChildren<Button>().gameObject.GetComponentInChildren<Text>().text = "Ready Down";
+            }
+        });
+    }
+
+    public void SetupGUIClient()
+    {
+        StartGame.GetComponentInChildren<Text>().text = "Join Game";
+        StartGame.GetComponentInChildren<Button>().gameObject.GetComponentInChildren<Text>().text = "Ready Up";
+        StartGame.GetComponentInChildren<Button>().onClick.AddListener(() =>
+        {
+            if (GameManager.Instance.isReady)
+            {
+                GUIReadyDown();
+                StartGame.GetComponentInChildren<Button>().gameObject.GetComponentInChildren<Text>().text = "Ready Up";
+            }
+            else
+            {
+                GUIReadyUp();
+                StartGame.GetComponentInChildren<Button>().gameObject.GetComponentInChildren<Text>().text = "Ready Down";
+            }
+        });
+
+        foreach(GameObject panel in ServerOnlyGameSetupList)
+        {
+            panel.SetActive(false);
+        }
     }
 
     public void GUIReadyDown()
     {
-        GameManager.Instance.OwnerReadyUp(1);
-        UpdatePlayersReadyText();
+        GameManager.Instance.OwnerReadyUp(false);
     }
 
     public void GUIGameType()
     {
-        BMSByte data = GameManager.Instance.gameData;
-        GameManager.Instance.SerializeGameData(data.GetString(0), GameTypeInput.value, data.GetString(2), data.GetBasicType<int>(3), data.GetBasicType<int>(4));
+        
     }
 
     public void GUIServerName()
     {
-        BMSByte data = GameManager.Instance.gameData;
-        GameManager.Instance.SerializeGameData(data.GetString(0), data.GetBasicType<int>(0), ServerNameInput.text, data.GetBasicType<int>(3), data.GetBasicType<int>(4));
+        ForgeMasterServer.RegisterServer(Networking.GetExternalIPAddress(), (ushort)Networking.PrimarySocket.Port, 16, ServerNameInput.text, ((GameManager.GameMode)GameTypeInput.value).ToString("F"), "Insert comment here", null, MapNameInput.text);
     }
 
     public void GUIPlayerName()
     {
-        BMSByte data = GameManager.Instance.ownerPlayerData;
-        GameManager.Instance.SerializePlayerData(PlayerNameInput.text, data.GetBasicType<int>(2), data.GetBasicType<int>(2));
+        Networking.PrimarySocket.Me.SetName(PlayerNameInput.text);
+        AddNotification("Your name has been set to: " + PlayerNameInput.text);
     }
 
     public void GUITeamID()
     {
-        BMSByte data = GameManager.Instance.ownerPlayerData;
-        GameManager.Instance.SerializePlayerData(data.GetString(0), int.Parse(TeamInput.text), data.GetBasicType<int>(2));
+        Networking.PrimarySocket.Me.SetMessageGroup(ushort.Parse(TeamInput.text));
+        AddNotification("Your team has been set");
     }
 
     public void GUIPointLimit()
     {
-        BMSByte data = GameManager.Instance.gameData;
-        GameManager.Instance.SerializeGameData(data.GetString(0), data.GetBasicType<int>(1), data.GetString(2), data.GetBasicType<int>(3), int.Parse(PointLimitInput.text));
+
     }
 
     public void GUIBanPlayer()
@@ -169,18 +184,23 @@ public class GUIManager : MonoBehaviour {
 
     private void Update ()
     {
-        if(Input.GetKeyDown(KeyCode.Escape))
+        if (GameManager.Instance.State == GameState.Playing)
         {
-            ShowCanvas(1);
-        }
-        if(Input.GetKeyUp(KeyCode.Escape))
-        {
-            ShowCanvas(0);
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                ShowCanvas(DisplayCanvas.GameSetup);
+            }
+            if (Input.GetKeyUp(KeyCode.Tab))
+            {
+                ShowCanvas(DisplayCanvas.HUD);
+            }
         }
     }
 
-    public void AddVerticalScrollItem(string name, int teamID)
+    public void AddPlayerToList(string name, int teamID)
     {
+        UpdatePlayersReadyText();
+
         GameObject item = Instantiate(VerticalScrollItem);
 
         if(teamID == 0)
@@ -258,66 +278,58 @@ public class GUIManager : MonoBehaviour {
         StartCoroutine(DisplayNotification());
     }
 
-    public void ShowCanvas(int index)
+    public void ShowCanvas(DisplayCanvas index)
     {
-        switch (index)
+        switch ((int)index)
         {
             case 0:
-                HUD.alpha = 1.0f;
-                HUD.blocksRaycasts = true;
-                HUD.interactable = true;
+                HUD.alpha = 1.0f;                
                 Scoreboard.alpha = 0.0f;
-                Scoreboard.blocksRaycasts = false;
-                Scoreboard.interactable = false;
                 GameSetup.alpha = 0.0f;
-                GameSetup.blocksRaycasts = false;
-                GameSetup.interactable = false;
                 Pause.alpha = 0.0f;
+
+                Scoreboard.blocksRaycasts = false;
+                GameSetup.blocksRaycasts = false;
                 Pause.blocksRaycasts = false;
-                Pause.interactable = false;
                 break;
             case 1:
                 HUD.alpha = 0.0f;
-                HUD.blocksRaycasts = false;
-                HUD.interactable = false;
                 Scoreboard.alpha = 1.0f;
-                Scoreboard.blocksRaycasts = true;
-                Scoreboard.interactable = true;
                 GameSetup.alpha = 0.0f;
-                GameSetup.blocksRaycasts = false;
-                GameSetup.interactable = false;
                 Pause.alpha = 0.0f;
+
+                Scoreboard.blocksRaycasts = true;
+                GameSetup.blocksRaycasts = false;
                 Pause.blocksRaycasts = false;
-                Pause.interactable = false;
                 break;
             case 2:
                 HUD.alpha = 0.0f;
-                HUD.blocksRaycasts = false;
-                HUD.interactable = false;
                 Scoreboard.alpha = 0.0f;
-                Scoreboard.blocksRaycasts = false;
-                Scoreboard.interactable = false;
                 GameSetup.alpha = 1.0f;
-                GameSetup.blocksRaycasts = true;
-                GameSetup.interactable = true;
                 Pause.alpha = 0.0f;
+
+                Scoreboard.blocksRaycasts = false;
+                GameSetup.blocksRaycasts = true;
                 Pause.blocksRaycasts = false;
-                Pause.interactable = false;
                 break;
             case 3:
                 HUD.alpha = 0.0f;
-                HUD.blocksRaycasts = false;
-                HUD.interactable = false;
                 Scoreboard.alpha = 0.0f;
-                Scoreboard.blocksRaycasts = false;
-                Scoreboard.interactable = false;
                 GameSetup.alpha = 0.0f;
-                GameSetup.blocksRaycasts = false;
-                GameSetup.interactable = false;
                 Pause.alpha = 1.0f;
+
+                Scoreboard.blocksRaycasts = false;
+                GameSetup.blocksRaycasts = false;
                 Pause.blocksRaycasts = true;
-                Pause.interactable = true;
                 break;
         }
+    }
+
+    public enum DisplayCanvas
+    {
+        HUD,
+        Scoreboard,
+        GameSetup,
+        Pause
     }
 }

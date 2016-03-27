@@ -1,14 +1,8 @@
 fileFormatVersion: 2
-guid: 1b188aee1d389614dbeb1775370894d0
-labels:
-- HSV
-- uGUI
-- UI
-- Picker
-- Color
+guid: 8608874022bb55b4b8c6a73cd90dfd6d
 folderAsset: yes
-timeCreated: 1445751413
-licenseType: Store
+timeCreated: 1458864726
+licenseType: Free
 DefaultImporter:
   userData: 
   assetBundleName: 

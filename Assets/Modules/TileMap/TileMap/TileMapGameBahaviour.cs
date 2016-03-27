@@ -192,6 +192,16 @@ public class TileMapGameBahaviour : MonoBehaviour {
                     }
                 }
 
+                else if (Input.GetKey(KeyCode.LeftShift) && Input.GetMouseButtonDown(0))
+                {
+                    if (UpdateMouseHit())
+                    {
+                        Vector2Int p1 = new Vector2Int(Mathf.FloorToInt(m_mouseHitPos.x), Mathf.FloorToInt(m_mouseHitPos.y));
+
+                        Fill(p1.x, p1.y, m_setTileID);
+                    }
+                }
+
                 else if (Input.GetMouseButton(0))
                 {
                     if (UpdateMouseHit())
@@ -294,6 +304,82 @@ public class TileMapGameBahaviour : MonoBehaviour {
         }
 
         return tiles;
+    }
+
+    private void FloodFill(Vector2Int tile, int targetId, int replaceId)
+    {
+        Queue<Vector2Int> q = new Queue<Vector2Int>();
+        if (m_tileMap[tile.x, tile.x] != targetId)
+            return;
+
+        q.Enqueue(tile);
+        while (q.Count > 0)
+        {
+            Vector2Int n = q.Dequeue();
+            if (m_tileMap[n.x, n.y] == targetId)
+            {
+                Vector2Int e = n;
+                Vector2Int w = n;
+                while ((w.x != 0) && (m_tileMap[w.x, w.y] == targetId))
+                {
+                    m_tileMap[w.x, w.y] = replaceId;
+                    w = new Vector2Int(w.x - 1, w.y);
+                }
+
+                while ((e.x != m_tileMeshSettings.TilesX - 1) && (m_tileMap[e.x, e.y] == targetId))
+                {
+                    m_tileMap[e.x, e.y] = replaceId;
+                    e = new Vector2Int(e.x + 1, e.y);
+                }
+
+                for (int i = w.x; i <= e.x; i++)
+                {
+                    Vector2Int x = new Vector2Int(i, e.y);
+                    if (e.y + 1 != m_tileMeshSettings.TilesY - 1)
+                    {
+                        if (m_tileMap[x.x, x.y + 1] == targetId)
+                            q.Enqueue(new Vector2Int(x.x, x.y + 1));
+                    }
+                    if (e.y - 1 != -1)
+                    {
+                        if (m_tileMap[x.x, x.y - 1] == targetId)
+                            q.Enqueue(new Vector2Int(x.x, x.y - 1));
+                    }
+                }
+            }
+        }
+    }
+
+    public void Fill(int x, int y, int newInt)
+    {
+        int initial = m_tileMap[x, y];
+
+        Queue<Vector2Int> queue = new Queue<Vector2Int>();
+        queue.Enqueue(new Vector2Int(x, y));
+
+        while (queue.Any())
+        {
+            Vector2Int point = queue.Dequeue();
+
+            if (m_tileMap[point.x, point.y] != initial)
+                continue;
+
+            m_tileMap[point.x, point.y] = newInt;
+
+            EnqueueIfMatches(queue, point.x - 1, point.y, initial);
+            EnqueueIfMatches(queue, point.x + 1, point.y, initial);
+            EnqueueIfMatches(queue, point.x, point.y - 1, initial);
+            EnqueueIfMatches(queue, point.x, point.y + 1, initial);
+        }
+    }
+
+    private void EnqueueIfMatches(Queue<Vector2Int> queue, int x, int y, int initial)
+    {
+        if (m_tileMap.IsInBounds(x, y) == false)
+            return;
+
+        if (m_tileMap[x, y] == initial)
+            queue.Enqueue(new Vector2Int(x, y));
     }
 
     /// <summary>

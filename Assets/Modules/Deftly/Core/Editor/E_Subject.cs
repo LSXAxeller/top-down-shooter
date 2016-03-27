@@ -25,6 +25,7 @@ public class E_Subject : Editor
     private readonly GUIContent _godMode =          new GUIContent("God Mode", "All incoming damage is ignored");
     private readonly GUIContent _unlimitedMags =    new GUIContent("Unlimited Mags", "Magazines are not consumed when reloading");
     private readonly GUIContent _hitReaction =      new GUIContent("Hit Reaction", "When hit/damaged, this sound effect plays");
+    private readonly GUIContent _hitIndicator =     new GUIContent("Hit Indicator", "When hit/damaged, this gameobject pops up facing the impact normal");
     private readonly GUIContent _crippledTime =     new GUIContent("Crippled Time", "After losing all health, enter 'downed' status where it can be revived. After this time, the Subject will turn into a corpse.");
     private readonly GUIContent _corpseTime =       new GUIContent("Corpse Time", "The model will disappear after this time (begins after Crippled ends)");
 
@@ -141,6 +142,7 @@ public class E_Subject : Editor
         _x.Stats.TeamId = EditorGUILayout.IntSlider(_teamId, _x.Stats.TeamId, 0, 8);
         _x.Stats.Title = EditorGUILayout.TextField(_title, _x.Stats.Title);
         _x.Stats.HitSound = EditorGUILayout.ObjectField(_hitReaction, _x.Stats.HitSound, typeof (AudioClip), false) as AudioClip;
+        _x.Stats.HitIndicator = EditorGUILayout.ObjectField(_hitIndicator, _x.Stats.HitIndicator, typeof(GameObject)) as GameObject;
 
         EditorGUILayout.Space();
 

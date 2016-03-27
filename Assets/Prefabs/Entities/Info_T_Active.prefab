@@ -516,13 +516,14 @@ MonoBehaviour:
     TeamId: 2
     Title: Peon
     HitSound: {fileID: 0}
+    HitIndicator: {fileID: 177558, guid: 430649348f210b4468e3493944c7227f, type: 2}
     DeathSound: {fileID: 0}
     MaxWeaponSlots: 0
     CrippledTime: 8
     CorpseTime: 15
-    DeathFx: {fileID: 0}
-    LevelUpFx: {fileID: 0}
-    SpawnFx: {fileID: 0}
+    DeathFx: {fileID: 100000, guid: 8eb5b98f38247ad4c97ab83e140c8ae6, type: 2}
+    LevelUpFx: {fileID: 100000, guid: dc4bb1168c41c9b4ea319722547466e1, type: 2}
+    SpawnFx: {fileID: 100000, guid: dc4bb1168c41c9b4ea319722547466e1, type: 2}
     UseMecanim: 0
     WeaponMountPoint: {fileID: 184992}
     DeadBodyObj: {fileID: 140604}

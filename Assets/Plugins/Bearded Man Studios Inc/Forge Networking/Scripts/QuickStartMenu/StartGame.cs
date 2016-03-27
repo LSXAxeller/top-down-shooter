@@ -253,8 +253,11 @@ namespace BeardedManStudios.Forge.Examples
 			socket.connected -= LoadScene;
 			Networking.SetPrimarySocket(socket);
 
-			GetComponent<StartOptions>().StartButtonClicked();
-
-        }
-    }
+#if UNITY_5_3
+			UnitySceneManager.LoadScene(sceneName);
+#else
+			Application.LoadLevel(sceneName);
+#endif
+		}
+	}
 }

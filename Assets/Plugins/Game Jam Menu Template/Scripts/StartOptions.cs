@@ -30,11 +30,10 @@ public class StartOptions : MonoBehaviour {
 		showPanels = GetComponent<ShowPanels> ();
 
 		//Get a reference to PlayMusic attached to UI object
-		playMusic = GetComponent<PlayMusic> ();
+		playMusic = GetComponent<PlayMusic> ();       
 	}
 
-
-	public void StartButtonClicked()
+    public void StartButtonClicked()
 	{
 		//If changeMusicOnStart is true, fade out volume of music group of AudioMixer by calling FadeDown function of PlayMusic, using length of fadeColorAnimationClip as time. 
 		//To change fade time, change length of animation "FadeToColor"

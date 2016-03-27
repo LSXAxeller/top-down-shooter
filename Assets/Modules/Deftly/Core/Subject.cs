@@ -131,6 +131,7 @@ namespace Deftly
             Stats.TeamId = 0;
             Stats.SubjectSkin = 0;
             Stats.HitSound = null;
+            Stats.HitIndicator = null;
 
             ResetCharacterStatValues(Stats);
 
@@ -492,6 +493,12 @@ namespace Deftly
             c.Lifetime = Stats.CorpseTime;
 
             DeSpawn();
+        }
+
+        public void ShowHitIndicator(Vector2 normal)
+        {
+            Quaternion rot = Quaternion.AngleAxis(Mathf.Atan2(normal.y, normal.x)*Mathf.Rad2Deg, Vector3.forward);
+            StaticUtil.Spawn(Stats.HitIndicator, transform.position, rot);
         }
 
         /// <summary> 

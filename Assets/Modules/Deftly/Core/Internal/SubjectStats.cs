@@ -17,6 +17,7 @@ namespace Deftly
         [SerializeField] public int TeamId;
         [SerializeField] public string Title;
         [SerializeField] public AudioClip HitSound;
+        [SerializeField] public GameObject HitIndicator;
         [SerializeField] public AudioClip DeathSound;
         [SerializeField] public int MaxWeaponSlots;
         [SerializeField] public float CrippledTime;

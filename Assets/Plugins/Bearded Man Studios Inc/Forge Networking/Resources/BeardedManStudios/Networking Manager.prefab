@@ -28,6 +28,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &11420860
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -39,15 +40,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98643db8660606c46abed6a71ae25bfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneNetworkedId: 0
-  dontDestroyOnLoad: 0
-  destroyOnDisconnect: 0
-  allowOwnershipChange: 1
-  MaxRPCBatch: 10000
-  startNetworkedSceneBehaviors: []
-  networkInstantiates:
-  - {fileID: 160660, guid: be6e2b3b81df9df4b9beaf748ee9d377, type: 2}
-  - {fileID: 183674, guid: 028705234ff87cf4cb5b4b1be9605d88, type: 2}
+  networkInstantiates: []
   resourcesDirectory: 
   frameInterval: 100
   updateTimeInterval: 1
