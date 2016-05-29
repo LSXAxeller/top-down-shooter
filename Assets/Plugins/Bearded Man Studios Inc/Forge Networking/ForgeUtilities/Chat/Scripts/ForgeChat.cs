@@ -49,7 +49,7 @@ public class ForgeChat : SimpleNetworkedMonoBehavior
 	private const int MAX_STORED_MESSAGES = 100;
 
 	// To help performance
-	private StringBuilder _textBuilder = new StringBuilder();
+	private System.Text.StringBuilder _textBuilder = new StringBuilder();
 
 	protected override void NetworkStart()
 	{

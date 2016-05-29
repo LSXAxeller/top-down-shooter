@@ -86,7 +86,7 @@ namespace Deftly
         {
             while (true)
             {
-                if (_cam != null)
+                if (_cam != null && _subject.IsOwner)
                 {
                     _cam.GetComponent<DeftlyCamera>().Targets[0] = gameObject;
                     _arbiter = _cam.GetComponent<DeftlyCamera>().GetArbiter();
@@ -97,6 +97,7 @@ namespace Deftly
 
         private void FixedUpdate()
         {
+            if (_subject.IsOwner == false) return;
             if (_subject.IsDead | !InputPermission) return;
 
             Aim();

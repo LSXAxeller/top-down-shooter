@@ -42,8 +42,24 @@ namespace BeardedManStudios.Forge.Examples
 
 		public InputField ipAddressInput = null;                                                                // The input label for the ip address for the client to connect to directly
 
-		public float packetDropSimulationChance = 0.0f;                                                         // A number between 0 and 1 where 0 is 0% and 1 is 100%
-		public int networkLatencySimulationTime = 0;                                                            // The amount of time in milliseconds to simulate network latency
+        /// <summary>
+        /// The percentage change each packet will be dropped in the network simulation.
+        /// </summary>
+        /// <remarks>
+        /// A number between 0 and 1 where 0 is 0% and 1 is 100%, the percentage is the chance that each network
+        /// message being sent, will be lost. This can be used to test what happens to your game when network packets
+        /// are being sent unreliably and are being lost.
+        /// </remarks>
+		public float packetDropSimulationChance = 0.0f;
+
+        /// <summary>
+        /// The amount of time in milliseconds to simulate network latency.
+        /// </summary>
+        /// <remarks>
+        /// All messages being sent across the network will be delayed by this amount of time, including RPCs and NetSyncs.
+        /// This can be used to test how your game reacts or just feels with higher latencies.
+        /// </remarks>
+        public int networkLatencySimulationTime = 0;
 
 		public string masterServerIp = string.Empty;                                                            // If this has a value then it will register itself on the master server at this location
 		public bool useNatHolePunching = false;
@@ -213,9 +229,10 @@ namespace BeardedManStudios.Forge.Examples
 						ipAddress = endpoint.ipAddress;
 						targetPort = (ushort)endpoint.port;
 #endif
-
-			socket = Networking.Connect(ipAddress, targetPort, protocolType, IsWinRT, useNatHolePunching);
-			Go();
+            MainThreadManager.Run(() => {
+                socket = Networking.Connect(ipAddress, targetPort, protocolType, IsWinRT, useNatHolePunching);
+                Go();
+            });
 		}
 
 		private void RemoveSocketReference()

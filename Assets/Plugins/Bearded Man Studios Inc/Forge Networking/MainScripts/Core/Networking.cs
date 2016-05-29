@@ -284,12 +284,26 @@ namespace BeardedManStudios.Network
 			return Sockets[port];
 		}
 
-		/// <summary>
-		/// This will force a firewall request by the users machine to allow for
-		/// network communications with this particular application
-		/// </summary>
-		/// <param name="port">Port to be allowed</param>
-		public static void InitializeFirewallCheck(ushort port)
+        /// <summary>
+        /// This will force a firewall request by the users machine to allow for
+        /// network communications with this particular application
+        /// </summary>
+        /// <param name="port">Port to be allowed</param>
+        /// <remarks>
+        /// When a connection is first initialized with forge, typically a user will be prompted to give access to the application (unity) to use the network.
+        /// This can be problematic if your game requires for any reason the user not to look out of the game, it is also industry standard to prompt the user with
+        /// anything like this when the application is starting up. In order to do this, you can use this helpful static method to force this prompt to popup on 
+        /// startup. This method would best be used:
+        /// <ul>
+        ///     <li>in the scene you load on startup</li>
+        ///     <li>in a gameobject that is enabled when the scene is loaded</li>
+        ///     <li>and in a method such as Awake() or Start(), both methods used by unity</li>
+        /// </ul>
+        /// If your game used multiple ports or may be hosted on a different port, just specify the default port you intend to use. Once your application has been
+        /// allowed through the firewall it won't need to keep requesting access. Moving the location, renaming the file or rebuilding the .exe may cause you to have
+        /// to reallow the application.
+        /// </remarks>
+        public static void InitializeFirewallCheck(ushort port)
 		{
 			DefaultServerTCP socket = new DefaultServerTCP(1);
 			socket.connected += socket.Disconnect;
@@ -361,8 +375,9 @@ namespace BeardedManStudios.Network
 			Sockets[port].UseNatHolePunch = useNat;
 			Sockets[port].Connect(ip, port);
 
-			if (!standAlone)
-				SimpleNetworkedMonoBehavior.Initialize(Sockets[port]);
+			if (!standAlone) {
+                SimpleNetworkedMonoBehavior.Initialize(Sockets[port]);
+            }
 
 			return Sockets[port];
 		}
@@ -475,17 +490,17 @@ namespace BeardedManStudios.Network
 			Sockets[port].Disconnect(player);
 		}
 
-		/// <summary>
-		/// Disconnect a player on a given NetWorker(Socket)
-		/// </summary>
-		/// <param name="socket">NetWorker(Socket) to be disconnected from</param>
-		/// <param name="player">The player reference to disconnect</param>
-		/// <exception cref="NetworkException">Thrown when the <see cref="NetWorker"/> on the specified port is not a server</exception>
-		/// <example>
-		/// // Disconnect the first player on the primary socket
-		/// Networking.Disconnect(Networking.PrimarySocket, Networking.PrimarySocket.Players[0]);
-		/// </example>
-		public static void Disconnect(NetWorker socket, NetworkingPlayer player)
+        /// <summary>
+        /// Disconnect a player on a given NetWorker(Socket)
+        /// </summary>
+        /// <param name="socket">NetWorker(Socket) to be disconnected from</param>
+        /// <param name="player">The player reference to disconnect</param>
+        /// <exception cref="NetworkException">Thrown when the <see cref="NetWorker"/> on the specified port is not a server</exception>
+        /// <code>
+        /// // Disconnect the first player on the primary socket
+        /// Networking.Disconnect(Networking.PrimarySocket, Networking.PrimarySocket.Players[0]);
+        /// </code>
+        public static void Disconnect(NetWorker socket, NetworkingPlayer player)
 		{
 			if (!socket.IsServer)
 				throw new NetworkException("Disconnecting players can only be managed by the server, the NetWorker on the specified port is not a server");
@@ -761,12 +776,24 @@ namespace BeardedManStudios.Network
 			return false;
 		}
 
-		/// <summary>
-		/// Instantiate an object on the network
-		/// </summary>
-		/// <param name="obj">Object to be instantiated by object name</param>
-		/// <param name="receivers">Recipients will receive this instantiate call</param>
-		public static void Instantiate(string obj, NetworkReceivers receivers, Action<SimpleNetworkedMonoBehavior> callback = null)
+        /// <summary>
+        /// Instantiate an object on the network
+        /// </summary>
+        /// <param name="obj">Object to be instantiated by object name, prefab must be in the NetworkingManager.networkInstantiates array to be found</param>
+        /// <param name="receivers">Recipients who will receive this instantiate call</param>
+        /// <remarks>
+        /// For an object to be instantiated across all connected clients. The player who calls the method locally will be the owner of the object. The object
+        /// must have an SNMB or NMB attatched to it. This polymorphic variant of the method will instantiate the object at the default zero position.
+        /// 
+        /// If receivers NetworkReceivers.AllBuffered is specified, any clients who connect after the call has been made on all clients, will immediately call the
+        /// buffered network instantiates that they missed before connecting. This can be very important for making a system where a player can join in late.
+        /// 
+        /// If an object with the same name but "(remote)" after the name, can be found in NetworkingManager.networkInstantiates
+        /// it will be spawned on all clients other than the client that calls instantiate. If no object with that name can be found, 
+        /// the same object will be instantiated. If the prefab "player" is spawned and "player(remote)" is in the list, "player(remote)"
+        /// will be used instead of "player".
+        /// </remarks>
+        public static void Instantiate(string obj, NetworkReceivers receivers, Action<SimpleNetworkedMonoBehavior> callback = null)
 		{
             if (!NetworkingManager.IsOnline)
             {
@@ -792,14 +819,26 @@ namespace BeardedManStudios.Network
 				CallInstantiate(obj, receivers, callback: callback);
 		}
 
-		/// <summary>
-		/// Instantiate an object on the network
-		/// </summary>
-		/// <param name="obj">Object to be instantiated by object name</param>
-		/// <param name="position">Position of instantiated object</param>
-		/// <param name="rotation">Rotation of instantiated object</param>
-		/// <param name="receivers">Recipients will receive this instantiate call</param>
-		public static void Instantiate(string obj, Vector3 position, Quaternion rotation, NetworkReceivers receivers, Action<SimpleNetworkedMonoBehavior> callback = null)
+        /// <summary>
+        /// Instantiate an object on the network
+        /// </summary>
+        /// <param name="obj">Object to be instantiated by object name</param>
+        /// <param name="position">Position of instantiated object</param>
+        /// <param name="rotation">Rotation of instantiated object</param>
+        /// <param name="receivers">Recipients who will receive this instantiate call</param>
+        /// <remarks>
+        /// For an object to be instantiated across all connected clients. The player who calls the method locally will be the owner of the object. The object
+        /// must have an SNMB or NMB attatched to it. This polymorphic variant of the method will instantiate the object at the specified position and rotation.
+        /// 
+        /// If receivers NetworkReceivers.AllBuffered is specified, any clients who connect after the call has been made on all clients, will immediately call the
+        /// buffered network instantiates that they missed before connecting. This can be very important for making a system where a player can join in late.
+        /// 
+        /// If an object with the same name but "(remote)" after the name, can be found in NetworkingManager.networkInstantiates
+        /// it will be spawned on all clients other than the client that calls instantiate. If no object with that name can be found, 
+        /// the same object will be instantiated. If the prefab "player" is spawned and "player(remote)" is in the list, "player(remote)"
+        /// will be used instead of "player".
+        /// </remarks>
+        public static void Instantiate(string obj, Vector3 position, Quaternion rotation, NetworkReceivers receivers, Action<SimpleNetworkedMonoBehavior> callback = null)
 		{
             if (!NetworkingManager.IsOnline)
             {
@@ -825,12 +864,24 @@ namespace BeardedManStudios.Network
 				CallInstantiate(obj, position, rotation, receivers, callback);
 		}
 
-		/// <summary>
-		/// Instantiate an object on the network
-		/// </summary>
-		/// <param name="obj">Object to be instantiated by object name</param>
-		/// <param name="receivers">Recipients will receive this instantiate call (Default: All)</param>
-		public static void Instantiate(GameObject obj, NetworkReceivers receivers = NetworkReceivers.All, Action<SimpleNetworkedMonoBehavior> callback = null)
+        /// <summary>
+        /// Instantiate an object on the network
+        /// </summary>
+        /// <param name="obj">Object to be instantiated by object name</param>
+        /// <param name="receivers">Recipients who will receive this instantiate call (Default: All)</param>
+        /// <remarks>
+        /// For an object to be instantiated across all connected clients. The player who calls the method locally will be the owner of the object. The object
+        /// must have an SNMB or NMB attatched to it. This polymorphic variant of the method will instantiate the object at the zero position.
+        /// 
+        /// If receivers NetworkReceivers.AllBuffered is specified, any clients who connect after the call has been made on all clients, will immediately call the
+        /// buffered network instantiates that they missed before connecting. This can be very important for making a system where a player can join in late.
+        /// 
+        /// If an object with the same name but "(remote)" after the name, can be found in NetworkingManager.networkInstantiates
+        /// it will be spawned on all clients other than the client that calls instantiate. If no object with that name can be found, 
+        /// the same object will be instantiated. If the prefab "player" is spawned and "player(remote)" is in the list, "player(remote)"
+        /// will be used instead of "player".
+        /// </remarks>
+        public static void Instantiate(GameObject obj, NetworkReceivers receivers = NetworkReceivers.All, Action<SimpleNetworkedMonoBehavior> callback = null)
 		{
 			if (!NetworkingManager.IsOnline)
 			{
@@ -852,14 +903,26 @@ namespace BeardedManStudios.Network
 				CallInstantiate(obj.name, receivers, callback: callback);
 		}
 
-		/// <summary>
-		/// Instantiate an object on the network
-		/// </summary>
-		/// <param name="obj">Object to be instantiated by object name</param>
-		/// <param name="position">Position of instantiated object</param>
-		/// <param name="rotation">Rotation of instantiated object</param>
-		/// <param name="receivers">Recipients will receive this instantiate call (Default: All)</param>
-		public static void Instantiate(GameObject obj, Vector3 position, Quaternion rotation, NetworkReceivers receivers = NetworkReceivers.All, Action<SimpleNetworkedMonoBehavior> callback = null)
+        /// <summary>
+        /// Instantiate an object on the network
+        /// </summary>
+        /// <param name="obj">Object to be instantiated by object name</param>
+        /// <param name="position">Position of instantiated object</param>
+        /// <param name="rotation">Rotation of instantiated object</param>
+        /// <param name="receivers">Recipients who will receive this instantiate call (Default: All)</param>
+        /// <remarks>
+        /// For an object to be instantiated across all connected clients. The player who calls the method locally will be the owner of the object. The object
+        /// must have an SNMB or NMB attatched to it. This polymorphic variant of the method will instantiate the object at the specified position and rotation.
+        /// 
+        /// If receivers NetworkReceivers.AllBuffered is specified, any clients who connect after the call has been made on all clients, will immediately call the
+        /// buffered network instantiates that they missed before connecting. This can be very important for making a system where a player can join in late.
+        /// 
+        /// If an object with the same name but "(remote)" after the name, can be found in NetworkingManager.networkInstantiates
+        /// it will be spawned on all clients other than the client that calls instantiate. If no object with that name can be found, 
+        /// the same object will be instantiated. If the prefab "player" is spawned and "player(remote)" is in the list, "player(remote)"
+        /// will be used instead of "player".
+        /// </remarks>
+        public static void Instantiate(GameObject obj, Vector3 position, Quaternion rotation, NetworkReceivers receivers = NetworkReceivers.All, Action<SimpleNetworkedMonoBehavior> callback = null)
 		{
 			if (!NetworkingManager.IsOnline)
 			{
@@ -923,13 +986,17 @@ namespace BeardedManStudios.Network
 			else
 				CallInstantiate(obj.name, position, rotation, receivers, callback);
 		}
-		#endregion
+        #endregion
 
-		/// <summary>
-		/// Destroy a simple networked object
-		/// </summary>
-		/// <param name="netBehavior">Networked behavior to destroy</param>
-		public static void Destroy(SimpleNetworkedMonoBehavior netBehavior)
+        /// <summary>
+        /// Destroy a simple networked object
+        /// </summary>
+        /// <param name="netBehavior">Networked behavior to destroy</param>
+        /// <remarks>
+        /// This destroys a SNMB across the network for all clients, the opposite of Networking.Instantiate() which creates an object.
+        /// SimpleNetworkedMonoBehavior.NetworkDestroy() can also be used to delete a SNMB using a SimpleNetworkedMonoBehavior.NetworkedId.
+        /// </remarks>
+        public static void Destroy(SimpleNetworkedMonoBehavior netBehavior)
 		{
 			if (!NetworkingManager.IsOnline)
 			{
@@ -983,16 +1050,22 @@ namespace BeardedManStudios.Network
 			data.InsertRange(0, new byte[1] { 1 });
 			netWorker.WriteRaw(targetPlayer, data, uniqueId, reliable);
 		}
-		#endregion
+        #endregion
 
-		#region Custom Writes
-		/// <summary>
-		/// This allows you to write custom data across the network and is useful for serializing entire classes if needed
-		/// </summary>
-		/// <param name="id">Unique identifier to be used</param>
-		/// <param name="port">Port to be written to</param>
-		/// <param name="data">Data to send over</param>
-		public static void WriteCustom(uint id, ushort port, BMSByte data, NetworkReceivers recievers = NetworkReceivers.All)
+        #region Custom Writes
+        /// <summary>
+        /// This allows you to write custom data across the network and is useful for serializing entire classes if needed
+        /// </summary>
+        /// <param name="id">Unique identifier to be used</param>
+        /// <param name="port">Port to be written to</param>
+        /// <param name="data">Data to send over</param>
+        /// <remarks>
+        /// This very useful method allows you to end a BMSByte to a given grouping of receivers. You can also use a version of WriteCustom() to
+        /// send a BMSByte to send directly to a specific NetworkingPlayer. WriteCustom requires all clients to be subscribed to Networking.PrimarySocket.AddCustomDataReadEvent().
+        /// You must specify the same ID for each corresponding method on each client. WriteCustom can be used a wide variety of ways,
+        /// see <A HREF="http://developers.forgepowered.com/Tutorials/WriteCustom/Write-Custom-Sending-Classes-Across-the-Network">this</A> for an example of one way it can be used.
+        /// </remarks>
+        public static void WriteCustom(uint id, ushort port, BMSByte data, NetworkReceivers recievers = NetworkReceivers.All)
 		{
 			WriteCustom(id, Sockets[port], data, false, recievers);
 		}
@@ -1269,14 +1342,14 @@ namespace BeardedManStudios.Network
 		/// Ping a particular host to get its response time in milliseconds
 		/// </summary>
 		/// <param name="host">The host object to ping</param>
-		/// <param name="port">The port number that the server is running on</param>
-		public static void Ping(HostInfo host)
+        /// <param name="callback">Called when it has finished the ping</param>
+		public static void Ping(HostInfo host, System.Action<HostInfo> callback = null)
 		{
 #if NETFX_CORE
 
 #else
 			System.Threading.Thread pingThread = new System.Threading.Thread(new System.Threading.ParameterizedThreadStart(ThreadPing));
-			pingThread.Start(new object[] { host });
+			pingThread.Start(new object[] { host, callback });
 #endif
 		}
 
@@ -1286,6 +1359,7 @@ namespace BeardedManStudios.Network
 
 #else
 			HostInfo host = (HostInfo)((object[])hostObj)[0];
+            System.Action<HostInfo> callback = (System.Action<HostInfo>)((object[])hostObj)[1];
 			IPAddress address = IPAddress.Parse(host.ipAddress);
 			UdpClient Client = new UdpClient();
 			IPEndPoint ep = new IPEndPoint(address, host.port);
@@ -1319,6 +1393,9 @@ namespace BeardedManStudios.Network
 
 			if (pingReceivedInvoker != null)
 				pingReceivedInvoker(host, time);
+
+            if (callback != null)
+                callback(host);
 #endif
 		}
 

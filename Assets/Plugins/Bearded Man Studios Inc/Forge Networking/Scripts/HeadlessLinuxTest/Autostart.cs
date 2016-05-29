@@ -28,20 +28,53 @@ using System.Collections;
 
 namespace BeardedManStudios.Network.Unity
 {
+    /// <summary>
+    /// A script that can be used to automatically launch a set of clients and connect to a local server for testing purposes
+    /// </summary>
+    /// <remarks>
+    /// Autostart can be attatched to allow for easy testing of net code that uses forge. It allows you to auto launch several unity instances and auto connect them.
+    /// This allows you to not only test the net code, but test it for a given number of players. This may be very heavy on your computer for more complex games, as running more than ~3-4 instances will 
+    /// be a lot of computation.
+    /// Please see <A HREF="http://developers.forgepowered.com/Tutorials/MasterClassIntermediate/Auto-Launcher">this</A> page for information on how to use the autostart.
+    /// </remarks>
 	public class Autostart : MonoBehaviour
 	{
-		public string host = "127.0.0.1";																		// IP address
-		public int port = 15937;																				// Port number
-		public Networking.TransportationProtocolType protocolType = Networking.TransportationProtocolType.UDP;	// Communication protocol
-		public int playerCount = 31;																			// Maximum player count -- excluding this server
-		public string sceneName = "Game";																		// Scene to load
-		public bool proximityBasedUpdates = false;																// Only send other player updates if they are within range
-		public float proximityDistance = 5.0f;																	// The range for the players to be updated within
+        /// <summary>
+        /// IP address to automatically connect to
+        /// </summary>
+		public string host = "127.0.0.1";                                                                       // IP address
+        /// <summary>
+        /// port to attempt to host the server on, and connect client instances to
+        /// </summary>
+        public int port = 15937;                                                                                // Port number
+        /// <summary>
+        /// The protocol type (either UDP reliable or TCP unreliable)
+        /// </summary>
+        public Networking.TransportationProtocolType protocolType = Networking.TransportationProtocolType.UDP;  // Communication protocol
+        /// <summary>
+        /// Max number of players that can connect to the server
+        /// </summary>
+        public int playerCount = 31;                                                                            // Maximum player count -- excluding this server
+        /// <summary>
+        /// Name of game scene to be loaded once instances launch
+        /// </summary>
+        public string sceneName = "Game";                                                                       // Scene to load
+        /// <summary>
+        /// Should proximity based updates be automatically enabled
+        /// </summary>
+        public bool proximityBasedUpdates = false;                                                              // Only send other player updates if they are within range
+        /// <summary>
+        /// If Autostart.proximityBasedUpdates is enabled, the distance for proximity updates to register
+        /// </summary>
+        public float proximityDistance = 5.0f;																	// The range for the players to be updated within
 
 		private NetWorker socket = null;																		// The initial connection socket
 
 		public string executePath = null;
-		public int clientCount = 5;
+        /// <summary>
+        /// Number of client instances to be launched
+        /// </summary>
+        public int clientCount = 5;
 
 		/// <summary>
 		/// Determine if the current system is within the "WinRT" ecosystem

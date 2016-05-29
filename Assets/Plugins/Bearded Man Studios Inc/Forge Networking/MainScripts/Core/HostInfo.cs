@@ -98,6 +98,11 @@ namespace BeardedManStudios.Network
 		/// </summary>
 		public int PingTime { get; private set; }
 
+        /// <summary>
+        /// The current ping we have last received since now
+        /// </summary>
+        public int LastPingTime { get { return (int)Math.Floor((DateTime.Now - lastPing).TotalMilliseconds); } }
+
 		/// <summary>
 		/// Default constructor
 		/// </summary>

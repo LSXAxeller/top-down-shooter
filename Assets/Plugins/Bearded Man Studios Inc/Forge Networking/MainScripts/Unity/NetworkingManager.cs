@@ -74,7 +74,7 @@ namespace BeardedManStudios.Network
 		{
 			get
 			{
-				if (Instance == null || !Instance.IsSetup || Instance.OwningNetWorker == null)
+                if (ReferenceEquals(Instance, null) || !Instance.IsSetup || ReferenceEquals(Instance.OwningNetWorker, null))
 					return false;
 
 				return true;
@@ -104,6 +104,8 @@ namespace BeardedManStudios.Network
 		private BMSByte playerPollData = new BMSByte();
 		private Action<List<NetworkingPlayer>> pollPlayersCallback = null;
 		private Action loadLevelFireOnConnect = null;
+
+        private Dictionary<string, GameObject> _cachedLoadedObjects = new Dictionary<string, GameObject>();
 
 		private float previousTime = 0.0f;
 		private float serverTime = 0.0f;
@@ -259,17 +261,18 @@ namespace BeardedManStudios.Network
 		public bool Populate(NetWorker socket)
 		{
 #if !BARE_METAL
-			List<SimpleNetworkedMonoBehavior> allBehaviors = new List<SimpleNetworkedMonoBehavior>(startNetworkedSceneBehaviors);
+            
+            List<SimpleNetworkedMonoBehavior> allBehaviors = new List<SimpleNetworkedMonoBehavior>(startNetworkedSceneBehaviors);
 			// Find all objects in the scene that have SNMB
 			SimpleNetworkedMonoBehavior[] behaviors = FindObjectsOfType<SimpleNetworkedMonoBehavior>();
-
-			foreach (SimpleNetworkedMonoBehavior behavior in behaviors)
+            
+            foreach (SimpleNetworkedMonoBehavior behavior in behaviors)
 			{
 				if (!allBehaviors.Contains(behavior))
 					allBehaviors.Add(behavior);
 			}
-
-			if (Networking.Sockets == null)
+            
+            if (Networking.Sockets == null)
 			{
 				Debug.LogWarning("No connection has been established for this network scene, preparing offline play...");
 				IsSetup = true;
@@ -279,8 +282,8 @@ namespace BeardedManStudios.Network
 
 				return false;
 			}
-
-			ControllingSocket = socket;
+            
+            ControllingSocket = socket;
 			OwningNetWorker = ControllingSocket;
 
 			if (!OwningNetWorker.Connected)
@@ -310,10 +313,8 @@ namespace BeardedManStudios.Network
 			ControllingSocket = socket;
 			OwningNetWorker = ControllingSocket;
 #endif
-
-			OwningNetWorker.AddCustomDataReadEvent(WriteCustomMapping.NETWORKING_MANAGER_POLL_PLAYERS, PollPlayersResponse, true);
-
-			return true;
+            OwningNetWorker.AddCustomDataReadEvent(WriteCustomMapping.NETWORKING_MANAGER_POLL_PLAYERS, PollPlayersResponse, true);
+            return true;
 		}
 
 		public static bool TryPullIdFromObject(string obj, ref ulong uniqueId)
@@ -516,25 +517,42 @@ namespace BeardedManStudios.Network
 				if (obj.name == name)
 					return obj;
 
-            GameObject find = null;
+            
 
-            foreach (GameObject obj in Resources.LoadAll(resourcesDirectory))
+            if (_cachedLoadedObjects.ContainsKey(name))
+                return _cachedLoadedObjects[name];
+            else
             {
-                if (obj.name == name)
+                GameObject find = null;
+                bool isRemote = name.Contains("(Remote)"); //Determining if this object is a remote, if we don't already have it stored
+                //Then we will skip loading resources again to try and search for it.
+
+                //If _cachedLoadedObjects.Count == 0, then this is our first time loading stuff from our resources directory
+                if ((_cachedLoadedObjects.Count == 0 || !isRemote) && !string.IsNullOrEmpty(resourcesDirectory))
                 {
-                    find = obj;
+                    foreach (GameObject obj in Resources.LoadAll<GameObject>(resourcesDirectory))
+                    {
+                        if (!_cachedLoadedObjects.ContainsKey(obj.name))
+                            _cachedLoadedObjects.Add(obj.name, obj);
+
+                        if (obj.name == name)
+                            find = obj;
+                    }
                 }
+
+
+                if (find == null)
+                {
+                    if (!string.IsNullOrEmpty(fallback))
+                        return PullObject(fallback);
+#if UNITY_EDITOR
+                    else
+                        Debug.LogError("GameObject with name " + name + " was not found in the lookup. Make sure the object is in the resources folder or in the Networking Manager \"Network Instantiates\" array in the inspector.");
+#endif
+                }
+
+                return find;
             }
-
-			if (find == null)
-			{
-				if (!string.IsNullOrEmpty(fallback))
-					return PullObject(fallback);
-				else
-					Debug.LogError("GameObject with name " + name + " was not found in the lookup. Make sure the object is in the resources folder or in the Networking Manager \"Network Instantiates\" array in the inspector.");
-			}
-
-			return find;
 		}
 
 		/// <summary>
@@ -644,10 +662,14 @@ namespace BeardedManStudios.Network
 
 			Unity.UnityEventObject.onDestroy -= SkipResetOnDestroy;
 
-			if (Threading.ThreadManagement.IsMainThread)
-				Destroy(gameObject);
-			else
-				Unity.MainThreadManager.Run(() => { Destroy(gameObject); }); // JM: make sure this is run on main thread
+            if (Threading.ThreadManagement.IsMainThread)
+                Destroy(gameObject);
+            else {
+                // JM: make sure this is run on main thread
+                Unity.MainThreadManager.Run(() => {
+                        Destroy(gameObject);
+                });
+            }
 
 			instance = null;
 		}

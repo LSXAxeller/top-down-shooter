@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 
 public class ForgeUtilities
 {
-	[MenuItem("Tools/Forge Networking/Chat")]
+	[MenuItem("Window/Forge Networking/Tools/Chat")]
 	private static void NewMenuOption()
 	{
 		GameObject.Instantiate(Resources.Load("FN_ChatWindow"));

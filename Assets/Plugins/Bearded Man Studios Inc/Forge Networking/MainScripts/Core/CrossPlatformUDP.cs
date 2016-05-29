@@ -1197,7 +1197,8 @@ namespace BeardedManStudios.Network
 								// If the receiver is out of range, do not update them with the message
 								if (UnityEngine.Vector3.Distance(stream.Sender.Position, player.Position) > ProximityMessagingDistance)
 								{
-									player.PlayerObject.ProximityOutCheck(stream.Sender.PlayerObject);
+                                    if (!ReferenceEquals(player, null) && !ReferenceEquals(player.PlayerObject, null))
+                                        player.PlayerObject.ProximityOutCheck(stream.Sender.PlayerObject);
 									if (reliable) RemoveReliable(updateidentifier, player);
 									return true;
 								}
@@ -1511,11 +1512,14 @@ namespace BeardedManStudios.Network
 				{
 					if (!Connected)
 						OnConnected();
-				}
-			}
+                }
+            } else {
+                packetManager.PacketRead(sender, header);
+                return;
+            }
 
-			// Something went wrong with the read stream
-			if (!readStream.Ready)
+            // Something went wrong with the read stream
+            if (!readStream.Ready)
 				return;
 
 			if (!IsServer)

@@ -18,9 +18,7 @@ public class GameManager : NetworkedMonoBehavior {
     
     [NetSync] public GameMode CurGameMode;
     [NetSync("OnMapChanged", NetworkCallers.Everyone)] public int SelectedMapIndex;
-    [NetSync("OnPlayersReadyChanged", NetworkCallers.Everyone)] public int PlayersReady = 0;
     [NetSync("OnGameStateChanged", NetworkCallers.Everyone)] public GameState State;
-
     private const ushort PORT = 15937;
 
     public void OnMapChanged()
@@ -54,7 +52,7 @@ public class GameManager : NetworkedMonoBehavior {
                 break;
         }
     }
-
+ 
     public void OnPlayersReadyChanged()
     {
         GUIManager.Instance.UpdatePlayersReadyText();
@@ -66,12 +64,12 @@ public class GameManager : NetworkedMonoBehavior {
     }
     
     public GameObject playerObject;
-    public bool isReady;
     public readonly float version = 0.1f;
     public delegate void ScoreChangedEventHandler();
     public ScoreChangedEventHandler OnScoreChanged;
     public List<string> maps = new List<string>();
     public UnityTileMap.TileMapBehaviour MapManager;
+    public int Timer = 10;
 
     private static GameManager _instance;
     private bool isBusyFindingLan = false;
@@ -100,6 +98,21 @@ public class GameManager : NetworkedMonoBehavior {
         }
     }
 
+    private int playersReady;
+    internal bool isReady;
+
+    public int PlayersReady {
+        get
+        {
+            return playersReady;
+        }
+        set
+        {
+            playersReady = value;
+            OnPlayersReadyChanged();
+        }
+    }
+
     public void Start()
     {
         maps.Add("Test_Map_1");
@@ -123,12 +136,11 @@ public class GameManager : NetworkedMonoBehavior {
             if (target == null)
             {
                 Debug.Log("No server found on LAN");
-                AttemptHosting();
                 return;
             }
 
             string ipAddress = string.Empty;
-            ushort targetPort = 0;
+            ushort targetPort = PORT;
             
             ipAddress = target.Address.ToString();
             targetPort = (ushort)target.Port;
@@ -196,10 +208,13 @@ public class GameManager : NetworkedMonoBehavior {
             GUIManager.Instance.SetupGUIClient();
         }
 
-        foreach (NetworkingPlayer player in Networking.PrimarySocket.Players)
+        NetworkingManager.Instance.PollPlayerList((players) =>
         {
-            GUIManager.Instance.AddPlayerToList(player.Name, player.MessageGroup);
-        }
+            foreach (var player in players)
+            {
+                GUIManager.Instance.AddPlayerToList(player.Name, player.MessageGroup);
+            }
+        });
 
         Networking.PrimarySocket.playerConnected += OnPlayerLobbyJoin;
     }
@@ -212,8 +227,11 @@ public class GameManager : NetworkedMonoBehavior {
 
     private void StartGame()
     {
-        GUIManager.Instance.AddNotification("Game is about to start!");
-        StartCoroutine(CountDown(5, 3));
+        if (State != GameState.Playing)
+        {
+            GUIManager.Instance.AddNotification("Game is about to start!");
+            StartCoroutine(CountDown(5, Timer));
+        }
     }
 
     private IEnumerator CountDown(int seconds, int minutes)
@@ -251,7 +269,7 @@ public class GameManager : NetworkedMonoBehavior {
         MapManager.ImportMap(Application.streamingAssetsPath + "/" + maps[0] + ".map");
         MapManager.CreateEntities();
 
-        SpawnPlayer();
+        SpawnPlayer(OwningPlayer.Name, OwningPlayer.MessageGroup);
     }
 
     private void SetGameMode()
@@ -280,10 +298,27 @@ public class GameManager : NetworkedMonoBehavior {
             RPC("ChangeMap", index);
         }
     }
-    
-    public void SpawnPlayer()
+
+    [BRPC]
+    public void UpdateStats(string playerName, Vector3 pos, int id)
     {
-         Networking.Instantiate(playerObject, SpawnManager.Instance.GetTeamSpawnPosition(OwningPlayer.MessageGroup), Quaternion.identity);
+        foreach(var player in FindObjectsOfType<Deftly.Subject>())
+        {
+            if(player.Stats.Title == playerName || player.name == playerName)
+            {
+                player.transform.position = pos;
+                Debug.Log(player.Stats.Title + " team id been set to " + id);
+                player.Stats.TeamId = id;
+            }
+        }
+    }
+
+    public void SpawnPlayer(string name, int id)
+    {
+         Networking.Instantiate(playerObject, SpawnManager.Instance.GetTeamSpawnPosition(OwningPlayer.MessageGroup), Quaternion.identity, NetworkReceivers.All, (player) => {
+             Vector3 position = SpawnManager.Instance.GetTeamSpawnPosition(id);
+             RPC("UpdateStats", name, position, id);
+         });
          Camera.main.GetComponent<DeftlyCamera>().enabled = true;
     }
     
@@ -297,10 +332,16 @@ public class GameManager : NetworkedMonoBehavior {
         return Networking.PrimarySocket.Players.Find(player => player.Name == name);
     }
 
-    public void OwnerReadyUp(bool state)
+    public void ReadyUp(bool state)
     {
         isReady = state;
+        RPC("RPCReadyUp", state);
+    }
 
+    [BRPC]
+    public void RPCReadyUp(bool state)
+    {
+        
         if (state == true)
             PlayersReady++;
         else if (state == false)
@@ -312,12 +353,13 @@ public class GameManager : NetworkedMonoBehavior {
     {
         Debug.Log("My master, my sir LEFT ME!");
         Networking.Disconnect();
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene("MainMenu");
     }
 
     protected override void NetworkDisconnect()
     {
         base.NetworkDisconnect();
+        GUIManager.Instance.RemovePlayerFromList(OwningPlayer.Name, OwningPlayer.MessageGroup);
         SceneManager.LoadScene(1);
     }
 }

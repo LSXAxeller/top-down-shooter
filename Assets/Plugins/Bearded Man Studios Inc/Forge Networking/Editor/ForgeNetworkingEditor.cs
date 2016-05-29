@@ -27,7 +27,7 @@ using UnityEngine;
 
 public class ForgeNetworkingEditor : EditorWindow
 {
-	public const float CURRENT_VERSION = 18.0f;
+	public const float CURRENT_VERSION = 19.21f;
 
 	private static ForgeNetworkingEditor Instance;
 	//private Texture2D ForgeIcon;
@@ -221,7 +221,8 @@ public class ForgeNetworkingEditor : EditorWindow
 		}
 	}
 
-	[MenuItem("Window/Forge Networking/Forge Editor %G")]
+    //Disabled until we re-implement it back in
+	//[MenuItem("Window/Forge Networking/Forge Editor %G")]
 	public static void Init()
 	{
 		if (Instance != null)

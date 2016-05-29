@@ -106,6 +106,7 @@ namespace Deftly
             else
             {
                 t.Delete();
+
                 writer = t.CreateText();
             }
             writer.Write(_dataAsString);

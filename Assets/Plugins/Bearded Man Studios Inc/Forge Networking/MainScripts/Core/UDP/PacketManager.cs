@@ -8,12 +8,13 @@ namespace BeardedManStudios.Network
 		public DateTime receiveTime;
 		public Header data;
 
-		public Packet(DateTime time, Header data)
-		{
-			receiveTime = time;
-			this.data = data;
-		}
-	}
+        public Packet(DateTime time, Header data) {
+            receiveTime = time;
+            Header head = new Header(data.updateId, data.packetGroupId, data.packetCount, data.packetOrderId, data.reliable);
+            head.Clone(data);
+            this.data = head;
+        }
+    }
 
 	public class PacketList
 	{

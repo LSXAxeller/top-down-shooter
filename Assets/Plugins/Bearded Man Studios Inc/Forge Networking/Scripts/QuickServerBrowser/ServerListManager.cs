@@ -63,6 +63,14 @@ public class ServerListManager : MonoBehaviour
 
 				foreach (HostInfo host in hosts)
 				{
+#if UNITY_EDITOR
+                    //You can get a ping from the client to a host by doing this!
+                    Networking.Ping(host, (hostInfo) =>
+                    {
+                        Debug.Log(string.Format("Ping to host({0}) is: {1}", hostInfo.ipAddress, hostInfo.LastPingTime));
+                    });
+#endif
+
 					GameObject gO = Instantiate(ServerListItemPrefab) as GameObject;
 					gO.transform.parent = Grid;
 					gO.GetComponent<ServerListItem>().SetupServerListItem(host);

@@ -7,9 +7,26 @@ Main Unity Forum Thread:  http://forum.unity3d.com/threads/superpowered-cross-pl
 Beginner Videos:   https://www.youtube.com/playlist?list=PLaMPnrbpanJ7DazlqTkZHHBSt8D5dx4Um
 Intermediate Videos:  https://www.youtube.com/playlist?list=PLaMPnrbpanJ6DC4RmaEbyHgcnqi6HrfTt
 
+Release V19.22:
+	Added functionality for clients to ping a host
+
+Release V19.21:
+	Fixed Large Packets not sending properly
+
+Release V19.2:
+	Documentation overhaul, everything is now properly documented out
+	Fixed Lan Discovery
+	Updated examples
+	Fixed cache pulling remote objects and displaying warnings
+	Fix for Forge Zombies Example when tracking bandwith
+	Bug fix for Webplayer
+	Bug fix for offline play when using cached game objects
+	Update for future bare metal support
+
 Release V19.1:
 	Bug fixes for Resources are now loading all subfolders instead of the listed folder
 	Additional null reference checks on instantiate for offline play
+
 Release V19:
 	Allowed optional params in RPC
 	Resources are now loading all subfolders instead of the listed folder

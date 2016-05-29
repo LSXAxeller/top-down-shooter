@@ -161,7 +161,7 @@ namespace BeardedManStudios.Network
 		/// </summary>
 		public override void GetNewPlayerUpdates()
 		{
-			Me = new NetworkingPlayer(Uniqueidentifier, "127.0.0.1", null, "PLAYER"+UnityEngine.Random.Range(0,100000));
+			Me = new NetworkingPlayer(Uniqueidentifier, "127.0.0.1", null, string.Empty);
 
 			BMSByte tmp = new BMSByte();
 			ObjectMapper.MapBytes(tmp, "update");

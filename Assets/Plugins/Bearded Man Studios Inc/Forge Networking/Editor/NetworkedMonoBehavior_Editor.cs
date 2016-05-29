@@ -148,7 +148,7 @@ public class NetworkedMonoBehavior_Editor : SNMB_Parent_Editor
 
 		_editorButtons.Add(easyControlsButton);
 
-		buttonStyle = new ForgeButtonStyle("Miscellanous", btnUp, btnUp, null, 200);
+        buttonStyle = new ForgeButtonStyle("Miscellaneous", btnUp, btnUp, null, 200);
 
 		MiscellaneousButton miscButton = new MiscellaneousButton(buttonStyle);
 		miscButton.Initialize("For things that constantly update like position and rotation you would normally not turn on reliable.",

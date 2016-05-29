@@ -23,9 +23,37 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
-namespace BeardedManStudios.Network
-{
-	public class ForgeTransportObject
+namespace BeardedManStudios.Network {
+    /// <summary>
+    /// A serializable class that can be sent across the network. Only the supported serialization Types (seen in NetSync) can be serialized and sent
+    /// in a ForgeTransportObject. A class must inherit from the ForgeTransportObject to function as one, then you use the Send() method to send the object.
+    /// You must subscribe to the event described in the documentation for Send(), you can also specify who receives the object with a parameter in Send().
+    /// 
+    /// Below is an example class of a ForgeTransportObject
+    /// <code>
+    /// public class ForgeExample_ObjectToTransport : ForgeTransportObject
+    ///{
+    ///	public int apple = 0;
+    ///   public float brent = 9.93f;
+    ///   public string cat = "cat";
+    /// public bool dog = false;
+    ///
+    /// public ForgeExample_ObjectToTransport()
+	///	: base()
+	///{
+    ///
+    ///}
+    ///
+    ///public override string ToString() {
+    ///    return "apple: " + apple.ToString() + "\n" +
+    ///       "brent: " + brent.ToString() + "\n" +
+    ///        "cat: " + cat + "\n" +
+    ///        "dog: " + dog.ToString();
+    ///}
+    ///}
+    /// </code>
+    /// </summary>
+public class ForgeTransportObject
 	{
 		public delegate void TransportFinished(ForgeTransportObject target);
 
@@ -82,6 +110,16 @@ namespace BeardedManStudios.Network
 #endif
 		}
 
+        /// <summary>
+        /// Sends the forge transport object
+        /// </summary>
+        /// <param name="receivers">who will receive the transport object</param>
+        /// <param name="reliable">send the packet reliably/unreliably</param>
+        /// <remarks>
+        /// Serializes the forge transport object, then sends it to all clients specified by the receivers. 
+        /// Subscribe a method to ForgeTransportObject.transportObject.transportFinished to decide what method should
+        /// be executed when the object is received.
+        /// </remarks>
 		public void Send(NetworkReceivers receivers = NetworkReceivers.Others, bool reliable = true)
 		{
 			lock (serializerMutex)

@@ -87,12 +87,16 @@ public class GUIManager : MonoBehaviour {
 
     public void UpdatePlayersReadyText()
     {
-        PlayersReadyText.text = GameManager.Instance.PlayersReady + "/" + Networking.PrimarySocket.ServerPlayerCounter + " players are ready.";
+        NetworkingManager.Instance.PollPlayerList((playerList) =>
+        {
+            PlayersReadyText.text = GameManager.Instance.PlayersReady + "/" + playerList.Count + " players are ready.";
+        });
     }
 
     public void GUIReadyUp()
     {
-        GameManager.Instance.OwnerReadyUp(true);
+        GameManager.Instance.ReadyUp(true);
+        
         UpdatePlayersReadyText();
     }
 
@@ -140,7 +144,7 @@ public class GUIManager : MonoBehaviour {
 
     public void GUIReadyDown()
     {
-        GameManager.Instance.OwnerReadyUp(false);
+        GameManager.Instance.ReadyUp(false);
     }
 
     public void GUIGameType()
@@ -155,19 +159,23 @@ public class GUIManager : MonoBehaviour {
 
     public void GUIPlayerName()
     {
+        RemovePlayerFromList(Networking.PrimarySocket.Me.Name, Networking.PrimarySocket.Me.MessageGroup);
         Networking.PrimarySocket.Me.SetName(PlayerNameInput.text);
-        AddNotification("Your name has been set to: " + PlayerNameInput.text);
+        AddPlayerToList(Networking.PrimarySocket.Me.Name, Networking.PrimarySocket.Me.MessageGroup);
+        AddNotification("Your name has been set to: " + Networking.PrimarySocket.Me.Name);
     }
 
     public void GUITeamID()
     {
         Networking.PrimarySocket.Me.SetMessageGroup(ushort.Parse(TeamInput.text));
-        AddNotification("Your team has been set");
+        SetTeamPlayerList(Networking.PrimarySocket.Me.Name, Networking.PrimarySocket.Me.MessageGroup);
+        AddNotification("Your team has been set to id: " + Networking.PrimarySocket.Me.MessageGroup);
     }
 
     public void GUIPointLimit()
     {
-
+        GameManager.Instance.Timer = int.Parse(PointLimitInput.text);
+        AddNotification("Your timer has been set to: "+ GameManager.Instance.Timer + " minutes");
     }
 
     public void GUIBanPlayer()
@@ -197,6 +205,33 @@ public class GUIManager : MonoBehaviour {
         }
     }
 
+    public void RemovePlayerFromList(string name, int teamID)
+    {   
+        if (teamID == 0)
+        {
+            Destroy(LeftTeamList.transform.FindChild(name).gameObject);
+        }
+        else if (teamID == 1)
+        {
+            Destroy(LeftTeamList.transform.FindChild(name).gameObject);
+        }
+        else
+        {
+            if(LeftTeamList.transform.FindChild(name) != null)
+                Destroy(LeftTeamList.transform.FindChild(name).gameObject);
+            if(RightTeamList.transform.FindChild(name) != null)
+                Destroy(RightTeamList.transform.FindChild(name).gameObject);
+        }
+    }
+
+    public void SetTeamPlayerList(string name, int teamID)
+    {
+        if (LeftTeamList.transform.FindChild(name) != null)
+            LeftTeamList.transform.FindChild(name).SetParent(LeftTeamList.transform);
+        if (RightTeamList.transform.FindChild(name) != null)
+            RightTeamList.transform.FindChild(name).SetParent(LeftTeamList.transform);
+    }
+
     public void AddPlayerToList(string name, int teamID)
     {
         UpdatePlayersReadyText();
@@ -215,8 +250,24 @@ public class GUIManager : MonoBehaviour {
             item.transform.SetAsLastSibling();
             item.GetComponent<Image>().color = TeamColors[1];
         }
+        else
+        {
+            item.transform.SetParent(LeftTeamList.transform);
+            item.transform.SetAsLastSibling();
+            item.GetComponent<Image>().color = TeamColors[0];
+        }
 
-        item.GetComponentInChildren<Text>().text = "Name: " + name;
+        if (string.IsNullOrEmpty(name))
+        {
+            gameObject.name = "Unknown_" + UnityEngine.Random.Range(100, 999);
+        }
+        else
+        {
+            gameObject.name = name;
+        }
+
+        item.GetComponentInChildren<Text>().text = "Name: " + gameObject.name;
+
     }
 
     public void AddNotification(string notification)

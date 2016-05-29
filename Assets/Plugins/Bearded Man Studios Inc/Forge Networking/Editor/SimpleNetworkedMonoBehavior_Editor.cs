@@ -41,6 +41,9 @@ public class SNMB_Parent_Editor : Editor
 
 			foreach (SimpleNetworkedMonoBehavior behavior in ((NetworkingManager)behaviors[0]).startNetworkedSceneBehaviors)
 			{
+                if (behavior == null)
+                    continue;
+
 				if (!behaviors.Contains(behavior))
 					behaviors.Add(behavior);
 			}

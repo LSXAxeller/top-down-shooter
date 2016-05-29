@@ -13,6 +13,10 @@ namespace BeardedManStudios.Network
 	/// <summary>
 	/// The main class for managing and communicating data from the server cache
 	/// </summary>
+    /// <remarks>
+    /// Cache is used to store any arbitrary data for your game, you can deposit supported data types to the server with a key, then access them again
+    /// on any client by using the key to access the specific data stored. Cache.Set() and Cache.Request() being the two primary ways to use Cache.
+    /// </remarks>
 	public static class Cache
 	{
 		// Default expiry datetime for a cached object.
@@ -205,6 +209,19 @@ namespace BeardedManStudios.Network
 		/// </summary>
 		/// <param name="key">The name variable used for storing the desired object</param>
 		/// <returns>The string data at the desired key or null</returns>
+        /// <remarks>
+        /// Allows a client (or the server) to get a value from the Cache, the value is read directly from the server.
+        /// A callback must be specified, this is because the code has to be executed after a moment when the response from the server
+        /// is received. Request can be done like this:
+        /// <code>
+        /// void getServerDescription(){
+        /// Cache.Request<string>("server_description", delegate (object response){
+        ///     Debug.Log(((string) response));
+        /// });
+        /// }
+        /// </code>
+        /// The Cache only supports Forge's supported data Types, you can find a list of supported data Types in the NetSync documentation...
+        /// </remarks>
 		public static void Request<T>(string key, Action<object> callback)
 		{
 			CheckSetup();
@@ -282,6 +299,9 @@ namespace BeardedManStudios.Network
 		/// <typeparam name="T">The serializable type of object</typeparam>
 		/// <param name="key">The name variable used for storing the specified object</param>
 		/// <param name="value">The object that is to be stored into cache</param>
+        /// <remarks>
+        /// This inputs a value into the cache, this can only be called on the server, you can only input Types forge supports (See NetSync for supported Types).
+        /// </remarks>
 		public static void Set<T>(string key, T value)
 		{
 			Set(key, value, maxDateTime);
