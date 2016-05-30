@@ -57,9 +57,8 @@ GameObject:
   m_Component:
   - 4: {fileID: 444256}
   - 50: {fileID: 5018508}
-  - 114: {fileID: 11433492}
-  - 114: {fileID: 11498152}
   - 114: {fileID: 11456382}
+  - 114: {fileID: 11498152}
   - 114: {fileID: 11498098}
   - 58: {fileID: 5875330}
   m_Layer: 0
@@ -359,7 +358,7 @@ Rigidbody2D:
   m_GameObject: {fileID: 143122}
   m_UseAutoMass: 1
   m_Mass: 0.7853982
-  m_LinearDrag: 0
+  m_LinearDrag: 100
   m_AngularDrag: 0.05
   m_GravityScale: 1
   m_IsKinematic: 0
@@ -381,34 +380,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
---- !u!114 &11433492
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 143122}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 373b52eb9bf8c40f785bb6947a1aee66, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  drawGizmos: 1
-  detailedGizmos: 0
-  startEndModifier:
-    priority: 1
-    addPoints: 0
-    exactStartPoint: 3
-    exactEndPoint: 3
-    useRaycasting: 0
-    mask:
-      serializedVersion: 2
-      m_Bits: 4294967295
-    useGraphRaycasting: 0
-  traversableTags: -1
-  traversableTagsCompatibility:
-    tagsChange: -1
-    tagsSet: -1
-  tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 --- !u!114 &11456382
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -417,16 +388,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 143122}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2cfd0fe508b0e4c489100916273ef280, type: 3}
+  m_Script: {fileID: 11500000, guid: 70d280988a4eafe46b775d1528b03c17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  repathRate: 2.68
-  canSearch: 1
-  canMove: 1
-  slowdownDistance: 0.6
-  pickNextWaypointDist: 2
-  forwardLook: 1
-  closestOnPathCheck: 1
+  remainingDistance: 0
+  stoppingDistance: 0
+  desiredVelocity: {x: 0, y: 0, z: 0}
+  destination: {x: 0, y: 0, z: 0}
+  isPathStale: 0
+  speed: 0
 --- !u!114 &11498098
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -439,9 +409,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LogDebug: 0
-  DrawGizmos: 1
+  DrawGizmos: 0
   IgnoreUpdates: 2
-  SenseFrequency: 2
+  SenseFrequency: 1
   MyProvokeType: 0
   MyThreatPriority: 0
   ProvokeDelay: 1
@@ -449,26 +419,25 @@ MonoBehaviour:
   MaxAllyCount: 10
   Provoked: 0
   FleeHealthThreshold: 47
-  AlertTime: 3
+  AlertTime: 10
   RetargetDamageThreshold: 0
   JukeTime: 2
   JukeFrequency: 0
   JukeFrequencyRandomness: 1
   FieldOfView: 30
-  SightRange: 5
+  SightRange: 15
   PursueRange: 10
   AttackRange: 0
   WanderRange: 3.32
   EngageThreshold: 1
   SightMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 256
   ThreatMask:
     serializedVersion: 2
     m_Bits: 256
   PatrolPoints: []
   MaxDeviation: 15
-  Agent: {fileID: 0}
   AnimatorDirection: direction
   AnimatorSpeed: speed
   AllyList: []
@@ -605,7 +574,7 @@ MonoBehaviour:
     AnimatorSwap: swap
     AnimatorWeaponType: IsMelee
   WeaponListEditor:
-  - {fileID: 0}
+  - {fileID: 102484, guid: 23b8969b400c6ba4fa69d56decfb4423, type: 2}
   WeaponListRuntime: []
   SwapSound: {fileID: 0}
   LogDebug: 0

@@ -366,6 +366,7 @@ namespace Deftly
             wx.Owner = this;
 
             WeaponListRuntime.Add(newToy);
+            
             newToy.transform.SetParent(gameObject.transform);
             newToy.SetActive(false);
 

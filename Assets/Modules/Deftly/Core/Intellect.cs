@@ -9,7 +9,6 @@ namespace Deftly
 {
     [AddComponentMenu("Deftly/Intellect")]
     [RequireComponent(typeof(Subject))]
-    [RequireComponent(typeof(Seeker))]
     [RequireComponent(typeof(Agent))]
     public class Intellect : MonoBehaviour
     {
@@ -57,7 +56,7 @@ namespace Deftly
 
         // NAVIGATION
         public float MaxDeviation;
-        public Agent Agent;
+        internal Agent Agent;
         public string AnimatorDirection;
         public string AnimatorSpeed;
 
@@ -81,7 +80,7 @@ namespace Deftly
         private static float _editorGizmoSpin;
         private Vector3 _victimLastPos;
         private Rigidbody2D _rb;
-        private CapsuleCollider _collider;
+        private CircleCollider2D _collider;
         private Vector3 _myCurPos;
 
         protected bool NoAmmoLeft;
@@ -153,10 +152,10 @@ namespace Deftly
         void Start()
         {
             _go = gameObject;
-            _collider = GetComponent<CapsuleCollider>();
+            _collider = GetComponent<CircleCollider2D>();
 
             //_curPatrol = 0;
-            _hasWeapons = (ThisSubject.WeaponListRuntime.Count > 0);
+            CheckIfHasWeapons();
 
             Fleeing = false;
             MyMood = Mood.Combat;
@@ -164,11 +163,17 @@ namespace Deftly
             ThisSubject.OnDeath += Die;
             ThisSubject.OnAttacked += Attacked;
             ThisSubject.OnSwitchedWeapon += UpdateWeapon;
-
+            CheckIfHasWeapons();
             if (_hasWeapons) UpdateWeapon(ThisSubject.GetCurrentWeaponGo());
 
             StartCoroutine(StateMachine());
         }
+
+        public void CheckIfHasWeapons()
+        {
+            _hasWeapons = (ThisSubject.WeaponListRuntime.Count > 0);
+        }
+
         void OnDrawGizmos()
         {
             _editorGizmoSpin+=0.02f;
@@ -234,6 +239,7 @@ namespace Deftly
         // Primary loop and context/condition analysis
         void DoLocomotion()
         {
+            CheckIfHasWeapons();
             // aim either at the target or toward our path.
             if (Provoked && _hasWeapons && Target != null)
             {
@@ -293,6 +299,7 @@ namespace Deftly
         }
         private IEnumerator ProcessConditions()
         {
+            CheckIfHasWeapons();
             if (ThisSubject.IsDead) yield break;
             if (MyMood != Mood.Combat && _hasWeapons) _weapon.Attacking = false;
             if (MyProvokeType == ProvokeType.TargetAttackedMe) Fleeing = (ThisSubject.Health <= FleeHealthThreshold && ThisSubject.LastAttacker);
@@ -410,7 +417,7 @@ namespace Deftly
         private IEnumerator Flee()
         {
             if (ThisSubject.IsDead) yield break;
-
+            CheckIfHasWeapons();
             if (_hasWeapons) _weapon.Attacking = false;
             AgentStoppingDistance = 0;
             if (DistToTarget >= SightRange)
@@ -457,10 +464,11 @@ namespace Deftly
         private IEnumerator Combat()
         {
             if (LogDebug) Debug.Log(_go.name + " Mood: Combat!...");
+            /*CheckIfHasWeapons();
             if (!_hasWeapons) yield break;
             if (_waiting) yield break;
             if (_needToReload && !_weapon.IsReloading) yield return _weapon.StartCoroutine("Reload"); // TODO is there a better way to call this so it can refactor clean?
-            if (ThisSubject.IsDead) yield break;
+            if (ThisSubject.IsDead) yield break;*/
             if (!Target)
             {
                 _weapon.Attacking = false;
@@ -477,15 +485,12 @@ namespace Deftly
                 _weapon.Attacking = false;
                 yield break;
             }
-            
             // At this point, I know I *could* fire my weapon.
             // If I'm in range, look at the target, if I'm not, Move to it.
-            
             _distanceToTarget = DistToTarget; // this is caching a variable used by other routines.
-            if (TargetCanBeSeen(Target.gameObject) && TargetIsInRange())
+            if (TargetCanBeSeen(Target.gameObject) || TargetIsInRange())
             {
                 if (JukeTime > 0f && !_juking) StartCoroutine(Juke());
-
                 _weapon.Attacking = _weapon.Stats.WeaponType == WeaponType.Melee || TargetIsInFov();
                 AgentStoppingDistance = AttackRange;
             }
@@ -712,7 +717,7 @@ namespace Deftly
         public void LookAt(Vector3 position)                // look at a specific position
         {
             if (Target.IsDead) return;
-            Agent.RotateTowards(position - transform.position);
+            Agent.RotateTowards(position);
         }
         public void LeadTarget(GameObject victim)           // lead the target, compensating for their trajectory and projectile speed
         {
@@ -791,13 +796,14 @@ namespace Deftly
         {
             bool inSight = false;
             Vector3 direction = (interest.transform.position - transform.position).normalized;
-            Vector3 origin = transform.position + (direction * _collider.radius);
+            Vector3 origin = transform.position;
 
             RaycastHit2D hit = Physics2D.Raycast(origin, direction, SightRange, SightMask);
             if (hit.collider != null)
             {
                 if (hit.collider.gameObject == interest) inSight = true;
             }
+
             return inSight;
         }
         bool TargetIsInFov()                                // check the FOV area for the target
@@ -862,7 +868,7 @@ namespace Deftly
         }
 
         // Agent accessors 
-        public Agent AgentGetComponent
+        internal Agent AgentGetComponent
         {
             get
             {
@@ -872,6 +878,7 @@ namespace Deftly
 
         public void AgentResume()
         {
+            Agent.CalculatePath();
             Agent.Resume();
         }
         public void AgentStop()
@@ -898,7 +905,7 @@ namespace Deftly
         public Vector3 AgentDestination
         {
             get { return Agent.destination; } 
-            set { Agent.destination = value; }
+            set { Agent.destination = value; Agent.CalculatePath(); }
         }
         public bool AgentIsPathStale
         {
