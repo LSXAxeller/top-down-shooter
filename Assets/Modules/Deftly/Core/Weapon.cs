@@ -1,6 +1,4 @@
-﻿// (c) Copyright Cleverous 2015. All rights reserved.
-
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 

@@ -3,9 +3,9 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Collections;
 using BeardedManStudios.Network;
-using System;
 
-public class GUIManager : MonoBehaviour {
+public class GUIManager : MonoBehaviour
+{
 
     public enum MenuCanvas
     {
@@ -14,7 +14,7 @@ public class GUIManager : MonoBehaviour {
         GameSetup = 2,
         Pause = 3
     };
-    
+
     public CanvasGroup HUD;
     public CanvasGroup Scoreboard;
     public CanvasGroup GameSetup;
@@ -44,7 +44,7 @@ public class GUIManager : MonoBehaviour {
     private List<string> pendingNotifications = new List<string>();
     private string currentNotification;
     private float notificationTimer = 1.0f;
-    private static GUIManager _instance; 
+    private static GUIManager _instance;
 
     public static GUIManager Instance
     {
@@ -96,7 +96,7 @@ public class GUIManager : MonoBehaviour {
     public void GUIReadyUp()
     {
         GameManager.Instance.ReadyUp(true);
-        
+
         UpdatePlayersReadyText();
     }
 
@@ -136,7 +136,7 @@ public class GUIManager : MonoBehaviour {
             }
         });
 
-        foreach(GameObject panel in ServerOnlyGameSetupList)
+        foreach (GameObject panel in ServerOnlyGameSetupList)
         {
             panel.SetActive(false);
         }
@@ -149,7 +149,7 @@ public class GUIManager : MonoBehaviour {
 
     public void GUIGameType()
     {
-        
+
     }
 
     public void GUIServerName()
@@ -175,7 +175,7 @@ public class GUIManager : MonoBehaviour {
     public void GUIPointLimit()
     {
         GameManager.Instance.Timer = int.Parse(PointLimitInput.text);
-        AddNotification("Your timer has been set to: "+ GameManager.Instance.Timer + " minutes");
+        AddNotification("Your timer has been set to: " + GameManager.Instance.Timer + " minutes");
     }
 
     public void GUIBanPlayer()
@@ -190,7 +190,7 @@ public class GUIManager : MonoBehaviour {
         Application.Quit();
     }
 
-    private void Update ()
+    private void Update()
     {
         if (GameManager.Instance.State == GameState.Playing)
         {
@@ -206,7 +206,7 @@ public class GUIManager : MonoBehaviour {
     }
 
     public void RemovePlayerFromList(string name, int teamID)
-    {   
+    {
         if (teamID == 0)
         {
             Destroy(LeftTeamList.transform.FindChild(name).gameObject);
@@ -217,9 +217,9 @@ public class GUIManager : MonoBehaviour {
         }
         else
         {
-            if(LeftTeamList.transform.FindChild(name) != null)
+            if (LeftTeamList.transform.FindChild(name) != null)
                 Destroy(LeftTeamList.transform.FindChild(name).gameObject);
-            if(RightTeamList.transform.FindChild(name) != null)
+            if (RightTeamList.transform.FindChild(name) != null)
                 Destroy(RightTeamList.transform.FindChild(name).gameObject);
         }
     }
@@ -238,13 +238,13 @@ public class GUIManager : MonoBehaviour {
 
         GameObject item = Instantiate(VerticalScrollItem);
 
-        if(teamID == 0)
-        {          
+        if (teamID == 0)
+        {
             item.transform.SetParent(LeftTeamList.transform);
             item.transform.SetAsLastSibling();
             item.GetComponent<Image>().color = TeamColors[0];
         }
-        else if(teamID == 1)
+        else if (teamID == 1)
         {
             item.transform.SetParent(RightTeamList.transform);
             item.transform.SetAsLastSibling();
@@ -317,7 +317,7 @@ public class GUIManager : MonoBehaviour {
     public void SetAmmoBar(float ammo)
     {
         string ammoText = "";
-        for(int i=0; i<ammo; i++)
+        for (int i = 0; i < ammo; i++)
         {
             ammoText += "I";
         }
@@ -334,7 +334,7 @@ public class GUIManager : MonoBehaviour {
         switch ((int)index)
         {
             case 0:
-                HUD.alpha = 1.0f;                
+                HUD.alpha = 1.0f;
                 Scoreboard.alpha = 0.0f;
                 GameSetup.alpha = 0.0f;
                 Pause.alpha = 0.0f;

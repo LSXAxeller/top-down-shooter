@@ -14,11 +14,15 @@ public enum GameState
     Counting
 }
 
-public class GameManager : NetworkedMonoBehavior {
-    
-    [NetSync] public GameMode CurGameMode;
-    [NetSync("OnMapChanged", NetworkCallers.Everyone)] public int SelectedMapIndex;
-    [NetSync("OnGameStateChanged", NetworkCallers.Everyone)] public GameState State;
+public class GameManager : NetworkedMonoBehavior
+{
+
+    [NetSync]
+    public GameMode CurGameMode;
+    [NetSync("OnMapChanged", NetworkCallers.Everyone)]
+    public int SelectedMapIndex;
+    [NetSync("OnGameStateChanged", NetworkCallers.Everyone)]
+    public GameState State;
     private const ushort PORT = 15937;
 
     public void OnMapChanged()
@@ -52,7 +56,7 @@ public class GameManager : NetworkedMonoBehavior {
                 break;
         }
     }
- 
+
     public void OnPlayersReadyChanged()
     {
         GUIManager.Instance.UpdatePlayersReadyText();
@@ -62,7 +66,7 @@ public class GameManager : NetworkedMonoBehavior {
             State = GameState.Ready;
         }
     }
-    
+
     public GameObject playerObject;
     public readonly float version = 0.1f;
     public delegate void ScoreChangedEventHandler();
@@ -101,7 +105,8 @@ public class GameManager : NetworkedMonoBehavior {
     private int playersReady;
     internal bool isReady;
 
-    public int PlayersReady {
+    public int PlayersReady
+    {
         get
         {
             return playersReady;
@@ -122,7 +127,7 @@ public class GameManager : NetworkedMonoBehavior {
 
     public void QuickStart()
     {
-            //AttemptHosting();
+        //AttemptHosting();
     }
 
     public void StartClient()
@@ -141,7 +146,7 @@ public class GameManager : NetworkedMonoBehavior {
 
             string ipAddress = string.Empty;
             ushort targetPort = PORT;
-            
+
             ipAddress = target.Address.ToString();
             targetPort = (ushort)target.Port;
 
@@ -155,9 +160,9 @@ public class GameManager : NetworkedMonoBehavior {
     {
         NetWorker socket = null;
         socket = Networking.Host(PORT, Networking.TransportationProtocolType.UDP, 16, false);
-        socket.error += PrimarySocket_error; 
+        socket.error += PrimarySocket_error;
 
-        if(socket == null)
+        if (socket == null)
         {
             StartClient();
         }
@@ -173,7 +178,7 @@ public class GameManager : NetworkedMonoBehavior {
             // Trying to connect to same port error code is 10048, we only want to retry on that one
             if (((System.Net.Sockets.SocketException)exception).ErrorCode == 10048)
             {
-                Debug.Log("Port " + PORT + " is in use, trying next port");               
+                Debug.Log("Port " + PORT + " is in use, trying next port");
             }
             else
                 Debug.LogException(exception);
@@ -237,7 +242,7 @@ public class GameManager : NetworkedMonoBehavior {
     private IEnumerator CountDown(int seconds, int minutes)
     {
         State = GameState.Counting;
-               
+
         int startTime = seconds;
         while (startTime >= 0)
         {
@@ -269,26 +274,7 @@ public class GameManager : NetworkedMonoBehavior {
         MapManager.ImportMap(Application.streamingAssetsPath + "/" + maps[0] + ".map");
         MapManager.CreateEntities();
 
-        SpawnPlayer(OwningPlayer.Name, OwningPlayer.MessageGroup);
-    }
-
-    private void SetGameMode()
-    {
-        if (CurGameMode == GameMode.TeamDeathMatch)
-        {          
-            // GUIManager.Instance.TeamSelectionMenu = GUIManager.Instance.TeamSelectionTDMMenu;
-            // GUIManager.Instance.Scoreboard = GUIManager.Instance.TDMScoreboard;
-        }
-        else if (CurGameMode == GameMode.DeathMatch)
-        {
-            // GUIManager.Instance.TeamSelectionMenu = GUIManager.Instance.TeamSelectionFFAMenu;
-            // GUIManager.Instance.Scoreboard = GUIManager.Instance.FFAScoreboard;
-        }
-        else if (CurGameMode == GameMode.CaptureTheFlag)
-        {
-            // GUIManager.Instance.TeamSelectionMenu = GUIManager.Instance.TeamSelectionCTFMenu;
-            // GUIManager.Instance.Scoreboard = GUIManager.Instance.TDMScoreboard;
-        }
+        InitiatePlayer("AK47", "M4A1", null);
     }
 
     public void BroadcastChangeMap(int index)
@@ -299,35 +285,32 @@ public class GameManager : NetworkedMonoBehavior {
         }
     }
 
-    [BRPC]
-    public void UpdateStats(string playerName, Vector3 pos, int id)
+    public void InitiatePlayer(string primary, string secondary, string grenade)
     {
-        foreach(var player in FindObjectsOfType<Deftly.Subject>())
+        /*
+        GUIManager.Instance.OnWeaponChanged -= InitiatePlayer;
+        object[] weaponIndicies = new object[]
+                                      {
+                                          PrimaryWeaponsList.IndexOf(primary), 
+                                          SecondaryWeaponsList.IndexOf(secondary),
+                                          GranadeList.IndexOf(granade)
+                                      };
+        GameObject player = PhotonNetwork.Instantiate("Player", _spawnPositions[Random.Range(0, _spawnPositions.Length)].transform.position, Quaternion.identity, 0, weaponIndicies);
+        player.GetComponent<Player>().OnScoreChanged += ScoreChanged;
+        */
+        Networking.Instantiate(playerObject, SpawnManager.Instance.GetTeamSpawnPosition(0), Quaternion.identity, NetworkReceivers.All, (player) =>
         {
-            if(player.Stats.Title == playerName || player.name == playerName)
-            {
-                player.transform.position = pos;
-                Debug.Log(player.Stats.Title + " team id been set to " + id);
-                player.Stats.TeamId = id;
-            }
-        }
+            //TODO: Assaign weapon data here
+        });
+        Camera.main.GetComponent<DeftlyCamera>().enabled = true;
     }
 
-    public void SpawnPlayer(string name, int id)
-    {
-         Networking.Instantiate(playerObject, SpawnManager.Instance.GetTeamSpawnPosition(OwningPlayer.MessageGroup), Quaternion.identity, NetworkReceivers.All, (player) => {
-             Vector3 position = SpawnManager.Instance.GetTeamSpawnPosition(id);
-             RPC("UpdateStats", name, position, id);
-         });
-         Camera.main.GetComponent<DeftlyCamera>().enabled = true;
-    }
-    
     public void BanPlayer(string playerName, int timePeriod)
     {
         Networking.PrimarySocket.BanPlayer(FindPlayer(playerName), timePeriod);
     }
 
-    public NetworkingPlayer FindPlayer(string name)
+    public static NetworkingPlayer FindPlayer(string name)
     {
         return Networking.PrimarySocket.Players.Find(player => player.Name == name);
     }
@@ -341,7 +324,7 @@ public class GameManager : NetworkedMonoBehavior {
     [BRPC]
     public void RPCReadyUp(bool state)
     {
-        
+
         if (state == true)
             PlayersReady++;
         else if (state == false)

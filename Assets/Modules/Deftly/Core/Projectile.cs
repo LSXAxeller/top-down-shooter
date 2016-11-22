@@ -92,8 +92,12 @@ namespace Deftly
                     _endPoint = col.contacts[0].point;
                     SetupImpactNormal(col.contacts[0].normal);
                     PopFx(GetCorrectFx(col.gameObject));
-                    _victim.ShowHitIndicator(_endNormal);
-                    FinishImpact();
+                    if (_endNormal != null)
+                    {
+                        _victim.ShowHitIndicator(_endNormal);
+                    }
+                    FinishImpact();--------------------------------------------------------------------------------------------------------ö-pöpö
+
                 }
                 else
                 {

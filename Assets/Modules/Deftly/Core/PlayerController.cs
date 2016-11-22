@@ -157,6 +157,25 @@ namespace Deftly
 
         private void OnDestroy()
         {
+            if (Camera.main == null)
+            {
+                var result = GameObject.FindObjectOfType<Camera>();
+                if (result != null)
+                {
+                    result.tag = "MainCamera";
+                    if (result.GetComponent<DeftlyCamera>() == null)
+                    {
+                        result.gameObject.AddComponent<DeftlyCamera>();
+                    }
+                }
+                else
+                {
+                    Debug.LogError("Fuck we have no main camera guys!!! Add the fucking MainCamera tag please!!!");
+                    Debug.LogError("Gold on... actually I might just create one automatically instad cos fuk it..... 8======) ;) haha lol XD, im drunk while coding.... reps to me motha fucka, cos I cant type for shit mother fuvka, holy shit I might just lose my job, bnut when im drunk im a gen uius.......!!!!!!!");
+                    var camera = new GameObject("Created main camera", typeof(Camera), typeof(DeftlyCamera));
+                    camera.tag = "MainCamera";
+                }
+            }
             if (Camera.main.GetComponent<DeftlyCamera>() != null)
             {
                 Camera.main.GetComponent<DeftlyCamera>().enabled = false;
